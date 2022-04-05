@@ -3,7 +3,6 @@ package Networking;
 import java.util.List;
 
 public class Networking_Component {
-
     private List<Swarm> Swarms;
 
     private void connect(String ip){}
