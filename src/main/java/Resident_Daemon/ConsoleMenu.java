@@ -89,7 +89,7 @@ public class ConsoleMenu {
         while (true) {
 
             display();
-            String consoleInput = getACmdIdxFromUser();
+            String consoleInput = getInput();
             List<String> args = splitInputIntoStrings(consoleInput);
 
             if (isAValidCmdIdx(args.get(0))) {
@@ -120,7 +120,7 @@ public class ConsoleMenu {
         return true;
     }
 
-    private static String getACmdIdxFromUser() {
+    private static String getInput() {
 
         Scanner input = new Scanner(System.in);
         return input.nextLine();
