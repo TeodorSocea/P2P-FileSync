@@ -1,18 +1,32 @@
 package Networking;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.List;
 
 public class Networking_Component {
     private List<Swarm> Swarms;
 
-    private void connect(String ip){}
+    public void connect(String ip) throws IOException {
+        int port = 32000;
+        Socket connection = new Socket(ip, port);
+        while(true){
+
+        }
+    }
 
     private String[] discover(){
         String[] ret = {"ala", "pala"};
         return ret;
     }
 
-    public void listen(){}
+    public Networking_Component(){
+    }
+
+    public void listen(){
+        PeerListener listener = new PeerListener();
+        new Thread(listener).start();
+    }
 
     public void stopListen(){}
 
