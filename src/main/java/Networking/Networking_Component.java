@@ -2,37 +2,24 @@ package Networking;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Networking_Component {
     private List<Swarm> Swarms;
 
-    public void connect(String ip) throws IOException {
-        int port = 32000;
-        Socket connection = new Socket(ip, port);
-        while(true){
-
-        }
+    public Networking_Component(int port){
+        Swarms = new ArrayList<Swarm>();
+        Swarms.add(new Swarm(port));
     }
 
-    private String[] discover(){
-        String[] ret = {"ala", "pala"};
-        return ret;
+    public List<Swarm> getSwarms(){
+        System.out.println(Swarms.get(0).getPeers());
+        return Swarms;
     }
 
-    public Networking_Component(){
+    public void connect(String ip, int port) throws IOException {
+        Swarms.get(0).addPeer(ip, port);
     }
 
-    public void listen(){
-        PeerListener listener = new PeerListener();
-        new Thread(listener).start();
-    }
-
-    public void stopListen(){}
-
-    public void sendRequest(Byte[] bytes){}
-
-    public AbstractResponse receiveResponse(){
-        return new GetDataResponse();
-    }
 }
