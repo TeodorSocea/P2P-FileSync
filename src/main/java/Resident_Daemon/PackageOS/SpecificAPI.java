@@ -6,8 +6,8 @@ import java.io.InputStreamReader;
 import java.util.Locale;
 
 public class SpecificAPI extends DetectOS{
-    public void WindowsCommands() {
-        String command="netstat"; // aici punem ce comenzi vrem sa executam pe sistemele de operare windows
+    public void CommandsProcessing (String command)
+    {
         try {
             Process process = Runtime.getRuntime().exec(command);
             System.out.println("the output stream is "+process.getOutputStream());
@@ -20,26 +20,17 @@ public class SpecificAPI extends DetectOS{
             e.printStackTrace();
         }
     }
+    public void WindowsCommands() {
+        String command="help"; // aici punem ce comenzi vrem sa executam pe sistemele de operare windows
+        CommandsProcessing(command);
+    }
     public void MacOSCommands() {
-
+        String command="comenzi pt mac";
+        CommandsProcessing(command);
     }
     public void UnixCommands() {
-        Process process = null;
-        try {
-            process = Runtime.getRuntime().exec("pwd"); // comenzi linux
-            //Process process = Runtime.getRuntime().exec("cmd /c dir"); //for Windows
-
-            process.waitFor();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            process.destroy();
-        }
+        String command="comenzi pt linux";
+        CommandsProcessing(command);
     }
     public void runOSActions(){
         String os = getOperatingSystem().toLowerCase(Locale.ROOT);
