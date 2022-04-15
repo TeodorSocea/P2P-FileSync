@@ -49,7 +49,7 @@ public class IncomingTrafficHandler implements Runnable{
                     peerSockets.add(newSocket);
                     */
                     System.out.println("New connection from " + newSocket.getRemoteSocketAddress().toString());
-                    newSocket.setSoTimeout(50);
+                    //newSocket.setSoTimeout(50);
                     SocketHandler sh=new SocketHandler(parent,newSocket);//Richi
                     sh.run();//Richi
 
