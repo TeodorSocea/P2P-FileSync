@@ -1,8 +1,6 @@
 package Resident_Daemon;
-import Networking.Networking_Component;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class TestMenu {
 

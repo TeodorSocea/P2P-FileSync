@@ -1,5 +1,5 @@
 package Networking.Messages;
 
-public interface AbstractMessage {
+public interface SendableMessage {
     public byte[] toPacket();
 }

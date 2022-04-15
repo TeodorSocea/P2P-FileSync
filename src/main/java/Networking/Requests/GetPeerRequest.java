@@ -4,7 +4,7 @@ import Networking.Requests.AbstractRequest;
 
 public class GetPeerRequest extends AbstractRequest {
     @Override
-    public String toPacket() {
+    public byte[] toPacket() {
         return null;
     }
 }

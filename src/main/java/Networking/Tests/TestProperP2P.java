@@ -1,4 +1,4 @@
-package Networking;
+package Networking.Tests;
 
 import Networking.Swarm.Swarm;
 import Networking.Swarm.SwarmManager;
@@ -12,7 +12,7 @@ public class TestProperP2P {
         if(args[0].equals("1")){ //create new swarm and wait for new connections
             //swarmManager.addSwarm(0,new Swarm(33000));
             System.out.println("making new swarm");
-            Swarm swarm = new Swarm(33000);
+            //Swarm swarm = new Swarm(33000);
 
         }else if(args[0].equals("0")){ //join existing swarm
             System.out.println("joining existing swarm");

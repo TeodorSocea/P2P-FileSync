@@ -37,11 +37,14 @@ public class PeerListener implements Runnable{
             while(true){
                 Socket peer_socket = listener.accept();
                 String peer_ip = peer_socket.getRemoteSocketAddress().toString();
-                Peer peer_obj = new Peer(peer_socket, peer_ip);
-                System.out.println(peer_ip);
+                Peer peer_obj = new Peer(peer_socket, peer_ip, 0);
+                //System.out.println(peer_ip);
                 peers.put(peer_ip, peer_obj);
                 peerHandlers.put(peer_obj, new PeerHandler(peer_obj));
-                new Thread(peerHandlers.get(peers.size() - 1)).start();
+
+                System.out.println("new peer connected from " + peer_ip);
+
+                new Thread(peerHandlers.get(peer_obj)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();

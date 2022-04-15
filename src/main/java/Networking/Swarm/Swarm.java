@@ -1,34 +1,61 @@
-package Networking;
+package Networking.Swarm;
 
+import Networking.Messages.MessageHeader;
+import Networking.Messages.ParseableMessage;
 import Networking.Peer.Peer;
 import Networking.Peer.PeerHandler;
 import Networking.Peer.PeerListener;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Swarm {
-    private PeerListener Known_Hosts;
+    private Map<Integer, Peer> peers;
+    private Integer selfID;
+    private String directory;
 
-    public Swarm(int port){
-        Known_Hosts = new PeerListener(port);
-        new Thread(Known_Hosts).start();
+    private int id;
+
+
+    public Swarm(int id){
+        this.id = id;
+        peers = new HashMap<>();
+        directory = "files/"; //temporary
     }
 
-    public Map<String, Peer> getPeers(){
-        return Known_Hosts.getPeers();
+    public void setSelfID(Integer selfID) {
+        this.selfID = selfID;
     }
 
-    public void addPeer(String ip, int port) throws IOException {
-        Socket peer_socket = new Socket(ip, port);
-        Peer peer_obj = new Peer(peer_socket, ip);
-        Known_Hosts.getPeers().put(ip, peer_obj);
-        Known_Hosts.getPeerHandlers().put(peer_obj, new PeerHandler(peer_obj));
-        new Thread(Known_Hosts.getPeerHandlers().get(peer_obj)).start();
+    public Map<Integer, Peer> getPeers(){
+        return peers;
+    }
+
+    public void addPeer(String ip, Socket peerSocket, Integer userID) throws IOException {
+        Peer peer_obj = new Peer(peerSocket, ip, userID);
+        peers.put(userID, peer_obj);
     }
 
     public void closePeer(){
         // TODO
+    }
+
+    public void handleMessage(ParseableMessage msg){
+        if(msg.getHeader() == MessageHeader.NEW_CONNECTION_REQUEST){
+
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder("Swarm with ID ");
+        s.append(this.id).append(":");
+
+        for (Integer p: this.peers.keySet()) {
+            s.append("\npeer with ID ").append(p).append(" and IP ").append(peers.get(p).getPeerIP());
+        }
+        return s.toString();
     }
 }
