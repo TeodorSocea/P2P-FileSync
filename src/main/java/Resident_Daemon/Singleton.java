@@ -1,31 +1,35 @@
 package Resident_Daemon;
 
-import java.nio.file.Path;
-import java.sql.SQLOutput;
 
 public class Singleton
 {
     private String currentPath;
     private String operatingSystem;
+    private static Singleton singletonObject;
 
-    private static Singleton singletonObject = new Singleton();
 
     public static Singleton getSingletonObject()
     {
+        if (singletonObject == null)
+        {
+            singletonObject = new Singleton();
+        }
         return singletonObject;
     }
 
     public String getCurrentPath()
     {
+        if( currentPath == null ) setCurrentPath();
         return currentPath;
     }
 
     public String getOperatingSystem()
     {
+        if ( operatingSystem == null ) setOperatingSystem();
         return operatingSystem;
     }
 
-    private void setPath()
+    private void setCurrentPath()
     {
         try
         {
@@ -49,9 +53,8 @@ public class Singleton
         }
     }
 
-    Singleton()
+    private Singleton()
     {
-        setPath();
-        setOperatingSystem();
+
     }
 }
