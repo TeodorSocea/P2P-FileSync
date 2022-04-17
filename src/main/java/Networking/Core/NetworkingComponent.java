@@ -6,14 +6,18 @@ import Networking.Swarm.Swarm;
 import Networking.Swarm.SwarmManager;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class NetworkingComponent {
+
     private SwarmManager swarmManager;
     private IncomingTrafficHandler trafficHandler;
-    int port;
+    private int port;
 
     Socket initialConnection;
 
@@ -77,7 +81,7 @@ public class NetworkingComponent {
             }
         } else {
             if(swarmManager.getByID(msg.getSwarmID()) != null){
-                swarmManager.getByID(msg.getSwarmID()).handleMessage(msg);
+                swarmManager.getByID(msg.getSwarmID()).handleMessage(msg,source);
             }
         }
 

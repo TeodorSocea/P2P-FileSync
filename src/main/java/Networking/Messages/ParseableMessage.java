@@ -7,7 +7,7 @@ public class ParseableMessage implements SendableMessage {
     int header;
 
     public ParseableMessage(byte[] rawMessage){
-        this.rawMessage = rawMessage;
+        this.rawMessage = rawMessage.clone();
         this.parse();
     }
 
