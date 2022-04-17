@@ -41,13 +41,6 @@ public class NetworkingComponent {
         new Thread(trafficHandler).start();
     }
 
-
-/*
-    public List<Swarm> getSwarms(){
-        //System.out.println(swarmManager.get(0).getPeers());
-        return swarmManager;
-    }
-*/
     public void addPeer(Integer swarmID, String ip, Socket peerSocket, Integer userID) throws IOException {
         swarmManager.getByID(swarmID).addPeer(ip,peerSocket , userID);
     }

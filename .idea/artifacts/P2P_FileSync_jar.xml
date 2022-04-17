@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="P2P-FileSync:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/P2P_FileSync_jar</output-path>
+    <root id="archive" name="P2P-FileSync.jar">
+      <element id="module-output" name="P2P-FileSync" />
+    </root>
+  </artifact>
+</component>

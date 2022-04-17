@@ -24,11 +24,17 @@ public class ConnectAcceptMessage extends ParseableMessage implements SendableMe
 
     private void parse(){
         swarmID = Messages.getIntFromByteArray(rawMessage,4);
+        System.out.println(swarmID);
         userID  = Messages.getIntFromByteArray(rawMessage,8);
+        System.out.println(userID);
         header  = Messages.getIntFromByteArray(rawMessage,12);
+        System.out.println(header);
         destination = Messages.getIntFromByteArray(rawMessage,16);
+        System.out.println(destination);
         newUserID = Messages.getIntFromByteArray(rawMessage,20);
+        System.out.println(newUserID);
         senderID = Messages.getIntFromByteArray(rawMessage, 24);
+        System.out.println(senderID);
     }
 
     @Override

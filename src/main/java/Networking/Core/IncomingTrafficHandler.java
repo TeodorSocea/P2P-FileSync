@@ -17,7 +17,6 @@ public class IncomingTrafficHandler implements Runnable{
         peerSockets = new ArrayList<>();
         listener = new ServerSocket(port);
         listener.setReuseAddress(true);
-        listener.setSoTimeout(500);
     }
 
     @Override

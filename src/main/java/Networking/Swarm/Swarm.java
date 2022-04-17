@@ -65,6 +65,7 @@ public class Swarm {
                         Socket peer_socket = new Socket(ip, port);
                         String peer_ip = peer_socket.getInetAddress().toString();
                         peers.put(peerID, new Peer(peer_socket, peer_ip, peerID));
+                        System.out.println(peers.get(peerID));
                     }
                 }
             }
