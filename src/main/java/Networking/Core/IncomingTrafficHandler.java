@@ -49,7 +49,10 @@ public class IncomingTrafficHandler implements Runnable{
                     peerSockets.add(newSocket);
                     */
                     System.out.println("New connection from " + newSocket.getRemoteSocketAddress().toString());
-                    newSocket.setSoTimeout(50);
+                    //newSocket.setSoTimeout(50);
+                    SocketHandler sh=new SocketHandler(parent,newSocket);//Richi
+                    new Thread(sh).start();
+
 
                     peerSockets.add(newSocket);
 
@@ -65,7 +68,7 @@ public class IncomingTrafficHandler implements Runnable{
                     e.printStackTrace();
             }
 
-            for (Socket s : peerSockets) {
+            /*for (Socket s : peerSockets) {
                 try {
                     byte[] buf = new byte[Messages.MAX_SIZE];
                     InputStream in = s.getInputStream();
@@ -81,7 +84,7 @@ public class IncomingTrafficHandler implements Runnable{
                     e.printStackTrace();
 
                 }
-            }
+            }*/
         }
     }
 }
