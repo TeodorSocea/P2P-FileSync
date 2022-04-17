@@ -1,6 +1,7 @@
 package Networking.Messages;
 
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class ConnectAcceptMessage extends ParseableMessage implements SendableMessage{
     private int destination;
@@ -23,6 +24,7 @@ public class ConnectAcceptMessage extends ParseableMessage implements SendableMe
     }
 
     private void parse(){
+        System.out.println(Arrays.toString(this.rawMessage));
         swarmID = Messages.getIntFromByteArray(rawMessage,4);
         System.out.println(swarmID);
         userID  = Messages.getIntFromByteArray(rawMessage,8);

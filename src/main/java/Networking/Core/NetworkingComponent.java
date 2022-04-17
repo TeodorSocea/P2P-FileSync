@@ -61,6 +61,7 @@ public class NetworkingComponent {
         if(source == null){
             sendMessage(msg);
         } else if(msg.getSwarmID() == Messages.NO_SWARM){
+            System.out.println("header: " + msg.getHeader());
             switch (msg.getHeader()) {
                 case MessageHeader.NEW_CONNECTION_REQUEST: {
                     ConnectMessage received = new ConnectMessage(msg.getRawMessage());
@@ -72,21 +73,22 @@ public class NetworkingComponent {
                     ConnectAcceptMessage response = new ConnectAcceptMessage(received.getDestination(), newID, swarmManager.getByID(received.getDestination()).getSelfID());
                     swarmManager.getByID(received.getDestination()).addPeer(source.getInetAddress().toString(), source, newID);
                     swarmManager.getByID(received.getDestination()).getPeers().get(newID).getPeerSocket().getOutputStream().write(response.toPacket());
+                    break;
                 }
                 case MessageHeader.NEW_CONNECTION_RESPONSE: {
+                    System.out.println("should have 28 bytes " + Arrays.toString(msg.getRawMessage()));
                     ConnectAcceptMessage received = new ConnectAcceptMessage(msg.getRawMessage());
                     swarmManager.addSwarm(received.getDestination());
                     swarmManager.getByID(received.getDestination()).setSelfID(received.getNewUserID());
                     swarmManager.getByID(received.getDestination()).addPeer(source.getInetAddress().toString(), source, received.getSenderID());
 
                     RequestPeersMessage response = new RequestPeersMessage(received.getDestination(), swarmManager.getByID(received.getDestination()).getSelfID());
+                    break;
                 }
             }
         } else if(swarmManager.getByID(msg.getSwarmID()) != null){
                 swarmManager.getByID(msg.getSwarmID()).handleMessage(msg,source);
         }
-
-        System.out.println(Arrays.toString(msg.getRawMessage()));
     }
 
     public void sendMessage(SendableMessage msg) throws IOException {

@@ -49,6 +49,7 @@ public class Swarm {
             case MessageHeader.PEER_REQUEST : {
                 RequestPeersMessage received = new RequestPeersMessage(msg.getRawMessage());
                 ResponsePeersMessage response = new ResponsePeersMessage(swarmID, selfID, peers);
+                break;
             }
             case MessageHeader.PEER_RESPONSE: {
                 ResponsePeersMessage received = new ResponsePeersMessage(msg.getRawMessage());
@@ -68,6 +69,7 @@ public class Swarm {
                         System.out.println(peers.get(peerID));
                     }
                 }
+                break;
             }
         }
     }
