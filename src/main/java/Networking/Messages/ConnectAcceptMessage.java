@@ -5,19 +5,21 @@ import java.nio.ByteBuffer;
 public class ConnectAcceptMessage extends ParseableMessage implements SendableMessage{
     private int destination;
     private int newUserID;
-    public ConnectAcceptMessage(int destination, int newUserID){
-        super(new byte[24]);
+    private int senderID;
+    public ConnectAcceptMessage(int destination, int newUserID, int senderID){
+        super(new byte[28]);
 
         this.swarmID = Messages.NO_SWARM;
         this.userID = Messages.UNAUTHENTICATED;
         this.header = MessageHeader.NEW_CONNECTION_RESPONSE;
         this.destination = destination;
         this.newUserID = newUserID;
+        this.senderID = senderID;
     }
 
     public ConnectAcceptMessage(byte[] rawMessage){
         super(rawMessage);
-        parse();
+        this.parse();
     }
 
     private void parse(){
@@ -26,6 +28,7 @@ public class ConnectAcceptMessage extends ParseableMessage implements SendableMe
         header  = Messages.getIntFromByteArray(rawMessage,12);
         destination = Messages.getIntFromByteArray(rawMessage,16);
         newUserID = Messages.getIntFromByteArray(rawMessage,20);
+        senderID = Messages.getIntFromByteArray(rawMessage, 24);
     }
 
     @Override
@@ -41,15 +44,18 @@ public class ConnectAcceptMessage extends ParseableMessage implements SendableMe
         return newUserID;
     }
 
+    public int getSenderID() {return senderID;}
+
     @Override
     public byte[] toPacket() {
-        ByteBuffer buf = ByteBuffer.allocate(24);
-        buf.putInt(0,  24); //length 16
+        ByteBuffer buf = ByteBuffer.allocate(28);
+        buf.putInt(0,  28); //length 16
         buf.putInt(4,  this.swarmID);
         buf.putInt(8,  this.userID);
         buf.putInt(12, this.header);
         buf.putInt(16, this.destination);
         buf.putInt(20, this.newUserID);
+        buf.putInt(24, this.senderID);
         rawMessage = buf.array();
         return rawMessage;
     }

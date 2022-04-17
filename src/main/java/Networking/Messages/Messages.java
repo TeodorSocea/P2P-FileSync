@@ -29,6 +29,9 @@ public class Messages {
                 ((input[offset + 2] & 0xFF) << 8 ) |
                 ((input[offset + 3] & 0xFF));
     }
+    public static byte getByteFromByteArray(byte[] input, int offset){
+        return input[offset];
+    }
 
 
 }
