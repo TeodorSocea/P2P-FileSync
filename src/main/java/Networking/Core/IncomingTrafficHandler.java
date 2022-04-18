@@ -30,9 +30,8 @@ public class IncomingTrafficHandler implements Runnable{
                 if(newSocket != null) {
                     System.out.println("New connection from " + newSocket.getRemoteSocketAddress().toString());
                     SocketHandler sh=new SocketHandler(parent,newSocket);//Richi
-                    new Thread(sh).start();
-
                     peerSockets.add(newSocket);
+                    new Thread(sh).start();
                 }
             } catch (IOException e){
                     e.printStackTrace();

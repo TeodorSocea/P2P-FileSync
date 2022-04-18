@@ -46,7 +46,11 @@ public class NetworkingComponent {
     }
 
     public void connect(String ip) throws IOException {
-        this.setInitialConnection(new Socket(ip,this.port));
+        Socket initialSocket = new Socket(ip,this.port);
+        SocketHandler sh = new SocketHandler(this, initialSocket);
+        this.setInitialConnection(initialSocket);
+        new Thread(sh).start();
+
     }
 
     public void setInitialConnection(Socket initialConnection) {
@@ -83,6 +87,7 @@ public class NetworkingComponent {
                     swarmManager.getByID(received.getDestination()).addPeer(source.getInetAddress().toString(), source, received.getSenderID());
 
                     RequestPeersMessage response = new RequestPeersMessage(received.getDestination(), swarmManager.getByID(received.getDestination()).getSelfID());
+                    swarmManager.getByID(received.getDestination()).getPeers().get(received.getSenderID()).getPeerSocket().getOutputStream().write(response.toPacket());
                     break;
                 }
             }

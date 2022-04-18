@@ -27,16 +27,19 @@ public class SocketHandler implements Runnable{
     public void run() {
 
         try {
-            byte[] buf = new byte[Messages.MAX_SIZE];
-            InputStream in = mySocket.getInputStream();
-            int nr = in.read(buf, 0, in.available());
-            System.out.println(nr);
-            if(nr!=0) {
-                byte[] toSend = Arrays.copyOfRange(buf, 0, nr);
-                parent.handleMessage(new ParseableMessage(toSend),mySocket);
+            while(true){
+                byte[] buf = new byte[Messages.MAX_SIZE];
+                InputStream in = mySocket.getInputStream();
+                System.out.println("Blocked");
+                int nr = in.read(buf);
+                System.out.println("Unblocked");
+                System.out.println(nr);
+                if(nr!=0) {
+                    byte[] toSend = Arrays.copyOfRange(buf, 0, nr);
+                    System.out.println("Parent will handle message");
+                    parent.handleMessage(new ParseableMessage(toSend),mySocket);
+                }
             }
-        } catch (SocketTimeoutException ignored) {
-            System.out.println("it is intentional");
         } catch (IOException e) {
             e.printStackTrace();
 
