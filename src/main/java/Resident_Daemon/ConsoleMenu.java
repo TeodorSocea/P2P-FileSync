@@ -1,21 +1,25 @@
 package Resident_Daemon;
 
+import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.Command;
+import Resident_Daemon.CommandsPack.Commands.LocalAPI.NewFile;
+import Resident_Daemon.CommandsPack.Commands.Networking.ConnectToIP;
+import Resident_Daemon.CommandsPack.Commands.Networking.CreateSwarm;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-// TODO: inlocuieste interfata cu clasa generala ce sta la baza implementarii command pattern-ului
-interface ICommand {
 
-    void execute(List<String> args);
-}
 class Option {
     private String whatToDisplay = null;
-    private ICommand whatToExecute = null;
+    private Command whatToExecute = null;
+    private CommandExecutor commandExecutor;
 
-    public Option(String whatToDisplay, ICommand whatToExecute) {
+    public Option(String whatToDisplay, Command whatToExecute) {
         this.whatToDisplay = whatToDisplay;
         this.whatToExecute = whatToExecute;
+        commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
     }
 
     public String getWhatToDisplay() {
@@ -25,11 +29,12 @@ class Option {
         return this.whatToDisplay;
     }
 
-    public ICommand getWhatToExecute() {
+    public Command getWhatToExecute() {
         if (this.whatToExecute == null){
-            return (args -> {
+            return () -> {
                System.out.println("NULL COMMAND!");
-            });
+               return true;
+            };
         }
         return this.whatToExecute;
     }
@@ -96,7 +101,10 @@ public class ConsoleMenu {
 
                 Integer cmdIxd = Integer.parseInt(args.get(0));
                 args.remove(0);
-                userOptions.get(cmdIxd).getWhatToExecute().execute(args);
+                Command choosedComm = userOptions.get(cmdIxd).getWhatToExecute();
+
+                Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(choosedComm);
+
             } else {
                 System.out.println("Invalid input!");
             }
@@ -128,16 +136,25 @@ public class ConsoleMenu {
 
     private static void generateOptions() {
 
-        userOptions.add(new Option("Synchronize", (args) -> {
-            System.out.println(args);
+        userOptions.add(new Option("Synchronize", () -> {
+            System.out.println("");
+            return true;
         }));
 
-        userOptions.add(new Option("Send files", (args) -> {
-            System.out.println(args);
+        userOptions.add(new Option("Send files", () -> {
+            System.out.println("");
+            return true;
         }));
 
-        userOptions.add(new Option("Exit", (args) -> {
+        userOptions.add(new Option("Create new file", new NewFile()));
+
+        userOptions.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\"", new CreateSwarm()));
+
+        userOptions.add(new Option("Connect to network(ip=\"192.168.1.220\", port:\"33531\"", new ConnectToIP()));
+
+        userOptions.add(new Option("Exit", () -> {
             System.exit(0);
+            return true;
         }));
     }
 
