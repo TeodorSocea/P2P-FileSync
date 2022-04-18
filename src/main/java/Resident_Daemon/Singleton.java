@@ -1,12 +1,14 @@
 package Resident_Daemon;
 
 
+import Resident_Daemon.CommandsPack.CommandExecutor;
+
 public class Singleton
 {
     private String currentPath;
     private String operatingSystem;
     private static Singleton singletonObject;
-
+    CommandExecutor commandExecutor;
 
     public static Singleton getSingletonObject()
     {
@@ -17,6 +19,10 @@ public class Singleton
         return singletonObject;
     }
 
+    public CommandExecutor getCommandExecutor() {
+        return commandExecutor;
+    }
+
     public String getCurrentPath()
     {
         if( currentPath == null ) setCurrentPath();
@@ -25,7 +31,6 @@ public class Singleton
 
     public String getOperatingSystem()
     {
-        if ( operatingSystem == null ) setOperatingSystem();
         return operatingSystem;
     }
 
@@ -41,20 +46,15 @@ public class Singleton
         }
     }
 
-    private void setOperatingSystem()
+    public void setOperatingSystem(String os)
     {
-        try
-        {
-            this.operatingSystem = System.getProperty("os.name");
-        }
-        catch (Exception e)
-        {
-            System.out.println("Operating System exception: " + e );
-        }
+        this.operatingSystem = os;
     }
 
     private Singleton()
     {
-
+        setCurrentPath();
+        this.operatingSystem = "unknown";
+        commandExecutor = new CommandExecutor();
     }
 }
