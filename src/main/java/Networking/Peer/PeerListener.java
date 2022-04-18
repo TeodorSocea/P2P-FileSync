@@ -1,8 +1,5 @@
 package Networking.Peer;
 
-import Networking.Peer.Peer;
-import Networking.Peer.PeerHandler;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;

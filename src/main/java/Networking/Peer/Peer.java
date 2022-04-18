@@ -21,6 +21,8 @@ public class Peer {
         return peerIP;
     }
 
+    public int getPeerID(){return peerID;}
+
     @Override
     public String toString() {
         return "Peer{" +

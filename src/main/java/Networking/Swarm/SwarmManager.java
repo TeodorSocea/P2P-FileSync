@@ -5,13 +5,14 @@ import java.util.Map;
 
 public class SwarmManager {
     private Map<Integer,Swarm> swarms;
-
-    public SwarmManager(){
+    private int port;
+    public SwarmManager(int port){
         swarms = new HashMap<>();
+        this.port = port;
     }
 
-    public void addSwarm(Integer swarmID, Swarm newSwarm){
-        swarms.put(swarmID,newSwarm);
+    public void addSwarm(Integer swarmID){
+        swarms.put(swarmID, new Swarm(swarmID, port));
     }
 
     public Swarm getByID(Integer id){

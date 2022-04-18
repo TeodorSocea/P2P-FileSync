@@ -14,8 +14,9 @@ public class TestConnectFunctionality {
 
         if(args[0].equals("0")){ //swarm initial connection
             nc.joinSwarm(44);
+            nc.getSwarmManager().getByID(44).setSelfID(69);
         } else if(args[0].equals("1")){ //connecting peer
-            nc.connect("192.168.0.100");
+            nc.connect(args[1]);
             nc.handleMessage(new ConnectMessage(44),null);
         }else {
             System.out.println("wrong args");

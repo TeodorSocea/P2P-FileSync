@@ -2,17 +2,21 @@ package Networking.Core;
 
 import Networking.Messages.Messages;
 import Networking.Messages.ParseableMessage;
+import Networking.Swarm.Swarm;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Arrays;
+import java.util.Map;
 
 public class SocketHandler implements Runnable{
 
     private NetworkingComponent parent;
     private Socket mySocket;
+
+    private Map<Integer, Swarm> relevantSwarms;
 
     public SocketHandler(NetworkingComponent parent, Socket mySocket) {
         this.parent = parent;

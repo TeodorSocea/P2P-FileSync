@@ -6,21 +6,25 @@ import Networking.Swarm.Swarm;
 import Networking.Swarm.SwarmManager;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 public class NetworkingComponent {
+
     private SwarmManager swarmManager;
     private IncomingTrafficHandler trafficHandler;
-    int port;
+    private int port;
 
     Socket initialConnection;
 
     public NetworkingComponent(int port){
         try {
             this.port = port;
-            swarmManager = new SwarmManager();
+            swarmManager = new SwarmManager(port);
             trafficHandler = new IncomingTrafficHandler(this, port);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -29,7 +33,7 @@ public class NetworkingComponent {
 
     public void joinSwarm(Integer swarmID){
         if(swarmManager.getByID(swarmID) == null){
-            swarmManager.addSwarm(swarmID,new Swarm(swarmID));
+            swarmManager.addSwarm(swarmID);
         }
     }
 
@@ -37,13 +41,6 @@ public class NetworkingComponent {
         new Thread(trafficHandler).start();
     }
 
-
-/*
-    public List<Swarm> getSwarms(){
-        //System.out.println(swarmManager.get(0).getPeers());
-        return swarmManager;
-    }
-*/
     public void addPeer(Integer swarmID, String ip, Socket peerSocket, Integer userID) throws IOException {
         swarmManager.getByID(swarmID).addPeer(ip,peerSocket , userID);
     }
@@ -64,24 +61,34 @@ public class NetworkingComponent {
         if(source == null){
             sendMessage(msg);
         } else if(msg.getSwarmID() == Messages.NO_SWARM){
-            if(msg.getHeader() == MessageHeader.NEW_CONNECTION_REQUEST){
+            System.out.println("header: " + msg.getHeader());
+            switch (msg.getHeader()) {
+                case MessageHeader.NEW_CONNECTION_REQUEST: {
+                    ConnectMessage received = new ConnectMessage(msg.getRawMessage());
+                    System.out.println(Arrays.toString(msg.getRawMessage()));
+                    int newID;
+                    do {
+                        newID = (int) (Math.random() * Integer.MAX_VALUE);
+                    } while (swarmManager.getByID(received.getDestination()).getPeers().containsKey(newID));
+                    ConnectAcceptMessage response = new ConnectAcceptMessage(received.getDestination(), newID, swarmManager.getByID(received.getDestination()).getSelfID());
+                    swarmManager.getByID(received.getDestination()).addPeer(source.getInetAddress().toString(), source, newID);
+                    swarmManager.getByID(received.getDestination()).getPeers().get(newID).getPeerSocket().getOutputStream().write(response.toPacket());
+                    break;
+                }
+                case MessageHeader.NEW_CONNECTION_RESPONSE: {
+                    System.out.println("should have 28 bytes " + Arrays.toString(msg.getRawMessage()));
+                    ConnectAcceptMessage received = new ConnectAcceptMessage(msg.getRawMessage());
+                    swarmManager.addSwarm(received.getDestination());
+                    swarmManager.getByID(received.getDestination()).setSelfID(received.getNewUserID());
+                    swarmManager.getByID(received.getDestination()).addPeer(source.getInetAddress().toString(), source, received.getSenderID());
 
-                ConnectMessage tmp = new ConnectMessage(msg.getRawMessage());
-                System.out.println(Arrays.toString(msg.getRawMessage()));
-                int tmpID;
-                do{
-                    tmpID = (int)(Math.random() * Integer.MAX_VALUE);
-                }while(swarmManager.getByID(tmp.getDestination()).getPeers().containsKey(tmpID));
-
-                swarmManager.getByID(tmp.getDestination()).addPeer(source.getInetAddress().toString(),source,tmpID);
+                    RequestPeersMessage response = new RequestPeersMessage(received.getDestination(), swarmManager.getByID(received.getDestination()).getSelfID());
+                    break;
+                }
             }
-        } else {
-            if(swarmManager.getByID(msg.getSwarmID()) != null){
-                swarmManager.getByID(msg.getSwarmID()).handleMessage(msg);
-            }
+        } else if(swarmManager.getByID(msg.getSwarmID()) != null){
+                swarmManager.getByID(msg.getSwarmID()).handleMessage(msg,source);
         }
-
-        System.out.println(Arrays.toString(msg.getRawMessage()));
     }
 
     public void sendMessage(SendableMessage msg) throws IOException {
