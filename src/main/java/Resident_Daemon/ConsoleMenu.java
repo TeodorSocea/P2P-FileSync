@@ -3,8 +3,8 @@ package Resident_Daemon;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.LocalAPI.NewFile;
-import Resident_Daemon.CommandsPack.Commands.Networking.ConnectToIP;
-import Resident_Daemon.CommandsPack.Commands.Networking.CreateSwarm;
+import Resident_Daemon.CommandsPack.Commands.Console.ConnectToIP;
+import Resident_Daemon.CommandsPack.Commands.Console.CreateSwarm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -148,9 +148,9 @@ public class ConsoleMenu {
 
         userOptions.add(new Option("Create new file", new NewFile()));
 
-        userOptions.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\"", new CreateSwarm()));
+        userOptions.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\")", new CreateSwarm()));
 
-        userOptions.add(new Option("Connect to network(ip=\"192.168.1.220\", port:\"33531\"", new ConnectToIP()));
+        userOptions.add(new Option("Connect to network", new ConnectToIP()));
 
         userOptions.add(new Option("Exit", () -> {
             System.exit(0);

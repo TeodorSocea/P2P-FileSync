@@ -1,7 +1,6 @@
-package Resident_Daemon.CommandsPack.Commands.Networking;
+package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Networking.Core.NetworkingComponent;
-import Networking.Messages.ConnectMessage;
 import Resident_Daemon.CommandsPack.Commands.Command;
 
 public class CreateSwarm implements Command {
