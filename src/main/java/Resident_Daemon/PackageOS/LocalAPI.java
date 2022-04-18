@@ -14,7 +14,7 @@ public class LocalAPI extends DetectOS {
             try {
                 Files.createFile(path);
             } catch (FileAlreadyExistsException e) {
-                System.err.println("already exists: " + e.getMessage()); //se verifica daca exista deja fisierul
+                System.err.println("File already exists: " + e.getMessage()); //se verifica daca exista deja fisierul
             }
         } catch (IOException e) {
             e.printStackTrace();

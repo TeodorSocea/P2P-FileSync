@@ -26,7 +26,6 @@ public class Main {
 
         ConsoleMenu.startToInteractWithTheUser();
 
-//        commandExecutor.ExecuteOperation(new NewFile()); //detecteaza automat sistemul de operare si creaza un moruz.txt
 
 
     }
