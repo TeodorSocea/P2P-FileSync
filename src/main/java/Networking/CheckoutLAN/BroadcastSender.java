@@ -12,7 +12,6 @@ public class BroadcastSender implements Runnable {
     private DatagramSocket socket;
     private int port;
     private String broadcastMsg = "check";
-    private static final int SIZE_BYTES = 100;
 
     public BroadcastSender(int port) {
         this.port = port;
@@ -29,12 +28,12 @@ public class BroadcastSender implements Runnable {
                 socket.setBroadcast(true);
                 byte[] buffer = broadcastMsg.getBytes();
 
-                DatagramPacket packet = null;
-
-                packet = new DatagramPacket(buffer, buffer.length,
+                DatagramPacket packet = new DatagramPacket(buffer, buffer.length,
                         InetAddress.getByName("255.255.255.255"), port);
+
                 socket.send(packet);
                 socket.close();
+
             } catch (SocketException e) {
                 e.printStackTrace();
             } catch (UnknownHostException e) {

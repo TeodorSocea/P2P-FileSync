@@ -14,7 +14,6 @@ public class BroadcastReceiver implements Runnable {
 
     public void startListening() throws SocketException {
         try {
-            this.port = port;
             socket = new DatagramSocket(port, InetAddress.getByName("0.0.0.0"));
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -24,16 +23,21 @@ public class BroadcastReceiver implements Runnable {
 
     @Override
     public void run() {
+        try {
+            startListening();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
         while (true) {
             //receives packets from any address
             try {
                 socket.setBroadcast(true);
                 byte[] recvBuf = new byte[SIZE_BYTES];
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
+
                 socket.receive(packet);
+
                 System.out.println("Packet from: " + packet.getAddress().getHostAddress());
-
-
 
             } catch (SocketException e) {
                 e.printStackTrace();
