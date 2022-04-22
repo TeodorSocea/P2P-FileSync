@@ -32,11 +32,12 @@ public class NetworkingComponent {
             swarmManager = new SwarmManager(port);
             trafficHandler = new IncomingTrafficHandler(this, port);
 
-            broadcastSender = new BroadcastSender(UDP_PORT);
-            broadcastReceiver = new BroadcastReceiver(UDP_PORT);
+            broadcastSender = new BroadcastSender(UDP_PORT,10);
+            broadcastReceiver = new BroadcastReceiver(UDP_PORT,10);
 
-            new Thread(broadcastSender).start();
-            new Thread(broadcastReceiver).start();
+            broadcastReceiver.startListening();
+            broadcastSender.startBroadcast();
+
 
         } catch (IOException e) {
             throw new RuntimeException(e);
