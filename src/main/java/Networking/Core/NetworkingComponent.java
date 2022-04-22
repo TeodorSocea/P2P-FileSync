@@ -1,5 +1,7 @@
 package Networking.Core;
 
+import Networking.CheckoutLAN.BroadcastReceiver;
+import Networking.CheckoutLAN.BroadcastSender;
 import Networking.Messages.*;
 import Networking.Requests.AbstractRequest;
 import Networking.Swarm.Swarm;
@@ -17,7 +19,10 @@ public class NetworkingComponent {
 
     private SwarmManager swarmManager;
     private IncomingTrafficHandler trafficHandler;
+    private BroadcastSender broadcastSender;
+    private BroadcastReceiver broadcastReceiver;
     private int port;
+    private int UDP_PORT = 40000;
 
     Socket initialConnection;
 
@@ -26,6 +31,13 @@ public class NetworkingComponent {
             this.port = port;
             swarmManager = new SwarmManager(port);
             trafficHandler = new IncomingTrafficHandler(this, port);
+
+            broadcastSender = new BroadcastSender(UDP_PORT);
+            broadcastReceiver = new BroadcastReceiver(UDP_PORT);
+
+            new Thread(broadcastSender).start();
+            new Thread(broadcastReceiver).start();
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
