@@ -136,6 +136,8 @@ public class ConsoleMenu {
 
     private static void generateOptions() {
 
+//
+
         userOptions.add(new Option("Synchronize", () -> {
             System.out.println("");
             return true;
