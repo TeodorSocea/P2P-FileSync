@@ -13,27 +13,28 @@ public class VersionFile {
     public VersionFile(String VersionFileData){
         this.VersionFileData = VersionFileData;
     }
-    public void setVersionFileData(Map<String,Pair<List<AddedRemoved>,Pair<String,String>>> map)
+    public void setVersionFileData(Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> map)
     {
         JSONObject files = new JSONObject(VersionFileData);
         JSONObject fileList = new JSONObject(files.getJSONObject("files"));
-        for(Map.Entry<String,Pair<List<AddedRemoved>,Pair<String,String>>> entry : map.entrySet()){
+        for(Map.Entry<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> entry : map.entrySet()){
             JSONObject obj = fileList.optJSONObject(entry.getKey());
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
             LocalDateTime time = LocalDateTime.now();
             String timestamp = time.format(dtf);
             JSONObject details = new JSONObject();
-            details.put("user",entry.getValue().getValue().getKey());
-            details.put("hash",entry.getValue().getValue().getValue());
             JSONObject addedLines = new JSONObject();
             JSONObject removedLines = new JSONObject();
-            for(AddedRemoved item : entry.getValue().getKey()){
-                addedLines.put(String.valueOf(item.addedLineNumber),item.addedLineContent);
-                removedLines.put(String.valueOf(item.removedLineNumber),item.removedLineContent);
+            for(Pair<Integer,String> added : entry.getValue().getKey()){
+                addedLines.put(String.valueOf(added.getKey()),added.getValue());
+            }
+            for(Pair<Integer,String> removed : entry.getValue().getValue()){
+                removedLines.put(String.valueOf(removed.getKey()),removed.getValue());
             }
             details.put("added_content",addedLines);
             details.put("deleted_content",removedLines);
             if(obj==null){
+                obj = new JSONObject();
                 obj.put(timestamp,details);
                 fileList.put(entry.getKey(),obj);
             }
