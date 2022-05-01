@@ -1,12 +1,10 @@
 package Resident_Daemon;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.stream.IntStream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -23,6 +21,12 @@ public class BasicFileUtils {
         }
 
         return true;
+    }
+
+    public static boolean isDirectory(String sPath) {
+        Path path = FileSystems.getDefault().getPath(sPath);
+
+        return Files.isDirectory(path);
     }
 
     public static boolean copyFile(Path src, Path dest) {
@@ -95,7 +99,7 @@ public class BasicFileUtils {
         return true;
     }
 
-    public static byte[] getBytesFromFile(Path src) {
+    public static byte[] file2bytes(Path src) {
 
         if (src == null || !isValidFile(src)) {
             return null;

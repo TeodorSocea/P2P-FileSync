@@ -2,9 +2,8 @@ package Resident_Daemon;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Command;
+import Resident_Daemon.CommandsPack.Commands.Console.*;
 import Resident_Daemon.CommandsPack.Commands.LocalAPI.NewFile;
-import Resident_Daemon.CommandsPack.Commands.Console.ConnectToIP;
-import Resident_Daemon.CommandsPack.Commands.Console.CreateSwarm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.Scanner;
 
 class Option {
     private String whatToDisplay = null;
-    private Command whatToExecute = null;
+    private Command whatToExecute = null; // HERE WE CAN HAVE MULTIPLE COMMANDS ON A CHOICE <<- A LIST OF COMMANDS "whatToExecute"
     private CommandExecutor commandExecutor;
 
     public Option(String whatToDisplay, Command whatToExecute) {
@@ -145,46 +144,39 @@ public class ConsoleMenu {
     }
 
     private static void generateOptions() {
+        List<Option> page;
 
 //      pagina 0
+        page = userOptions.get(0);
 
-        List<Option> page0 = userOptions.get(0);
-        page0.add(new Option("Disconnect", () -> {
-            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber + 1) % 2;
-            return true;
-        }));
+        page.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\")", new CreateSwarm()));
 
-        page0.add(new Option("Exit", () -> {
+        page.add(new Option("Connect to network", new ConnectToIP()));
+
+
+
+        page.add(new Option("Exit", () -> {
             System.exit(0);
             return true;
         }));
 
 //        pagina 1
+        page = userOptions.get(1);
 
-        List<Option> page1 = userOptions.get(1);
+        page.add(new Option("Choose folder to sync", new ChooseFolder()));
 
-        page1.add(new Option("Connect", () -> {
-            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber + 1) % 2;
+        page.add(new Option("Send to Synchronize file", new ChooseFileToSync()));
+
+        page.add(new Option("Receive Synced file", new ReceiveSyncedFile()));
+
+        page.add(new Option("Create new file", new NewFile()));
+
+        page.add(new Option("Disconnect", () -> {
+            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;
             return true;
         }));
 
-        page1.add(new Option("Synchronize", () -> {
-            System.out.println("");
-            return true;
-        }));
-
-        page1.add(new Option("Send files", () -> {
-            System.out.println("");
-            return true;
-        }));
-
-        page1.add(new Option("Create new file", new NewFile()));
-
-        page1.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\")", new CreateSwarm()));
-
-        page1.add(new Option("Connect to network", new ConnectToIP()));
-
-        page1.add(new Option("Exit", () -> {
+        page.add(new Option("Exit", () -> {
             System.exit(0);
             return true;
         }));
