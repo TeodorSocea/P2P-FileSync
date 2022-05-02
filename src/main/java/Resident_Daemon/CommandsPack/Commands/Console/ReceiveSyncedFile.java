@@ -63,6 +63,7 @@ public class ReceiveSyncedFile implements Command {
 
             i++;
         }
+        System.out.println("");
 
         System.out.println("\nChoose the index to apply changes: ");
 
@@ -82,9 +83,12 @@ public class ReceiveSyncedFile implements Command {
         for (int IP : dataMap.keySet()){
             if(i == index){
                 choosedIP = IP;
+                System.out.println(i + "_" + IP);
             }
             i++;
         }
+
+        System.out.println("Index choosed: " + index + ", data_ID choosed: " + choosedIP);
 
         if(choosedIP == -1){
             System.out.println("Error while searching ip!");
