@@ -2,13 +2,12 @@ package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon.ConsoleMenu;
 import Resident_Daemon.Singleton;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-public class ConnectToIP implements Command {
+public class InviteToSwarm implements Command {
 
     @Override
     public boolean execute() {
@@ -18,13 +17,20 @@ public class ConnectToIP implements Command {
 
         System.out.println("Input IP: ");
         String sIP = input.nextLine();
+        System.out.println("Input swarm's ID: ");
+        String sID = input.nextLine();
+
+
         try {
-            networkingComponent.connectToIP(sIP);
+            int ID = Integer.parseInt(sID);
+            networkingComponent.inviteIPToSwarm(sIP, ID);
         } catch (IOException e) {
-            System.out.println("Error at connecting!");
+            System.out.println("Error at inviting!");
+            return false;
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a valid number!");
             return false;
         }
-
 
         return true;
     }

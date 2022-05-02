@@ -46,7 +46,7 @@ public class ConsoleMenu {
     private static void init() {
 
         userOptions.add(new ArrayList<>());
-        userOptions.add(new ArrayList<>());
+//        userOptions.add(new ArrayList<>());
 
         generateOptions();
     }
@@ -105,8 +105,14 @@ public class ConsoleMenu {
             List<String> args = splitInputIntoStrings(consoleInput);
 
             if (isAValidCmdIdx(args.get(0))) {
+                Integer cmdIxd;
+                try {
+                    cmdIxd = Integer.parseInt(args.get(0));
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input!");
+                    continue;
+                }
 
-                Integer cmdIxd = Integer.parseInt(args.get(0));
                 args.remove(0);
                 List<Option> page = userOptions.get(pageNumber);
                 Command choosedComm = page.get(cmdIxd).getWhatToExecute();
@@ -149,19 +155,22 @@ public class ConsoleMenu {
 //      pagina 0
         page = userOptions.get(0);
 
-        page.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\")", new CreateSwarm()));
+        page.add(new Option("Create new swarm", new CreateSwarm()));
 
-        page.add(new Option("Connect to network", new ConnectToIP()));
+//        page.add(new Option("Connect to network", new ConnectToIP()));
 
+        page.add(new Option("Print IPs", new PrintIPs()));
 
+        page.add(new Option("Print sockets", new PrintSockets()));
 
-        page.add(new Option("Exit", () -> {
-            System.exit(0);
-            return true;
-        }));
+        page.add(new Option("Invite to swarm", new InviteToSwarm()));
 
-//        pagina 1
-        page = userOptions.get(1);
+        page.add(new Option("Print invitations", new PrintInvitations()));
+
+        page.add(new Option("Respond to invitation", new RespondToInvitation()));
+
+        page.add(new Option("Print swarms", new PrintSwarms()));
+
 
         page.add(new Option("Choose folder to sync", new ChooseFolder()));
 
@@ -169,12 +178,12 @@ public class ConsoleMenu {
 
         page.add(new Option("Receive Synced file", new ReceiveSyncedFile()));
 
-        page.add(new Option("Create new file", new NewFile()));
+//        page.add(new Option("Create new file", new NewFile()));
 
-        page.add(new Option("Disconnect", () -> {
-            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;
-            return true;
-        }));
+//        page.add(new Option("Disconnect", () -> {
+//            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;
+//            return true;
+//        }));
 
         page.add(new Option("Exit", () -> {
             System.exit(0);
