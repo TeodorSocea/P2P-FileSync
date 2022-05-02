@@ -2,18 +2,16 @@ package Resident_Daemon;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Command;
+import Resident_Daemon.CommandsPack.Commands.Console.*;
 import Resident_Daemon.CommandsPack.Commands.LocalAPI.NewFile;
-import Resident_Daemon.CommandsPack.Commands.Console.ConnectToIP;
-import Resident_Daemon.CommandsPack.Commands.Console.CreateSwarm;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 class Option {
     private String whatToDisplay = null;
-    private Command whatToExecute = null;
+    private Command whatToExecute = null; // HERE WE CAN HAVE MULTIPLE COMMANDS ON A CHOICE <<- A LIST OF COMMANDS "whatToExecute"
     private CommandExecutor commandExecutor;
 
     public Option(String whatToDisplay, Command whatToExecute) {
@@ -42,7 +40,16 @@ class Option {
 
 public class ConsoleMenu {
 
-    private static List<Option> userOptions = new ArrayList<>();
+    public static int pageNumber = 0;
+    private static List<List<Option>> userOptions = new ArrayList<>();
+
+    private static void init() {
+
+        userOptions.add(new ArrayList<>());
+        userOptions.add(new ArrayList<>());
+
+        generateOptions();
+    }
 
     private static List<String> splitInputIntoStrings(String consoleInput) {
 
@@ -89,7 +96,7 @@ public class ConsoleMenu {
 
     public static void startToInteractWithTheUser() {
 
-        generateOptions();
+        init();
 
         while (true) {
 
@@ -101,7 +108,8 @@ public class ConsoleMenu {
 
                 Integer cmdIxd = Integer.parseInt(args.get(0));
                 args.remove(0);
-                Command choosedComm = userOptions.get(cmdIxd).getWhatToExecute();
+                List<Option> page = userOptions.get(pageNumber);
+                Command choosedComm = page.get(cmdIxd).getWhatToExecute();
 
                 Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(choosedComm);
 
@@ -121,7 +129,8 @@ public class ConsoleMenu {
             return false;
         }
 
-        if (!(0 <= cmdIxd && cmdIxd < userOptions.size())) {
+        List<Option> page = userOptions.get(pageNumber);
+        if (!(0 <= cmdIxd && cmdIxd < page.size())) {
             return false;
         }
 
@@ -135,24 +144,39 @@ public class ConsoleMenu {
     }
 
     private static void generateOptions() {
+        List<Option> page;
 
-        userOptions.add(new Option("Synchronize", () -> {
-            System.out.println("");
+//      pagina 0
+        page = userOptions.get(0);
+
+        page.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\")", new CreateSwarm()));
+
+        page.add(new Option("Connect to network", new ConnectToIP()));
+
+
+
+        page.add(new Option("Exit", () -> {
+            System.exit(0);
             return true;
         }));
 
-        userOptions.add(new Option("Send files", () -> {
-            System.out.println("");
+//        pagina 1
+        page = userOptions.get(1);
+
+        page.add(new Option("Choose folder to sync", new ChooseFolder()));
+
+        page.add(new Option("Send to Synchronize file", new ChooseFileToSync()));
+
+        page.add(new Option("Receive Synced file", new ReceiveSyncedFile()));
+
+        page.add(new Option("Create new file", new NewFile()));
+
+        page.add(new Option("Disconnect", () -> {
+            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;
             return true;
         }));
 
-        userOptions.add(new Option("Create new file", new NewFile()));
-
-        userOptions.add(new Option("Create new swarm(swarmId=\"18\", port:\"33531\")", new CreateSwarm()));
-
-        userOptions.add(new Option("Connect to network", new ConnectToIP()));
-
-        userOptions.add(new Option("Exit", () -> {
+        page.add(new Option("Exit", () -> {
             System.exit(0);
             return true;
         }));
@@ -160,8 +184,9 @@ public class ConsoleMenu {
 
     private static void display() {
 
-        for (int indOpt = 0; indOpt < userOptions.size(); indOpt++) {
-            System.out.println("[" + indOpt + "] " + userOptions.get(indOpt).getWhatToDisplay());
+        List<Option> page = userOptions.get(pageNumber);
+        for (int indOpt = 0; indOpt < page.size(); indOpt++) {
+            System.out.println("[" + indOpt + "] " + page.get(indOpt).getWhatToDisplay());
         }
     }
 }

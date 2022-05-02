@@ -7,8 +7,16 @@ public class Singleton
 {
     private String currentPath;
     private String operatingSystem;
+    private String folderToSyncPath;
     private static Singleton singletonObject;
     CommandExecutor commandExecutor;
+
+    private Singleton()
+    {
+        setCurrentPath();
+        this.operatingSystem = "unknown";
+        commandExecutor = new CommandExecutor();
+    }
 
     public static Singleton getSingletonObject()
     {
@@ -19,6 +27,7 @@ public class Singleton
         return singletonObject;
     }
 
+    //region Getters & Setters
     public CommandExecutor getCommandExecutor() {
         return commandExecutor;
     }
@@ -51,10 +60,14 @@ public class Singleton
         this.operatingSystem = os;
     }
 
-    private Singleton()
-    {
-        setCurrentPath();
-        this.operatingSystem = "unknown";
-        commandExecutor = new CommandExecutor();
+    public String getFolderToSyncPath() {
+        return folderToSyncPath;
     }
+
+    public void setFolderToSyncPath(String folderToSyncPath) {
+        this.folderToSyncPath = folderToSyncPath;
+    }
+
+    //endregion
+
 }
