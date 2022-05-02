@@ -56,7 +56,7 @@ public class ReceiveSyncedFile implements Command {
         int i = 0;
 
         for(int IP : dataMap.keySet()){
-            String data = new String(dataMap.get(i));
+            String data = new String(dataMap.get(IP));
             String filePath = getFilePath(data);
 
             System.out.printf("[%d] %d : %s",i, IP, filePath);
@@ -64,13 +64,13 @@ public class ReceiveSyncedFile implements Command {
             i++;
         }
 
-        System.out.println("Choose the index to apply changes: ");
+        System.out.println("\nChoose the index to apply changes: ");
 
         String sIndex = input.nextLine();
         int index;
 
         try {
-            index = Integer.parseInt(sID);
+            index = Integer.parseInt(sIndex);
         } catch (NumberFormatException e){
             System.out.println("Invalid index!");
             return false;
