@@ -2,6 +2,9 @@ package Networking.CheckoutLAN;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Executors;
@@ -14,10 +17,15 @@ public class BroadcastReceiver implements Runnable {
     private int port;
     private static final int SIZE_BYTES = 10;
     private Set<String> ipSet;
+    private List<String> definitiveIpSet;
+    private String selfIP;
 
     private Runnable clearIpSet=new Runnable() {
         @Override
         public void run() {
+            if(!definitiveIpSet.equals(ipSet.toArray())){
+                definitiveIpSet = new ArrayList<>(ipSet);
+            }
             ipSet.clear();
         }
     };
@@ -27,8 +35,15 @@ public class BroadcastReceiver implements Runnable {
      * @param delay the amount of seconds between refreshing of the list of ips from which a packet has been received
      */
     public BroadcastReceiver( int port,int delay) {
+        try(final DatagramSocket socket = new DatagramSocket()){
+            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
+            selfIP = socket.getLocalAddress().getHostAddress();
+        } catch (SocketException | UnknownHostException e) {
+            e.printStackTrace();
+        }
         this.port = port;
-        ipSet= new ConcurrentSkipListSet<>();
+        ipSet= new HashSet<>();
+        definitiveIpSet = new ArrayList<String>();
         ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(clearIpSet,0,delay, TimeUnit.SECONDS);
     }
@@ -47,8 +62,8 @@ public class BroadcastReceiver implements Runnable {
 
     }
 
-    public Set<String> getIpSet() {
-        return ipSet;
+    public List<String> getIpSet() {
+        return definitiveIpSet;
     }
 
     /**
@@ -63,8 +78,9 @@ public class BroadcastReceiver implements Runnable {
                 byte[] recvBuf = new byte[SIZE_BYTES];
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
                 socket.receive(packet);
-                ipSet.add(packet.getAddress().getHostAddress().toString());
-                System.out.println(ipSet);
+                if(!packet.getAddress().getHostAddress().toString().equals(selfIP))
+                    ipSet.add(packet.getAddress().getHostAddress().toString());
+                //System.out.println(ipSet);
 
             } catch (SocketException e) {
                 e.printStackTrace();

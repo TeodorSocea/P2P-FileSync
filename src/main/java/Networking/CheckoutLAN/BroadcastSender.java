@@ -56,7 +56,6 @@ public class BroadcastSender{
     public void startBroadcast(){
         ScheduledExecutorService executorService= Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(taskBroadcast,0,delay,TimeUnit.SECONDS);
-
     }
 
 
