@@ -1,7 +1,11 @@
-package Networking.Core;
+package Networking.Networking;
 
 import Networking.Messages.InviteMessage;
 import Networking.Messages.MessageHeader;
+import Networking.Networking.ConnectionHandler;
+import Networking.Networking.NetworkListener;
+import Networking.Swarm.NetworkSwarm;
+import Networking.Swarm.NetworkSwarmManager;
 
 import java.io.IOException;
 import java.net.Socket;

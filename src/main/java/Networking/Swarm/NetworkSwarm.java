@@ -1,5 +1,6 @@
-package Networking.Core;
+package Networking.Swarm;
 
+import Networking.Utils.DataBuffer;
 import Networking.Peer.Peer;
 
 import java.util.HashMap;

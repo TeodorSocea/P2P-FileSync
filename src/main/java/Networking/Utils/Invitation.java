@@ -1,4 +1,4 @@
-package Networking.Core;
+package Networking.Utils;
 
 import java.net.Socket;
 

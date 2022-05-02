@@ -1,7 +1,10 @@
-package Networking.Core;
+package Networking.Networking;
 
+import Networking.Utils.Invitation;
 import Networking.Messages.*;
 import Networking.Peer.Peer;
+import Networking.Swarm.NetworkSwarm;
+import Networking.Swarm.NetworkSwarmManager;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -109,10 +112,16 @@ public class ConnectionHandler implements Runnable{
 
                             new Thread(connectionHandler).start();
                         }
-
+                        NewPeerMessage newPeerMessage = new NewPeerMessage(MessageHeader.NEW_PEER, networkSwarmManager.getSwarms().get(swarmDataMessage.getSwarmID()).getSelfID(), swarmDataMessage.getSwarmID());
+                        newSocket.getOutputStream().write(newPeerMessage.toPacket());
                         Peer newPeer = new Peer(newSocket, newSocket.getInetAddress().toString(), swarmDataMessage.getPeerID());
                         networkSwarmManager.addPeerToSwarm(swarmDataMessage.getSwarmID(), newPeer);
                         break;
+                    }
+                    case MessageHeader.NEW_PEER -> {
+                        NewPeerMessage newPeerMessage = new NewPeerMessage(incoming.getRawMessage());
+                        Peer newPeer = new Peer(selfSocket, selfSocket.getInetAddress().toString(), newPeerMessage.getSenderID());
+                        networkSwarmManager.getSwarms().get(newPeerMessage.getSwarmID()).addNewPeer(newPeer);
                     }
                     case MessageHeader.DATA -> {
                         DataMessage dataMessage = new DataMessage(incoming.getRawMessage());

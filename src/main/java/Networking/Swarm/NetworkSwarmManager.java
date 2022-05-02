@@ -1,9 +1,9 @@
-package Networking.Core;
+package Networking.Swarm;
 
+import Networking.Utils.DataBuffer;
+import Networking.Utils.Invitation;
 import Networking.Peer.Peer;
-import Networking.Swarm.Swarm;
 
-import java.net.Socket;
 import java.util.*;
 
 public class NetworkSwarmManager {
