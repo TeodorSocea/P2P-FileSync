@@ -1,6 +1,7 @@
 package Resident_Daemon;
 
 
+import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 
 public class Singleton
@@ -9,6 +10,8 @@ public class Singleton
     private String operatingSystem;
     private String folderToSyncPath;
     private static Singleton singletonObject;
+
+    private NetworkingComponent networkingComponent;
     CommandExecutor commandExecutor;
 
     private Singleton()
@@ -16,6 +19,7 @@ public class Singleton
         setCurrentPath();
         this.operatingSystem = "unknown";
         commandExecutor = new CommandExecutor();
+        this.networkingComponent = new NetworkingComponent(30000);
     }
 
     public static Singleton getSingletonObject()
@@ -66,6 +70,10 @@ public class Singleton
 
     public void setFolderToSyncPath(String folderToSyncPath) {
         this.folderToSyncPath = folderToSyncPath;
+    }
+
+    public NetworkingComponent getNetworkingComponent() {
+        return networkingComponent;
     }
 
     //endregion
