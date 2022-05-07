@@ -6,6 +6,8 @@ import Resident_Daemon.CommandsPack.CommandExecutor;
 
 public class Singleton
 {
+    static public int port = 30000;
+
     private String currentPath;
     private String operatingSystem;
     private String folderToSyncPath;
@@ -19,7 +21,11 @@ public class Singleton
         setCurrentPath();
         this.operatingSystem = "unknown";
         commandExecutor = new CommandExecutor();
-        this.networkingComponent = new NetworkingComponent(30000);
+
+        System.out.println("------");
+        System.out.println(this.port);
+        this.networkingComponent = new NetworkingComponent(this.port);
+//        this.networkingComponent = new NetworkingComponent(0);
     }
 
     public static Singleton getSingletonObject()
