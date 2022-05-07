@@ -3,7 +3,7 @@ package Resident_Daemon;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.Console.*;
-import Resident_Daemon.CommandsPack.Commands.LocalAPI.NewFile;
+import Resident_Daemon.Core.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;

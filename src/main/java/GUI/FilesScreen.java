@@ -1,3 +1,6 @@
+package GUI;
+import GUI.GUI_Component;
+
 import javax.swing.*;
 import java.awt.*;
 

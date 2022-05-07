@@ -3,7 +3,6 @@ package Resident_Daemon.Core;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.ConsoleMenu;
 import Resident_Daemon.PackageOS.DetectOS;
-import Resident_Daemon.Singleton;
 
 public class Main {
     private Singleton mainData;

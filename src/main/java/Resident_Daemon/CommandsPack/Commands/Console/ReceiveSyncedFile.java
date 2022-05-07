@@ -1,13 +1,10 @@
 package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Networking.Core.NetworkingComponent;
-import Resident_Daemon.BasicFileUtils;
 import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon.Singleton;
+import Resident_Daemon.Core.Singleton;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

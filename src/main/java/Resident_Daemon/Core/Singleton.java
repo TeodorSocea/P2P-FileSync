@@ -1,4 +1,4 @@
-package Resident_Daemon;
+package Resident_Daemon.Core;
 
 
 import Networking.Core.NetworkingComponent;
