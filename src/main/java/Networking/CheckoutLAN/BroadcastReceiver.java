@@ -1,5 +1,7 @@
 package Networking.CheckoutLAN;
 
+import Networking.Utils.LanIP;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class BroadcastReceiver implements Runnable {
     private static final int SIZE_BYTES = 10;
     private Set<String> ipSet;
     private List<String> definitiveIpSet;
-
+    private String selfIP;
 
     private Runnable clearIpSet=new Runnable() {
         @Override
@@ -34,12 +36,8 @@ public class BroadcastReceiver implements Runnable {
      * @param port the port on which the socket will listen
      * @param delay the amount of seconds between refreshing of the list of ips from which a packet has been received
      */
-    public BroadcastReceiver( int port,int delay) {
-        try(final DatagramSocket socket = new DatagramSocket()){
-            socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-        } catch (SocketException | UnknownHostException e) {
-            e.printStackTrace();
-        }
+    public BroadcastReceiver( int port,int delay) throws UnknownHostException {
+
         this.port = port;
         ipSet= new HashSet<>();
         definitiveIpSet = new ArrayList<String>();
@@ -73,13 +71,14 @@ public class BroadcastReceiver implements Runnable {
 
         while (true) {
             try {
-                socket.setBroadcast(true);
                 byte[] recvBuf = new byte[SIZE_BYTES];
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
                 socket.receive(packet);
-                if(!packet.getAddress().getHostAddress().toString().equals(InetAddress.getLocalHost().getHostAddress()))
-                    ipSet.add(packet.getAddress().getHostAddress().toString());
+                String msg=new String(packet.getData(),packet.getOffset(),packet.getLength());
+                
 
+                if(!msg.equals(LanIP.getLanIP()) )
+                    ipSet.add(msg);
 
             } catch (SocketException e) {
                 e.printStackTrace();
