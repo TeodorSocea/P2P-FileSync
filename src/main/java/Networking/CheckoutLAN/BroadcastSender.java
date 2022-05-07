@@ -31,8 +31,6 @@ public class BroadcastSender{
         @Override
         public void run() {
             try {
-
-                //sends a broadcast on predefined port LAN
                 DatagramSocket socket = new DatagramSocket();
                 socket.setBroadcast(true);
                 byte[] buffer = broadcastMsg.getBytes();

@@ -18,7 +18,7 @@ public class BroadcastReceiver implements Runnable {
     private static final int SIZE_BYTES = 10;
     private Set<String> ipSet;
     private List<String> definitiveIpSet;
-    private String selfIP;
+
 
     private Runnable clearIpSet=new Runnable() {
         @Override
@@ -37,7 +37,6 @@ public class BroadcastReceiver implements Runnable {
     public BroadcastReceiver( int port,int delay) {
         try(final DatagramSocket socket = new DatagramSocket()){
             socket.connect(InetAddress.getByName("8.8.8.8"), 10002);
-            selfIP = socket.getLocalAddress().getHostAddress();
         } catch (SocketException | UnknownHostException e) {
             e.printStackTrace();
         }
@@ -78,9 +77,9 @@ public class BroadcastReceiver implements Runnable {
                 byte[] recvBuf = new byte[SIZE_BYTES];
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
                 socket.receive(packet);
-                if(!packet.getAddress().getHostAddress().toString().equals(selfIP))
+                if(!packet.getAddress().getHostAddress().toString().equals(InetAddress.getLocalHost().getHostAddress()))
                     ipSet.add(packet.getAddress().getHostAddress().toString());
-                //System.out.println(ipSet);
+
 
             } catch (SocketException e) {
                 e.printStackTrace();

@@ -11,7 +11,10 @@ import Networking.Utils.DataBuffer;
 import Networking.Utils.Invitation;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.*;
 
@@ -132,4 +135,12 @@ public class NetworkingComponent {
         }
         return output;
     }
+    public String getSelfIp() throws UnknownHostException {
+       return InetAddress.getLocalHost().getHostAddress();
+       //need changes on linux doesn't work return 127.0.0.1
+       //it may be because of file in /etc/hosts
+       //I will do an iteration over all network interfaces and return a good one
+    }
+
+
 }
