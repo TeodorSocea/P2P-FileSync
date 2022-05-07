@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class BroadcastReceiver implements Runnable {
     private DatagramSocket socket;
     private int port;
-    private static final int SIZE_BYTES = 10;
+    private static final int SIZE_BYTES = 100;
     private Set<String> ipSet;
     private List<String> definitiveIpSet;
     private String selfIP;
@@ -74,8 +74,8 @@ public class BroadcastReceiver implements Runnable {
                 byte[] recvBuf = new byte[SIZE_BYTES];
                 DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
                 socket.receive(packet);
-                String msg=new String(packet.getData(),packet.getOffset(),packet.getLength());
-                
+
+                String msg=new String(packet.getData()).trim();
 
                 if(!msg.equals(LanIP.getLanIP()) )
                     ipSet.add(msg);
