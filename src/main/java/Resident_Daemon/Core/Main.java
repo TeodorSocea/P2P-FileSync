@@ -1,7 +1,7 @@
 package Resident_Daemon.Core;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
-import Resident_Daemon.ConsoleMenu;
+import Resident_Daemon.MenuPack.ConsoleMenu;
 import Resident_Daemon.PackageOS.DetectOS;
 
 public class Main {

@@ -13,7 +13,7 @@ public class CommandExecutor {
     }
 
     public boolean ExecuteOperation(Command command){
-        commandsList.add(command);
+//        commandsList.add(command);
         return command.execute();
     }
 }

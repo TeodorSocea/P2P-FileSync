@@ -1,39 +1,91 @@
 package Resident_Daemon.UnitTests;
 
-
-import Resident_Daemon.BasicFileUtils;
-
+import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.Console.ChooseFileToSync;
+import Resident_Daemon.CommandsPack.Commands.Console.ChooseFolder;
+import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Exceptions.NoFolderIsSelected;
 import org.junit.jupiter.api.Test;
 
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.file.InvalidPathException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ChooseFileToSyncTest {
+    Singleton singleton = Singleton.getSingletonObject();
+    CommandExecutor commandExecutor = new CommandExecutor();
 
     @Test
-    void testFileMatching() {
-        String folderPath = "src/main/java/Resident_Daemon/UnitTests/Media";
+    void NoFolderIsSelected() {
 
-        System.out.println("The folder path is: " + folderPath);
+        ChooseFileToSync command = new ChooseFileToSync();
+        commandExecutor.ExecuteOperation(command);
 
-        String fileRelativePath = "ceva.txt";
-
-        Path filePath = Paths.get(folderPath, fileRelativePath);
-
-        if (!Files.isRegularFile(filePath)) return;
-
-        byte[] out = BasicFileUtils.file2bytes(filePath);
-        String fileContent = new String(out, StandardCharsets.UTF_8);
-
-        String fromFileOLD = fileRelativePath + "!" + fileContent;
-        String dataShouldBe = "ceva.txt!niste bytes obositi";
-
-        assertEquals(dataShouldBe, fromFileOLD);
+        Exception exception = command.getException();
+        assertInstanceOf(NoFolderIsSelected.class, exception);
+//        assertTrue(exception instanceof NoFolderIsSelected);
     }
+
+    @Test
+    void InvalidFileRelativePath() {
+
+//        Put a valid path using, "ChooseFolder" command
+        System.setIn(new ByteArrayInputStream("src/main/java/Resident_Daemon/UnitTests/Media".getBytes()));
+        commandExecutor.ExecuteOperation(new ChooseFolder());
+
+        ChooseFileToSync command = new ChooseFileToSync();
+
+//        Input invalid path "3" as wrong relative file path, "ChooseFileToSync" command
+        System.setIn(new ByteArrayInputStream("3".getBytes()));
+        commandExecutor.ExecuteOperation(command);
+
+        Exception exception = command.getException();
+        assertInstanceOf(InvalidPathException.class, exception);
+    }
+
+
+    @Test
+    void InvalidSwarmID() {
+//        Put a valid path using, "ChooseFolder" command
+        System.setIn(new ByteArrayInputStream("src/main/java/Resident_Daemon/UnitTests/Media".getBytes()));
+        commandExecutor.ExecuteOperation(new ChooseFolder());
+
+        ChooseFileToSync command = new ChooseFileToSync();
+
+//        Input valid path "ceva.txt" as wrong relative file path, "ChooseFileToSync" command
+//        Input for swarmID a char 'a'
+        System.setIn(new ByteArrayInputStream("ceva.txt\na".getBytes()));
+        commandExecutor.ExecuteOperation(command);
+
+        Exception exception = command.getException();
+        assertInstanceOf(NumberFormatException.class, exception);
+    }
+
+    @Test
+    void ValidFileRelativePath_ValidSwarmID_NetworkFail() {
+
+//        Put a valid path using, "ChooseFolder" command
+        System.setIn(new ByteArrayInputStream("src/main/java/Resident_Daemon/UnitTests/Media".getBytes()));
+        commandExecutor.ExecuteOperation(new ChooseFolder());
+
+        ChooseFileToSync command = new ChooseFileToSync();
+
+//        Input valid path "ceva.txt" as wrong relative file path, "ChooseFileToSync" command
+//        Input for swarmID a char 'a'
+        System.setIn(new ByteArrayInputStream("ceva.txt\n32".getBytes()));
+
+
+        Exception exception = command.getException();
+
+        assertThrows(NullPointerException.class,
+                () -> {
+                    commandExecutor.ExecuteOperation(command);
+                });
+
+//        Daca au rezolvat cei de la Networking(comanda de jos trebuie sa nu fie comentata)
+//        assertInstanceOf(IOException.class, exception);
+    }
+
 }
