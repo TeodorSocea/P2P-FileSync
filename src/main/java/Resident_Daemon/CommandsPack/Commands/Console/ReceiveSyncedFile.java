@@ -2,7 +2,9 @@ package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Commands.Command;
+import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Input;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,7 +13,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ReceiveSyncedFile implements Command {
+public class ReceiveSyncedFile extends ExceptionModule implements Command {
 
     private String getFilePath(String data){
         return data.substring(0, data.indexOf("!"));
@@ -32,11 +34,11 @@ public class ReceiveSyncedFile implements Command {
             return false;
         }
 
-        Scanner input = new Scanner(System.in);
+        Input.confScanner();
 
         System.out.println("Input swarm's ID: ");
 
-        String sID = input.nextLine();
+        String sID = Input.nextLine();
         int swarmID;
 
         try {
@@ -64,7 +66,7 @@ public class ReceiveSyncedFile implements Command {
 
         System.out.println("\nChoose the index to apply changes: ");
 
-        String sIndex = input.nextLine();
+        String sIndex = Input.nextLine();
         int index;
 
         try {

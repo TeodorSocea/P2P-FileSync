@@ -6,6 +6,7 @@ import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Exceptions.NoFolderIsSelected;
+import Resident_Daemon.Input;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -23,12 +24,12 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
 
     }
 
-    private String GetFilePath(Scanner input){
+    private String GetFilePath(){
         String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
 
         System.out.println("Input file relative path from \"" + folderPath + "\": ");
 
-        return input.nextLine();
+        return Input.nextLine();
     }
 
     private byte[] GetBytesToSend(String fileRelativePath) throws InvalidPathException{
@@ -48,11 +49,11 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
         return out;
     }
 
-    private int GetSwarmID(Scanner input){
+    private int GetSwarmID(){
 
         System.out.println("Input swarm's ID: ");
 
-        String sID = input.nextLine();
+        String sID = Input.nextLine();
         int swarmID = Integer.parseInt(sID);
 
         return swarmID;
@@ -62,8 +63,7 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-
-        Scanner input = new Scanner(System.in);
+        Input.confScanner();
 
         try {
             IsFolderSelected();
@@ -73,12 +73,12 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
             return false;
         }
 
-        String fileRelativePath = GetFilePath(input);
+        String fileRelativePath = GetFilePath();
 
         try {
 
             byte[] out = GetBytesToSend(fileRelativePath);
-            int swarmID = GetSwarmID(input);
+            int swarmID = GetSwarmID();
 
             networkingComponent.sendDataToPeers(out, swarmID);
 
