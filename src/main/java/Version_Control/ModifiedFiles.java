@@ -8,7 +8,7 @@ import java.io.StringReader;
 import java.util.*;
 
 public class ModifiedFiles {
-    public List<Pair<String,String>> buildModifiedFiles(ArrayList<Pair<String,String>> originalFiles, Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> modifications) throws IOException {
+    public List<Pair<String,String>> buildModifiedFiles(List<Pair<String,String>> originalFiles, Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> modifications) throws IOException {
         List<Pair<String,String>> modifiedFiles = new ArrayList<>();
         Comparator<Pair<Integer,String>> comparator = new Comparator<Pair<Integer, String>>() {
             @Override
@@ -35,25 +35,26 @@ public class ModifiedFiles {
                 BufferedReader bf = new BufferedReader(new StringReader(file.getValue()));
                 String lineFile = "";
                 int counter = 1;
+                System.out.println(removed.get(removed.size()-1).getKey());
                 if(removed.isEmpty()){
                     while((lineFile = bf.readLine())!=null){
-                        newModifiedFile = newModifiedFile.concat(lineFile);
+                        newModifiedFile = newModifiedFile.concat(lineFile+"\n");
                     }
                     if(!added.isEmpty()){
-                        for(int i=0;i<value.getKey().size();i++)
+                        for(int i=value.getKey().size()-1;i>=0;i--)
                             newModifiedFile = newModifiedFile.concat(added.get(i).getValue());
                     }
                     modifiedFiles.add(new Pair<>(file.getKey(),newModifiedFile));
                 }
                 else{
                     while ((lineFile = bf.readLine())!= null){
-                        if(counter!=removed.get(0).getKey()){
-                            newModifiedFile = newModifiedFile.concat(lineFile);
+                        if(counter!=removed.get(removed.size()-1).getKey()){
+                            newModifiedFile = newModifiedFile.concat(lineFile+"\n");
                             counter++;
                         }
                         else{
                             if(!added.isEmpty()){
-                                for(int i=0;i<value.getKey().size();i++)
+                                for(int i=value.getKey().size()-1;i>=0;i--)
                                     newModifiedFile = newModifiedFile.concat(added.get(i).getValue());
                             }
                             modifiedFiles.add(new Pair<>(file.getKey(),newModifiedFile));
