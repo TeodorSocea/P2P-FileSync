@@ -1,42 +1,13 @@
-package Resident_Daemon;
+package Resident_Daemon.MenuPack;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.Console.*;
-import Resident_Daemon.CommandsPack.Commands.LocalAPI.NewFile;
+import Resident_Daemon.Core.Singleton;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-class Option {
-    private String whatToDisplay = null;
-    private Command whatToExecute = null; // HERE WE CAN HAVE MULTIPLE COMMANDS ON A CHOICE <<- A LIST OF COMMANDS "whatToExecute"
-    private CommandExecutor commandExecutor;
-
-    public Option(String whatToDisplay, Command whatToExecute) {
-        this.whatToDisplay = whatToDisplay;
-        this.whatToExecute = whatToExecute;
-        commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
-    }
-
-    public String getWhatToDisplay() {
-        if (this.whatToExecute == null) {
-            return "NULL";
-        }
-        return this.whatToDisplay;
-    }
-
-    public Command getWhatToExecute() {
-        if (this.whatToExecute == null){
-            return () -> {
-               System.out.println("NULL COMMAND!");
-               return true;
-            };
-        }
-        return this.whatToExecute;
-    }
-}
 
 public class ConsoleMenu {
 
@@ -106,12 +77,7 @@ public class ConsoleMenu {
 
             if (isAValidCmdIdx(args.get(0))) {
                 Integer cmdIxd;
-                try {
-                    cmdIxd = Integer.parseInt(args.get(0));
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input!");
-                    continue;
-                }
+                cmdIxd = Integer.parseInt(args.get(0));
 
                 args.remove(0);
                 List<Option> page = userOptions.get(pageNumber);

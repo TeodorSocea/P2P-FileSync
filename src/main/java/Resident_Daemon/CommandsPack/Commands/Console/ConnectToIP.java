@@ -2,8 +2,7 @@ package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon.ConsoleMenu;
-import Resident_Daemon.Singleton;
+import Resident_Daemon.Core.Singleton;
 
 import java.io.IOException;
 import java.util.Scanner;
