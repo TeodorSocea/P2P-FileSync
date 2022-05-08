@@ -26,8 +26,9 @@ public class Peer {
     @Override
     public String toString() {
         return "Peer{" +
-                "peer_socket=" + peerSocket +
-                ", peer_ip='" + peerIP + '\'' +
+                "peerSocket=" + peerSocket +
+                ", peerIP='" + peerIP + '\'' +
+                ", peerID=" + peerID +
                 '}';
     }
 }
