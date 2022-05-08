@@ -8,11 +8,11 @@ import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Comparator {
+public class ComparatorP2PFiles {
     private static List<Pair<String, String>> originalFiles;
     private static Map<String,List<String>> otherFiles;
 
-    public Comparator(List<Pair<String, String>> originalFiles, Map<String,List<String>> otherFiles){
+    public ComparatorP2PFiles(List<Pair<String, String>> originalFiles, Map<String,List<String>> otherFiles){
         this.originalFiles = originalFiles;
         this.otherFiles = otherFiles;
     }
@@ -126,10 +126,10 @@ public class Comparator {
         Map<String, List<String>> temp1 = new HashMap<>();
         temp1.put("primul", temp);
 
-        Comparator a = new Comparator(temp2, temp1);
-
-        System.out.println(compare().getKey().toString());
-        System.out.println(compare().getValue().toString());
+        ComparatorP2PFiles a = new ComparatorP2PFiles(temp2, temp1);
+       /// Pair< Map<String, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>>, Map<String, List<Integer>>>
+        //Map<String, Pair<List<Pair<Integer, String>>
+        //System.out.println(compare().getKey().get("primul").getValue().get(0).getValue());
     }
 }
 
