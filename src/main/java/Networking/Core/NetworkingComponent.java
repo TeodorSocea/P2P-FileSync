@@ -42,6 +42,7 @@ public class NetworkingComponent {
             broadcastSender = new BroadcastSender(config.UDPPORT(),10);
             broadcastReceiver = new BroadcastReceiver(config.UDPPORT(),10);
 
+
             broadcastReceiver.startListening();
             broadcastSender.startBroadcast();
 

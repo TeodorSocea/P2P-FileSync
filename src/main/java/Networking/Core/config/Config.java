@@ -1,30 +1,29 @@
 package Networking.Core.config;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import java.io.FileReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 public class Config {
 
-    // Static variable reference of single_instance
-    // of type Singleton
+
     private static Config single_instance = null;
 
-    // Declaring a variable of type int
+
     public static int UDP_PORT;
 
 
-    // Constructor
-    // Here we will be creating private constructor
-    // restricted to this class itself
+
     private Config() {
 
     }
     //Getter
     public int UDPPORT() {
 
-        return 10101;
+        return UDP_PORT;
     }
 
     public static void setUdpPort(int udpPort) {
@@ -34,18 +33,20 @@ public class Config {
     public static void init() {
         JSONParser parser = new JSONParser();
         try {
-            Object obj = parser.parse(new FileReader("ConfigFile.json"));
-            JSONObject jsonObject = (JSONObject) obj;
+            Path path = FileSystems.getDefault().getPath("");
+            String directoryName = path.toAbsolutePath().toString();
+            String secondPartOfThePath="\\src\\main\\java\\Networking\\Core\\config\\ConfigFile.json";
+            String finalPath =directoryName+secondPartOfThePath;
+            
+            Object obj = parser.parse(new FileReader(finalPath));
+            org.json.simple.JSONObject jsonObject = (JSONObject)obj;
+            String port = (String)jsonObject.get("port");
 
-            /*
-            Iterator iterator = subjects.iterator();
-            while (iterator.hasNext()) {
-                System.out.println(iterator.next());
-            }
-            */
-            setUdpPort(12);
-            System.out.println(UDP_PORT + " hello");
-        } catch (Exception e) {
+
+            int port1 = Integer.parseInt(port);
+
+            UDP_PORT=port1;
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
