@@ -2,6 +2,7 @@ package Networking.Core;
 
 import Networking.CheckoutLAN.BroadcastReceiver;
 import Networking.CheckoutLAN.BroadcastSender;
+import Networking.Core.config.Config;
 import Networking.Messages.*;
 import Networking.Networking.NetworkManager;
 import Networking.Peer.Peer;
@@ -34,9 +35,12 @@ public class NetworkingComponent {
 
             //swarmManager = new SwarmManager(port);
             //trafficHandler = new IncomingTrafficHandler(this, port);
+            Config config =Config.getInstance();
 
-            broadcastSender = new BroadcastSender(UDP_PORT,10);
-            broadcastReceiver = new BroadcastReceiver(UDP_PORT,10);
+
+
+            broadcastSender = new BroadcastSender(config.UDPPORT(),10);
+            broadcastReceiver = new BroadcastReceiver(config.UDPPORT(),10);
 
             broadcastReceiver.startListening();
             broadcastSender.startBroadcast();
