@@ -67,4 +67,23 @@ public class ModifiedFiles {
         }
         return modifiedFiles;
     }
+    /*
+    * public static void main(String[] args) throws IOException {
+        List<Pair<String,String>> originalFiles = new ArrayList<>();
+        Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> modifications = new HashMap<>();
+        originalFiles.add(new Pair<>("proiect.txt","Acest proiect este\nBun\nCeva"));
+        List<Pair<Integer,String>> added = new ArrayList<>();
+        added.add(new Pair<>(2,"Interesant si\n"));
+        added.add(new Pair<>(3,"Bun\n"));
+        added.add(new Pair<>(4,"Altceva"));
+        List<Pair<Integer,String>> removed = new ArrayList<>();
+        removed.add(new Pair<>(2,"Bun\n"));
+        removed.add(new Pair<>(3,"Ceva"));
+        modifications.put("proiect.txt",new Pair<>(added,removed));
+        ModifiedFiles mod = new ModifiedFiles();
+        List<Pair<String,String>> modifiedFiles = mod.buildModifiedFiles(originalFiles,modifications);
+        for(Pair<String,String> item : modifiedFiles){
+            System.out.println(item.getValue());
+        }
+    }*/
 }
