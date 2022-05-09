@@ -25,6 +25,7 @@ public class NetworkingComponent {
     private NetworkManager networkManager;
     private BroadcastSender broadcastSender;
     private BroadcastReceiver broadcastReceiver;
+    private Map<SwarmDataMessage, DataPipeline> swarmDataMessageDataPipelineMap; /* Written by Teodora */
     private int port;
     private int UDP_PORT = 10101;
 
@@ -34,6 +35,7 @@ public class NetworkingComponent {
 
             networkSwarmManager = new NetworkSwarmManager();
             networkManager = new NetworkManager(port, networkSwarmManager);
+            swarmDataMessageDataPipelineMap = new HashMap<>(); /* Written by Teodora */
 
             //swarmManager = new SwarmManager(port);
             //trafficHandler = new IncomingTrafficHandler(this, port);
@@ -48,6 +50,10 @@ public class NetworkingComponent {
             throw new RuntimeException(e);
         }
     }
+
+    public Map<SwarmDataMessage, DataPipeline> getSwarmDataMessageDataPipelineMap() {
+        return swarmDataMessageDataPipelineMap;
+    } /* Written by Teodora */
 
     public void printCommonIPPool(){
         System.out.println(broadcastReceiver.getIpSet());
