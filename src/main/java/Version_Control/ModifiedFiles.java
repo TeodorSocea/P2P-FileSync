@@ -57,6 +57,9 @@ public class ModifiedFiles {
                 }
                 counter++;
             }
+            for(int i=positionAdded;i<added.size();i++){
+                newModifiedFile.add(added.get(i).getValue());
+            }
             String modifiedFileAsString = "";
             for (String s : newModifiedFile) {
                 modifiedFileAsString = modifiedFileAsString.concat(s + "\n");
