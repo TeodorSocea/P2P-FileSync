@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 public class BroadcastSender{
     private int port,delay;
     private String broadcastMsg;
+    private String broadcastAddr;
     private static final int SIZE_BYTES = 100;
 
     /**
@@ -26,11 +27,13 @@ public class BroadcastSender{
     public BroadcastSender(int port, int delay) {
         this.port = port;
         this.delay = delay;
-        LanIP lanIP= null;
+
         try {
-            lanIP = new LanIP();
-            broadcastMsg=lanIP.getLanIP();
+            broadcastAddr=LanIP.getBroadcastAddress();
+            broadcastMsg=LanIP.getLanIP();
         } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
             e.printStackTrace();
         }
 
@@ -47,7 +50,7 @@ public class BroadcastSender{
                 byte[] buffer = broadcastMsg.getBytes();
 
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length,
-                        InetAddress.getByName("255.255.255.255"), port);
+                        InetAddress.getByName(broadcastAddr), port);
                 socket.send(packet);
                 socket.close();
             } catch (SocketException e) {
