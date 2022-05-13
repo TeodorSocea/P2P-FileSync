@@ -8,12 +8,16 @@ import java.awt.event.ActionListener;
 import static java.lang.System.exit;
 
 public class ConnectScreen extends JFrame implements ActionListener {
+    private final GUI_Component frame;
+    WorkScreen workScreen;
+    JLabel title;
     JButton newSwarmButton;
     JButton viewInvitesButton;
     JButton printSwarmsButton;
     JButton helpButton;
     JButton quitButton;
     JButton backButton;
+    JButton tempTransitionButton;
     JLabel helpContents;
     JList inviteList;
 
@@ -26,15 +30,17 @@ public class ConnectScreen extends JFrame implements ActionListener {
         // VIEW INVITES BUTTON PRESS:
         if (e.getSource() == viewInvitesButton){
             System.out.println("// VIEW INVITATIONS BUTTON PRESSED");
-            this.remove(newSwarmButton);
-            this.remove(viewInvitesButton);
-            this.remove(printSwarmsButton);
-            this.remove(helpButton);
-            this.remove(quitButton);
-            this.revalidate();
-            this.repaint();
-            this.add(backButton);
-            this.add(inviteList);
+            frame.remove(newSwarmButton);
+            frame.remove(viewInvitesButton);
+            frame.remove(printSwarmsButton);
+            frame.remove(helpButton);
+            frame.remove(quitButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(backButton);
+            frame.add(inviteList);
+            frame.revalidate();
+            frame.repaint();
         }
         // PRINT SWARMS PRESS:
         if (e.getSource() == printSwarmsButton){
@@ -43,37 +49,64 @@ public class ConnectScreen extends JFrame implements ActionListener {
         // HELP PRESS:
         if (e.getSource() == helpButton){
             System.out.println("// HELP BUTTON PRESSED");
-            this.remove(newSwarmButton);
-            this.remove(viewInvitesButton);
-            this.remove(printSwarmsButton);
-            this.remove(helpButton);
-            this.remove(quitButton);
-            this.revalidate();
-            this.repaint();
-            this.add(helpContents);
-            this.add(backButton);
+            frame.remove(newSwarmButton);
+            frame.remove(viewInvitesButton);
+            frame.remove(printSwarmsButton);
+            frame.remove(helpButton);
+            frame.remove(quitButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(helpContents);
+            frame.add(backButton);
+            frame.revalidate();
+            frame.repaint();
         }
         // BACK HELP BUTTON:
         if (e.getSource() == backButton){
             System.out.println("// BACK HELP BUTTON PRESSED");
-            this.remove(helpContents);
-            this.remove(backButton);
-            revalidate();
-            repaint();
-            this.add(newSwarmButton);
-            this.add(viewInvitesButton);
-            this.add(printSwarmsButton);
-            this.add(helpButton);
-            this.add(quitButton);
+            frame.remove(helpContents);
+            frame.remove(backButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(newSwarmButton);
+            frame.add(viewInvitesButton);
+            frame.add(printSwarmsButton);
+            frame.add(helpButton);
+            frame.add(quitButton);
+            frame.revalidate();
+            frame.repaint();
         }
         // QUIT PRESS:
         if (e.getSource() == quitButton){
             System.out.println("// QUIT BUTTON PRESSED, BYE!");
             exit(1);
         }
+        // TRANSITION BUTTON TEMP:
+        if (e.getSource() == tempTransitionButton){
+            System.out.println("// switching...");
+            frame.remove(newSwarmButton);
+            frame.remove(viewInvitesButton);
+            frame.remove(printSwarmsButton);
+            frame.remove(helpButton);
+            frame.remove(tempTransitionButton);
+            frame.remove(title);
+            frame.revalidate();
+            frame.repaint();
+            workScreen = new WorkScreen(frame);
+        }
     }
 
-    ConnectScreen() {
+    public ConnectScreen(GUI_Component frame) {
+        this.frame = frame;
+        // TEMP TRANSITION BUTTON:
+        tempTransitionButton = new JButton();
+        tempTransitionButton.setText("TEMP: TRANSITION TO WORK SCREEN");
+        tempTransitionButton.setBounds(100, 100, 200, 30);
+        tempTransitionButton.setForeground(new Color(0x000000));
+        tempTransitionButton.setBackground(new Color(0xB1B6A6));
+        tempTransitionButton.setFocusable(false);
+        tempTransitionButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+        tempTransitionButton.addActionListener(this);
         // PRINT SWARMS BUTTON:
         printSwarmsButton = new JButton();
         printSwarmsButton.setText("VIEW SWARMS");
@@ -143,28 +176,21 @@ public class ConnectScreen extends JFrame implements ActionListener {
         quitButton.addActionListener(this);
         // --
         // Title:
-        JLabel title = new JLabel();
+        title = new JLabel();
         title.setText("P2P File Sync");
         title.setForeground(new Color(0xB1B6A6));
         title.setFont(new Font("Radio Canada", Font.BOLD, 96));
         title.setBounds(330, -100, 884, 500);
         // --
-        // Main Frame:
-        this.setVisible(true);
-        this.setSize(1280, 720);
-        this.setTitle("P2P File Sync");
-        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        this.setResizable(false);
-        ImageIcon image = new ImageIcon("sync_logo.jpg");
-        this.setIconImage(image.getImage());
-        this.getContentPane().setBackground(new Color(0x363946));
-        this.setLayout(null);
-        this.add(title);
-        this.add(newSwarmButton);
-        this.add(viewInvitesButton);
-        this.add(printSwarmsButton);
-        this.add(helpButton);
-        this.add(quitButton);
+        frame.add(title);
+        frame.add(newSwarmButton);
+        frame.add(viewInvitesButton);
+        frame.add(printSwarmsButton);
+        frame.add(helpButton);
+        frame.add(quitButton);
+        frame.add(tempTransitionButton);
+        frame.revalidate();
+        frame.repaint();
         // --
     }
 }
