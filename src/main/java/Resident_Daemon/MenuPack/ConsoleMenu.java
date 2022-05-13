@@ -17,7 +17,7 @@ public class ConsoleMenu {
     private static void init() {
 
         userOptions.add(new ArrayList<>());
-//        userOptions.add(new ArrayList<>());
+        userOptions.add(new ArrayList<>());
 
         generateOptions();
     }
@@ -121,6 +121,11 @@ public class ConsoleMenu {
 //      pagina 0
         page = userOptions.get(0);
 
+        page.add(new Option("Choose folder to sync", new ChooseFolder()));
+
+//      pagina 1
+        page = userOptions.get(1);
+
         page.add(new Option("Create new swarm", new CreateSwarm()));
 
 //        page.add(new Option("Connect to network", new ConnectToIP()));
@@ -136,9 +141,6 @@ public class ConsoleMenu {
         page.add(new Option("Respond to invitation", new RespondToInvitation()));
 
         page.add(new Option("Print swarms", new PrintSwarms()));
-
-
-        page.add(new Option("Choose folder to sync", new ChooseFolder()));
 
         page.add(new Option("Send to Synchronize file", new ChooseFileToSync()));
 

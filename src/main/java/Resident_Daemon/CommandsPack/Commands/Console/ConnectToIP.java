@@ -2,12 +2,13 @@ package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Commands.Command;
+import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
 
 import java.io.IOException;
 import java.util.Scanner;
 
-public class ConnectToIP implements Command {
+public class ConnectToIP extends ExceptionModule implements Command {
 
     @Override
     public boolean execute() {
@@ -23,7 +24,6 @@ public class ConnectToIP implements Command {
             System.out.println("Error at connecting!");
             return false;
         }
-
 
         return true;
     }
