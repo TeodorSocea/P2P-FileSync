@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="P2P-FileSync:jar2">
+    <output-path>$PROJECT_DIR$/out/artifacts/P2P_FileSync_jar2</output-path>
+    <root id="archive" name="P2P-FileSync.jar">
+      <element id="module-output" name="P2P-FileSync" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20180130/json-20180130.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.12.0/commons-lang3-3.12.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/18/javafx-base-18-linux.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/openjfx/javafx-base/18/javafx-base-18.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
