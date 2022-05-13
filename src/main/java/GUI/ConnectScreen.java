@@ -73,7 +73,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
         }
     }
 
-    Login_Screen() {
+    ConnectScreen() {
         // PRINT SWARMS BUTTON:
         printSwarmsButton = new JButton();
         printSwarmsButton.setText("VIEW SWARMS");
