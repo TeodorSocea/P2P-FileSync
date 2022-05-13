@@ -5,6 +5,7 @@ import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Input;
+import Resident_Daemon.MenuPack.ConsoleMenu;
 
 import java.nio.file.InvalidPathException;
 import java.util.Scanner;
@@ -43,6 +44,8 @@ public class ChooseFolder extends ExceptionModule implements Command {
         Singleton.getSingletonObject().setFolderToSyncPath(folderPath);
         String path = Singleton.getSingletonObject().getFolderToSyncPath();
         System.out.println("The folder path is: " + path);
+
+        ConsoleMenu.pageNumber += 1 % 2;
         return true;
     }
 }
