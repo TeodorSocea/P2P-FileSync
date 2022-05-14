@@ -1,12 +1,23 @@
 package Version_Control;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Objects;
 
 public class FileP2P {
     String fileName;
     String userName;
-    String data;
+    String data = "";
     int hash;
+
+    public FileP2P(String filename, String username) {
+        this.fileName = filename;
+        this.userName = username;
+        this.hash = hashCode();
+        readFile(filename);
+    }
 
     public FileP2P(String fileName, String userName, String data) {
         this.fileName = fileName;
@@ -33,6 +44,29 @@ public class FileP2P {
     @Override
     public int hashCode() {
         return Objects.hash(fileName, userName, data, hash);
+    }
+
+    public boolean binaryCheck() {
+        char ch;
+        for(int i = 0; i < this.data.length(); i++) {
+            ch = this.data.charAt(i);
+            if(ch != '0' && ch != '1')
+                return false;
+        }
+        return true;
+    }
+
+    private void readFile(String filename) {
+        try (FileInputStream file = new FileInputStream(new File(filename))) {
+            int content;
+            while((content = file.read()) != -1) {
+                this.data += (char)content;
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getFileName() {
@@ -66,4 +100,5 @@ public class FileP2P {
     public void setHash(int hash) {
         this.hash = hash;
     }
+
 }
