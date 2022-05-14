@@ -27,7 +27,7 @@ public class ReceiveSyncedFile extends ExceptionModule implements Command {
     public boolean execute() {
 
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         if (folderPath == null){
             System.out.println("Choose the folder to sync first!");

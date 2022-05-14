@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class ChooseFileToSync extends ExceptionModule implements Command{
 
     private void IsFolderSelected() throws NoFolderIsSelected {
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         if (folderPath == null){
             throw new NoFolderIsSelected("Choose the folder to sync first!");
@@ -25,7 +25,7 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
     }
 
     private String GetFilePath(){
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         System.out.println("Input file relative path from \"" + folderPath + "\": ");
 
@@ -34,7 +34,7 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
 
     private byte[] GetBytesToSend(String fileRelativePath) throws InvalidPathException{
 
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         Path filePath = Paths.get(folderPath, fileRelativePath);
 
