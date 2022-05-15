@@ -1,15 +1,14 @@
 package Resident_Daemon.CommandsPack.Commands.Console;
 
-import Resident_Daemon.BasicFileUtils;
+import Resident_Daemon.FileAux.BasicFileUtils;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
-import Resident_Daemon.Input;
+import Resident_Daemon.Core.Input;
 import Resident_Daemon.MenuPack.ConsoleMenu;
 
 import java.io.FileNotFoundException;
 import java.nio.file.InvalidPathException;
-import java.util.Scanner;
 
 public class ChooseFolder extends ExceptionModule implements Command {
 
@@ -60,7 +59,7 @@ public class ChooseFolder extends ExceptionModule implements Command {
 /*
 package Resident_Daemon.CommandsPack.Commands.Console;
 
-import Resident_Daemon.BasicFileUtils;
+import Resident_Daemon.FileAux.BasicFileUtils;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.Core.Singleton;
 

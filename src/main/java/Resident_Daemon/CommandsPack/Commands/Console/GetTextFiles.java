@@ -1,16 +1,12 @@
 package Resident_Daemon.CommandsPack.Commands.Console;
 
-import Resident_Daemon.BasicFileUtils;
-import Resident_Daemon.Input;
+import Resident_Daemon.FileAux.BasicFileUtils;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Flow;
-import java.util.function.Consumer;
 
 public class GetTextFiles
 {//Basic Files Utils file2bytes
@@ -65,28 +61,28 @@ public class GetTextFiles
         }
     };
 
-    public static void main(String[] args)
-    {
-        Input.confScanner();
-        // Reading data using readLine
-        String name = null;
-        try
-        {
-            name = ChooseFolder.GetFolderPath();
-        } catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        Path p = Path.of(name);
-        var g = getTextFiles(p);
-        for ( int i = 0 ; i < g.size() ; ++i )
-        {
-            var map = g.get(i).entrySet();
-            if ( map == null ) System.out.println("a a");
-            for ( var entry : map )
-            {
-                System.out.println(entry.getKey());
-            }
-        }
-    }
+//    public static void main(String[] args)
+//    {
+//        Input.confScanner();
+//        // Reading data using readLine
+//        String name = null;
+//        try
+//        {
+//            name = ChooseFolder.GetFolderPath();
+//        } catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
+//        Path p = Path.of(name);
+//        var g = getTextFiles(p);
+//        for ( int i = 0 ; i < g.size() ; ++i )
+//        {
+//            var map = g.get(i).entrySet();
+//            if ( map == null ) System.out.println("a a");
+//            for ( var entry : map )
+//            {
+//                System.out.println(entry.getKey());
+//            }
+//        }
+//    }
 }

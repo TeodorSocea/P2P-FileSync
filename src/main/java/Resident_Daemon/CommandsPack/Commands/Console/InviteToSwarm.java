@@ -4,10 +4,9 @@ import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
-import Resident_Daemon.Input;
+import Resident_Daemon.Core.Input;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 public class InviteToSwarm extends ExceptionModule implements Command {
 

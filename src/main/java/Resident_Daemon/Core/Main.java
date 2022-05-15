@@ -17,6 +17,11 @@ public class Main {
         mainData = Singleton.getSingletonObject();
         mainData.setOperatingSystem(new DetectOS().getOperatingSystem());
 
+        try {
+            Singleton.loadSingletonData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void testSerialization() {
@@ -38,12 +43,14 @@ public class Main {
 
     public static void main(String[] args) {
 
-        testSerialization();
+//        testSerialization();
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
 
         System.out.println("App started! System detected: " + main.mainData.getOperatingSystem());
+        String name = System.getProperty("user.name");
+        System.out.println("System name: " + name);
 
 
         ConsoleMenu.startToInteractWithTheUser();

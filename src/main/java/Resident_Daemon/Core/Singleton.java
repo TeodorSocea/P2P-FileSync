@@ -49,6 +49,11 @@ public class Singleton
 
     //    TODO
     public static void loadSingletonData(String fileName) throws IOException {
+        //No savedData
+        if(!(new File(fileName).isFile())){
+            return;
+        }
+
         FileInputStream fis = new FileInputStream(fileName);
         DataInputStream in = new DataInputStream(fis);
 
@@ -99,7 +104,7 @@ public class Singleton
         this.operatingSystem = os;
     }
 
-    public Path getFolderToSyncPath() {
+    public Path getFolderToSyncPath() throws NullPointerException{
         if (folderToSyncPath == null) {
             throw new NullPointerException("FolderToSyncPath is null!");
         }

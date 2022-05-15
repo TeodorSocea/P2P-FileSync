@@ -1,10 +1,10 @@
 package Resident_Daemon.MenuPack;
 
-import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.Console.*;
 import Resident_Daemon.Core.Singleton;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +15,13 @@ public class ConsoleMenu {
     private static List<List<Option>> userOptions = new ArrayList<>();
 
     private static void init() {
+        try {
+            Path folderToSyncPath = Singleton.getSingletonObject().getFolderToSyncPath();
+            pageNumber = 1;
+        } catch (NullPointerException e) {
+            pageNumber = 0;
+        }
+
 
         userOptions.add(new ArrayList<>());
         userOptions.add(new ArrayList<>());
@@ -153,10 +160,7 @@ public class ConsoleMenu {
 //            return true;
 //        }));
 
-        page.add(new Option("Exit", () -> {
-            System.exit(0);
-            return true;
-        }));
+        page.add(new Option("Exit", new ExitApp()));
     }
 
     private static void display() {

@@ -1,4 +1,4 @@
-package Resident_Daemon;
+package Resident_Daemon.Core;
 
 import java.io.ByteArrayInputStream;
 import java.util.Scanner;
