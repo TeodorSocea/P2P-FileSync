@@ -17,4 +17,5 @@ public class MessageHeader {
     public static final int SWARM_DATA = 13;
     public static final int DATA = 14;
     public static final int NEW_PEER = 15;
+    public static final int CHUNK_REQUEST = 16;                 // + fileID + chunkNumber
 }

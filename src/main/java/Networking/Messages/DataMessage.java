@@ -8,6 +8,8 @@ public class DataMessage extends Message{
     private int chunkID;
     private byte[] data;
 
+    private int padding; //we will need to use this at some point
+
     public DataMessage(byte[] rawMessage) {
         super(rawMessage);
         parse();

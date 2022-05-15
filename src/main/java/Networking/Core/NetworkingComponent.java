@@ -141,6 +141,33 @@ public class NetworkingComponent {
         }
         return output;
     }
+
+    public void requestChunk(int fileID, int chunkID, int swarmID, int userID){  //fileID might be replaced by a string containing the path or sth
+        Peer peer = networkSwarmManager.getSwarms().get(swarmID).getPeers().get(userID);
+        DataMessageRequest request = new DataMessageRequest(userID,swarmID,fileID,chunkID);
+        try {
+            peer.getPeerSocket().getOutputStream().write(request.toPacket());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void sendChunk(int fileID, int chunkID, int swarmID, int userID, byte[] data){
+        Peer peer = networkSwarmManager.getSwarms().get(swarmID).getPeers().get(userID);
+        DataMessage msg = new DataMessage(MessageHeader.DATA,userID,swarmID,chunkID,data);
+        try {
+            peer.getPeerSocket().getOutputStream().write(msg.toPacket());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public byte[] receiveChunk(DataMessage message){
+        return message.getData().clone(); //maybe send it to daemon?
+    }
+
+
+
     public String getSelfIp() throws UnknownHostException {
        return InetAddress.getLocalHost().getHostAddress();
        //need changes on linux doesn't work return 127.0.0.1
