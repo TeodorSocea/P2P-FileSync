@@ -17,7 +17,7 @@ public class ModifiedFiles {
             List<Pair<Integer,String>> removed = value.getValue();
             BufferedReader bf = new BufferedReader(new StringReader(file.getValue()));
             String lineFile = "";
-            int counter = 1;
+            int counter = 0;
             int positionAdded = 0;
             int positionRemoved = 0;
             while((lineFile=bf.readLine())!=null){
