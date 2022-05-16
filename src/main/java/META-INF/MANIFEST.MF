@@ -1,5 +1,3 @@
 Manifest-Version: 1.0
 Main-Class: Resident_Daemon.Core.Main
-Class-Path: json-20180130.jar javafx-base-18.jar javafx-base-18-win.jar 
- commons-lang3-3.12.0.jar
 

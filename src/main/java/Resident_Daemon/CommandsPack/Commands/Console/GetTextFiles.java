@@ -1,20 +1,21 @@
 package Resident_Daemon.CommandsPack.Commands.Console;
 
-import Resident_Daemon.FileAux.BasicFileUtils;
+import Resident_Daemon.Core.Input;
+import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Utils.BasicFileUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GetTextFiles
 {//Basic Files Utils file2bytes
-    public static ArrayList<Map<File, byte[]>> getTextFiles(Path src)
+    public static Map<Path, byte[]> getTextFiles(Path src)
     {
-        ArrayList<Map<File, byte[]>> list = new ArrayList<Map<File, byte[]>>();
+        Map<Path, byte[]> mapData = new HashMap<>();
 
-        var map = new HashMap<File, byte[]>();
 
         var dir = src.toFile();
 
@@ -27,24 +28,27 @@ public class GetTextFiles
                 // Check if the file is a directory
                 if (file.isDirectory())
                 {
-                    var list2 = getTextFiles(Path.of(file.getAbsolutePath()));
-                    for (var map1 : list2)
+                    var mapData2 = getTextFiles(Path.of(file.getAbsolutePath()));
+                    for (var entry : mapData2.entrySet())
                     {
-                        if( map1 != null) list.add(map1);
+                        mapData.put(entry.getKey(), entry.getValue());
                     }
                 }
                 else
                 {
                     if(textFileFilter.accept(dir, file.getName()))
                     {
-                        var fullPath = file.getAbsolutePath();
-                        map.put(new File(fullPath), BasicFileUtils.file2bytes(Path.of(fullPath)));
+                        Path base = Singleton.getSingletonObject().getFolderToSyncPath();
+                        Path fileFullPath = Path.of(file.getAbsolutePath());
+
+                        var fileRelPath = base.relativize(fileFullPath);
+
+                        mapData.put(fileRelPath, BasicFileUtils.file2bytes(Path.of(file.getAbsolutePath())));
                     }
                 }
             }
         }
-        if ( map != null )list.add(map);
-        return  list;
+        return mapData;
     }
 
     private static final FilenameFilter textFileFilter = new FilenameFilter()
@@ -61,28 +65,23 @@ public class GetTextFiles
         }
     };
 
-//    public static void main(String[] args)
-//    {
-//        Input.confScanner();
-//        // Reading data using readLine
-//        String name = null;
-//        try
-//        {
-//            name = ChooseFolder.GetFolderPath();
-//        } catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
-//        Path p = Path.of(name);
-//        var g = getTextFiles(p);
-//        for ( int i = 0 ; i < g.size() ; ++i )
-//        {
-//            var map = g.get(i).entrySet();
-//            if ( map == null ) System.out.println("a a");
-//            for ( var entry : map )
-//            {
-//                System.out.println(entry.getKey());
-//            }
-//        }
-//    }
+    public static void main(String[] args)
+    {
+        Input.confScanner();
+        // Reading data using readLine
+        try {
+            Singleton.loadSingletonData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Path p = Singleton.getSingletonObject().getFolderToSyncPath();
+        var g = getTextFiles(p);
+
+        for(var entry : g.entrySet()){
+            System.out.println(entry.getKey() + " data:");
+
+            String fileContent = new String(entry.getValue(), StandardCharsets.UTF_8);
+            System.out.println(fileContent);
+        }
+    }
 }

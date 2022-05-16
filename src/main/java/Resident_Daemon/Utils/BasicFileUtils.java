@@ -1,4 +1,4 @@
-package Resident_Daemon.FileAux;
+package Resident_Daemon.Utils;
 
 import java.io.IOException;
 import java.nio.file.FileSystems;

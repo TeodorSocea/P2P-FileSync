@@ -53,6 +53,9 @@ public class Main {
         System.out.println("System name: " + name);
 
 
+        ThreadToSend threadToSend = new ThreadToSend();
+        new Thread(threadToSend).start();
+
         ConsoleMenu.startToInteractWithTheUser();
 
 
