@@ -10,7 +10,6 @@ import Networking.Swarm.NetworkSwarmManager;
 import Networking.Utils.*;
 
 import java.io.IOException;
-import java.io.ObjectInputFilter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -21,6 +20,7 @@ import java.util.*;
 public class NetworkingComponent {
 
     private NetworkSwarmManager networkSwarmManager;
+    private Map<Integer, NetworkSwarm> definitiveNetworkSwarms;
     private NetworkManager networkManager;
     private BroadcastSender broadcastSender;
     private BroadcastReceiver broadcastReceiver;
@@ -34,6 +34,7 @@ public class NetworkingComponent {
             this.port = port;
 
             networkSwarmManager = new NetworkSwarmManager();
+            definitiveNetworkSwarms = new HashMap<>();
             dataPipelineMap = new HashMap<>();
             networkManager = new NetworkManager(port, networkSwarmManager, dataPipelineMap);
             dataPipelineMap = new HashMap<>();
@@ -112,6 +113,34 @@ public class NetworkingComponent {
         }
 
         networkSwarmManager.getInvitations().remove(invitation);
+    }
+
+    public List<Map<Integer, List<Integer>>> updateDefinitiveSwarms(){
+        List<Map<Integer, List<Integer>>> output = new ArrayList<>();
+        if(definitiveNetworkSwarms != networkSwarmManager.getSwarms()){
+            for(Map.Entry<Integer, NetworkSwarm> entry : networkSwarmManager.getSwarms().entrySet()){
+                Map<Integer, List<Integer>> swarmDiff = new HashMap<>();
+                if(!definitiveNetworkSwarms.containsKey(entry.getKey())){
+                    List<Integer> peers = new ArrayList<>();
+                    for(Map.Entry<Integer, Peer> entry2 : (entry.getValue()).getPeers().entrySet()){
+                        peers.add(entry2.getKey());
+                    }
+                    swarmDiff.put(entry.getKey(), peers);
+                }else{
+                    List<Integer> peers = new ArrayList<>();
+                    for(Map.Entry<Integer, Peer> entry2 : (entry.getValue()).getPeers().entrySet()){
+                        if(!definitiveNetworkSwarms.get(entry.getKey()).getPeers().containsKey(entry2.getKey())){
+                            peers.add(entry2.getKey());
+                        }
+                    }
+                    swarmDiff.put(entry.getKey(), peers);
+                }
+                output.add(swarmDiff);
+            }
+            definitiveNetworkSwarms = new HashMap<>(networkSwarmManager.getSwarms());
+            return output;
+        }
+        return new ArrayList<>();
     }
 
     // will soon be deprecated
