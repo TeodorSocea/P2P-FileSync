@@ -1,5 +1,6 @@
 package Networking.Networking;
 
+import Networking.Utils.DataPipeline;
 import Networking.Utils.Invitation;
 import Networking.Messages.*;
 import Networking.Peer.Peer;
@@ -19,11 +20,13 @@ public class ConnectionHandler implements Runnable{
     private Socket selfSocket;
     private NetworkSwarmManager networkSwarmManager;
     private List<Socket> commonSocketPool;
+    private Map<Integer, DataPipeline> dataPipelineMap;
 
-    public ConnectionHandler(Socket selfSocket, NetworkSwarmManager networkSwarmManager, List<Socket> commonSocketPool){
+    public ConnectionHandler(Socket selfSocket, NetworkSwarmManager networkSwarmManager, List<Socket> commonSocketPool, Map<Integer, DataPipeline> dataPipelineMap){
         this.selfSocket = selfSocket;
         this.networkSwarmManager = networkSwarmManager;
         this.commonSocketPool = commonSocketPool;
+        this.dataPipelineMap = dataPipelineMap;
     }
 
     private Message readIncomingMessage() throws IOException {
@@ -63,7 +66,7 @@ public class ConnectionHandler implements Runnable{
         for(byte b : ip){
             sb.append(prefix);
             prefix = ".";
-            sb.append(Integer.toString(b));
+            sb.append(Integer.toString(b & 0xff));
         }
         return sb.toString();
     }
@@ -100,7 +103,6 @@ public class ConnectionHandler implements Runnable{
                     case MessageHeader.SWARM_DATA -> {
                         SwarmDataMessage swarmDataMessage = new SwarmDataMessage(incoming.getRawMessage());
                         String ip = inetToString(swarmDataMessage.getPeerIP());
-
                         Socket newSocket = isInCommonSocketPool(ip);
 
                         if(newSocket == null) {
@@ -108,7 +110,7 @@ public class ConnectionHandler implements Runnable{
 
                             commonSocketPool.add(newSocket);
 
-                            ConnectionHandler connectionHandler = new ConnectionHandler(newSocket, networkSwarmManager, commonSocketPool);
+                            ConnectionHandler connectionHandler = new ConnectionHandler(newSocket, networkSwarmManager, commonSocketPool, dataPipelineMap);
 
                             new Thread(connectionHandler).start();
                         }
@@ -122,10 +124,20 @@ public class ConnectionHandler implements Runnable{
                         NewPeerMessage newPeerMessage = new NewPeerMessage(incoming.getRawMessage());
                         Peer newPeer = new Peer(selfSocket, selfSocket.getInetAddress().toString(), newPeerMessage.getSenderID());
                         networkSwarmManager.getSwarms().get(newPeerMessage.getSwarmID()).addNewPeer(newPeer);
+                        break;
                     }
                     case MessageHeader.DATA -> {
                         DataMessage dataMessage = new DataMessage(incoming.getRawMessage());
-                        networkSwarmManager.getSwarms().get(dataMessage.getSwarmID()).addData(dataMessage.getSenderID(), dataMessage.getChunkID(), dataMessage.getData());
+                        if(dataMessage.getChunkID() == -1){
+                            dataPipelineMap.get(dataMessage.getSwarmID()).updateLatestIndexOfPeer(dataMessage.getSenderID());
+                            break;
+                        }
+                        if (!dataPipelineMap.containsKey(dataMessage.getSwarmID())){
+                            dataPipelineMap.put(dataMessage.getSwarmID(), new DataPipeline());
+                        }
+                        int latestIndex = dataPipelineMap.get(dataMessage.getSwarmID()).getLatestIndexOfPeer(dataMessage.getSenderID());
+                        dataPipelineMap.get(dataMessage.getSwarmID()).addData(dataMessage.getSenderID(), dataMessage.getData(), latestIndex);
+                        break;
                     }
                 }
             }
