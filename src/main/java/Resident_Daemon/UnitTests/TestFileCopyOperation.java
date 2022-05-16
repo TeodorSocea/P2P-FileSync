@@ -1,4 +1,4 @@
-package Resident_Daemon;
+package Resident_Daemon.UnitTests;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

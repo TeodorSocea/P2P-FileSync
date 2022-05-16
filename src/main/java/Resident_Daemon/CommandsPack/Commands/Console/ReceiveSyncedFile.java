@@ -4,14 +4,13 @@ import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
-import Resident_Daemon.Input;
+import Resident_Daemon.Core.Input;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Scanner;
 
 public class ReceiveSyncedFile extends ExceptionModule implements Command {
 
@@ -27,7 +26,7 @@ public class ReceiveSyncedFile extends ExceptionModule implements Command {
     public boolean execute() {
 
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         if (folderPath == null){
             System.out.println("Choose the folder to sync first!");

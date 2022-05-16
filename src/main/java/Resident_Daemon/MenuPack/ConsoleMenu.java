@@ -1,10 +1,10 @@
 package Resident_Daemon.MenuPack;
 
-import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.Console.*;
 import Resident_Daemon.Core.Singleton;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,9 +15,16 @@ public class ConsoleMenu {
     private static List<List<Option>> userOptions = new ArrayList<>();
 
     private static void init() {
+        try {
+            Path folderToSyncPath = Singleton.getSingletonObject().getFolderToSyncPath();
+            pageNumber = 1;
+        } catch (NullPointerException e) {
+            pageNumber = 0;
+        }
+
 
         userOptions.add(new ArrayList<>());
-//        userOptions.add(new ArrayList<>());
+        userOptions.add(new ArrayList<>());
 
         generateOptions();
     }
@@ -121,6 +128,11 @@ public class ConsoleMenu {
 //      pagina 0
         page = userOptions.get(0);
 
+        page.add(new Option("Choose folder to sync", new ChooseFolder()));
+
+//      pagina 1
+        page = userOptions.get(1);
+
         page.add(new Option("Create new swarm", new CreateSwarm()));
 
 //        page.add(new Option("Connect to network", new ConnectToIP()));
@@ -137,9 +149,6 @@ public class ConsoleMenu {
 
         page.add(new Option("Print swarms", new PrintSwarms()));
 
-
-        page.add(new Option("Choose folder to sync", new ChooseFolder()));
-
         page.add(new Option("Send to Synchronize file", new ChooseFileToSync()));
 
         page.add(new Option("Receive Synced file", new ReceiveSyncedFile()));
@@ -151,10 +160,7 @@ public class ConsoleMenu {
 //            return true;
 //        }));
 
-        page.add(new Option("Exit", () -> {
-            System.exit(0);
-            return true;
-        }));
+        page.add(new Option("Exit", new ExitApp()));
     }
 
     private static void display() {

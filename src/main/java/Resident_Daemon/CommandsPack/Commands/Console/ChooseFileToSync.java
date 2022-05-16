@@ -1,22 +1,21 @@
 package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Networking.Core.NetworkingComponent;
-import Resident_Daemon.BasicFileUtils;
+import Resident_Daemon.FileAux.BasicFileUtils;
 import Resident_Daemon.CommandsPack.Commands.Command;
 import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Exceptions.NoFolderIsSelected;
-import Resident_Daemon.Input;
+import Resident_Daemon.Core.Input;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.Scanner;
 
 public class ChooseFileToSync extends ExceptionModule implements Command{
 
     private void IsFolderSelected() throws NoFolderIsSelected {
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         if (folderPath == null){
             throw new NoFolderIsSelected("Choose the folder to sync first!");
@@ -25,7 +24,7 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
     }
 
     private String GetFilePath(){
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         System.out.println("Input file relative path from \"" + folderPath + "\": ");
 
@@ -34,7 +33,7 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
 
     private byte[] GetBytesToSend(String fileRelativePath) throws InvalidPathException{
 
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         Path filePath = Paths.get(folderPath, fileRelativePath);
 

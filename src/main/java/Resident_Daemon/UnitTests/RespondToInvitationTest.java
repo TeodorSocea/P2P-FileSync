@@ -1,12 +1,9 @@
 package Resident_Daemon.UnitTests;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
-import Resident_Daemon.CommandsPack.Commands.Console.ChooseFolder;
 import Resident_Daemon.CommandsPack.Commands.Console.RespondToInvitation;
-import Resident_Daemon.Input;
+import Resident_Daemon.Core.Input;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
