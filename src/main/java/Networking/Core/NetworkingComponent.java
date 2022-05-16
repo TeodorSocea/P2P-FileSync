@@ -7,11 +7,10 @@ import Networking.Networking.NetworkManager;
 import Networking.Peer.Peer;
 import Networking.Swarm.NetworkSwarm;
 import Networking.Swarm.NetworkSwarmManager;
-import Networking.Utils.DataBuffer;
-import Networking.Utils.Invitation;
+import Networking.Utils.*;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectInputFilter;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -25,20 +24,19 @@ public class NetworkingComponent {
     private NetworkManager networkManager;
     private BroadcastSender broadcastSender;
     private BroadcastReceiver broadcastReceiver;
-    private Map<SwarmDataMessage, DataPipeline> swarmDataMessageDataPipelineMap; /* Written by Teodora */
+    private Map<Integer, DataPipeline> dataPipelineMap;
     private int port;
     private int UDP_PORT = 10101;
+    // private Config config = Config.getInstance(); soon
 
     public NetworkingComponent(int port){
         try {
             this.port = port;
 
             networkSwarmManager = new NetworkSwarmManager();
-            networkManager = new NetworkManager(port, networkSwarmManager);
-            swarmDataMessageDataPipelineMap = new HashMap<>(); /* Written by Teodora */
-
-            //swarmManager = new SwarmManager(port);
-            //trafficHandler = new IncomingTrafficHandler(this, port);
+            dataPipelineMap = new HashMap<>();
+            networkManager = new NetworkManager(port, networkSwarmManager, dataPipelineMap);
+            dataPipelineMap = new HashMap<>();
 
             broadcastSender = new BroadcastSender(UDP_PORT,10);
             broadcastReceiver = new BroadcastReceiver(UDP_PORT,10);
@@ -51,9 +49,9 @@ public class NetworkingComponent {
         }
     }
 
-    public Map<SwarmDataMessage, DataPipeline> getSwarmDataMessageDataPipelineMap() {
-        return swarmDataMessageDataPipelineMap;
-    } /* Written by Teodora */
+    public Map<Integer, DataPipeline> getDataPipelineMap() {
+        return dataPipelineMap;
+    }
 
     public void printCommonIPPool(){
         System.out.println(broadcastReceiver.getIpSet());
@@ -116,6 +114,7 @@ public class NetworkingComponent {
         networkSwarmManager.getInvitations().remove(invitation);
     }
 
+    // will soon be deprecated
     public void sendDataToPeers(byte[] data, int swarmID) throws IOException {
         NetworkSwarm swarm = networkSwarmManager.getSwarms().get(swarmID);
         for(int i = 0 ; i < data.length / 1024 + 1; i++){
@@ -125,6 +124,17 @@ public class NetworkingComponent {
                 entry.getValue().getPeerSocket().getOutputStream().write(dataMessage.toPacket());
             }
         }
+    }
+
+    public void sentDataToPeer(byte[] data, int swarmID, int peerID) throws IOException {
+        Peer peer = networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID);
+        for(int i = 0; i < data.length / 1024; i++){
+            byte[] dataToSend = Arrays.copyOfRange(data, i * 1024, Math.min((i+1) * 1024, data.length));
+            DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, i, dataToSend);
+            peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
+        }
+        DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, -1, new byte[1]);
+        peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
     }
 
     public Map<Integer, byte[]> receiveData(int swarmID){
@@ -141,6 +151,26 @@ public class NetworkingComponent {
         }
         return output;
     }
+
+    public List<byte[]> getDataFromDataPipeline(int swarmID, int peerID){
+        List<byte[]>output = new ArrayList<>();
+        List<Data> allDataFromPeer = dataPipelineMap.get(swarmID).getDataInPipeline(peerID);
+        for(Data data : allDataFromPeer){
+            ByteBuffer byteBuffer = ByteBuffer.allocate(data.getData().size()*1024);
+            int index = 0;
+            for(byte[] byteArray : data.getData()){
+                byteBuffer.put(index * 1024, byteArray);
+                index++;
+            }
+            output.add(byteBuffer.array());
+        }
+        return output;
+    }
+
+    public int getLatestIndex(int swarmID, int peerID){
+        return dataPipelineMap.get(swarmID).getLatestIndexOfPeer(peerID);
+    }
+
     public String getSelfIp() throws UnknownHostException {
        return InetAddress.getLocalHost().getHostAddress();
        //need changes on linux doesn't work return 127.0.0.1
