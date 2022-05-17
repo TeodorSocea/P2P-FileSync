@@ -1,8 +1,7 @@
 package Resident_Daemon.CommandsPack.Commands.Console;
 
-import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
+import Resident_Daemon._UnitTests.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
 
 import java.io.IOException;

@@ -2,9 +2,6 @@ package Resident_Daemon.Core;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.MenuPack.ConsoleMenu;
-import Resident_Daemon.PackageOS.DetectOS;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public class Main {
@@ -15,7 +12,7 @@ public class Main {
         commandExecutor = new CommandExecutor();
 
         mainData = Singleton.getSingletonObject();
-        mainData.setOperatingSystem(new DetectOS().getOperatingSystem());
+        mainData.setOperatingSystem(System.getProperty("os.name"));
 
         try {
             Singleton.loadSingletonData();

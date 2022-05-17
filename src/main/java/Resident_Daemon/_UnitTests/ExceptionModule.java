@@ -1,4 +1,4 @@
-package Resident_Daemon.CommandsPack.Commands;
+package Resident_Daemon._UnitTests;
 
 public class ExceptionModule {
     private Exception exception;

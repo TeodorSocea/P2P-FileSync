@@ -2,7 +2,7 @@ package Resident_Daemon.CommandsPack.Commands.Console;
 
 import Resident_Daemon.Utils.BasicFileUtils;
 import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon.CommandsPack.Commands.ExceptionModule;
+import Resident_Daemon._UnitTests.ExceptionModule;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.Input;
 import Resident_Daemon.MenuPack.ConsoleMenu;

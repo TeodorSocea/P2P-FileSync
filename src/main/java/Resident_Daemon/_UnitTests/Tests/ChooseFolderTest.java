@@ -12,7 +12,7 @@
 //import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 
-package Resident_Daemon.UnitTests;
+package Resident_Daemon._UnitTests.Tests;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Console.ChooseFolder;

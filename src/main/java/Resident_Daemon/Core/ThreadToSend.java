@@ -1,8 +1,7 @@
 package Resident_Daemon.Core;
 
 import Networking.Core.NetworkingComponent;
-import Resident_Daemon.CommandsPack.Commands.Console.GetTextFiles;
-import Resident_Daemon.Utils.BasicFileUtils;
+import Resident_Daemon.Utils.GetTextFiles;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

@@ -1,4 +1,4 @@
-package Resident_Daemon.UnitTests;
+package Resident_Daemon._UnitTests.Tests;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.Console.ChooseFileToSync;
@@ -8,7 +8,6 @@ import Resident_Daemon.Exceptions.NoFolderIsSelected;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.nio.file.InvalidPathException;
 
 import static org.junit.jupiter.api.Assertions.*;
