@@ -2,8 +2,10 @@ package Networking.Swarm;
 
 import Networking.Utils.DataBuffer;
 import Networking.Peer.Peer;
+import javafx.util.Pair;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -18,12 +20,17 @@ public class NetworkSwarm {
     private String swarmName;
     private Map<Integer, Peer> peers;
     private Map<Integer, DataBuffer> dataBufferMap;
+    private List<Pair<Integer, String>> requests;
 
     public NetworkSwarm(int swarmID, int selfID){
         this.swarmID = swarmID;
         this.selfID = selfID;
         this.peers = new HashMap<>();
         this.dataBufferMap = new HashMap<>();
+    }
+
+    public List<Pair<Integer, String>> getRequests() {
+        return requests;
     }
 
     public int getSwarmID() {

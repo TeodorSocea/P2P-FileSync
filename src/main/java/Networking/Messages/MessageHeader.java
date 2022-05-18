@@ -10,11 +10,11 @@ public class MessageHeader {
     public static final int PEER_RESPONSE = 6;                  // + swarmID + Peer
     public static final int FILENAMES_REQUEST = 7;              // + swarmID
     public static final int FILENAME_RESPONSE = 8;              // + swarmID + fileID + <file path>
-    public static final int DATA_REQUEST = 9;                   // + fileID + chunkNumber
     public static final int DATA_RESPONSE = 10;                 // + fileID + chunkNumber + <data>
     public static final int INVITE_TO_SWARM = 11;
     public static final int RESPONSE_INVITE_TO_SWARM = 12;
     public static final int SWARM_DATA = 13;
     public static final int DATA = 14;
     public static final int NEW_PEER = 15;
+    public static final int DATA_REQUEST = 16;
 }
