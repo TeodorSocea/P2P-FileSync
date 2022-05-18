@@ -8,6 +8,8 @@ import Networking.Peer.Peer;
 import Networking.Swarm.NetworkSwarm;
 import Networking.Swarm.NetworkSwarmManager;
 import Networking.Utils.*;
+import javafx.util.Pair;
+
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -34,10 +36,9 @@ public class NetworkingComponent {
             this.port = port;
 
             networkSwarmManager = new NetworkSwarmManager();
-            definitiveNetworkSwarms = new HashMap<>();
             dataPipelineMap = new HashMap<>();
             networkManager = new NetworkManager(port, networkSwarmManager, dataPipelineMap);
-            dataPipelineMap = new HashMap<>();
+
 
             broadcastSender = new BroadcastSender(UDP_PORT,10);
             broadcastReceiver = new BroadcastReceiver(UDP_PORT,10);
@@ -94,6 +95,14 @@ public class NetworkingComponent {
         return networkSwarmManager.getInvitations();
     }
 
+    public void printRequests(){
+        for(Map.Entry<Integer, NetworkSwarm> swarm : networkSwarmManager.getSwarms().entrySet()){
+            for(Pair<Integer, String> request : swarm.getValue().getRequests()){
+                System.out.println("Peer " + request.getKey() + " in swarm " + swarm.getKey() + " wants " + request.getValue());
+            }
+        }
+    }
+
     public void inviteIPToSwarm(String ip, int swarmID) throws IOException {
         networkManager.inviteIPToSwarm(ip, networkSwarmManager.getSwarms().get(swarmID));
     }
@@ -114,35 +123,6 @@ public class NetworkingComponent {
 
         networkSwarmManager.getInvitations().remove(invitation);
     }
-
-    public List<Map<Integer, List<Integer>>> updateDefinitiveSwarms(){
-        List<Map<Integer, List<Integer>>> output = new ArrayList<>();
-        if(definitiveNetworkSwarms != networkSwarmManager.getSwarms()){
-            for(Map.Entry<Integer, NetworkSwarm> entry : networkSwarmManager.getSwarms().entrySet()){
-                Map<Integer, List<Integer>> swarmDiff = new HashMap<>();
-                if(!definitiveNetworkSwarms.containsKey(entry.getKey())){
-                    List<Integer> peers = new ArrayList<>();
-                    for(Map.Entry<Integer, Peer> entry2 : (entry.getValue()).getPeers().entrySet()){
-                        peers.add(entry2.getKey());
-                    }
-                    swarmDiff.put(entry.getKey(), peers);
-                }else{
-                    List<Integer> peers = new ArrayList<>();
-                    for(Map.Entry<Integer, Peer> entry2 : (entry.getValue()).getPeers().entrySet()){
-                        if(!definitiveNetworkSwarms.get(entry.getKey()).getPeers().containsKey(entry2.getKey())){
-                            peers.add(entry2.getKey());
-                        }
-                    }
-                    swarmDiff.put(entry.getKey(), peers);
-                }
-                output.add(swarmDiff);
-            }
-            definitiveNetworkSwarms = new HashMap<>(networkSwarmManager.getSwarms());
-            return output;
-        }
-        return new ArrayList<>();
-    }
-
     // will soon be deprecated
     public void sendDataToPeers(byte[] data, int swarmID) throws IOException {
         NetworkSwarm swarm = networkSwarmManager.getSwarms().get(swarmID);
@@ -207,5 +187,8 @@ public class NetworkingComponent {
        //I will do an iteration over all network interfaces and return a good one
     }
 
-
+    public void requestDataFromSwarm(int swarmID, int peerID, String path) throws IOException {
+        DataRequestMessage dataRequestMessage = new DataRequestMessage(MessageHeader.DATA_REQUEST, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, path);
+        networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).getPeerSocket().getOutputStream().write(dataRequestMessage.toPacket());
+    }
 }

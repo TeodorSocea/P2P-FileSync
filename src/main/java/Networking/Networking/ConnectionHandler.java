@@ -6,6 +6,7 @@ import Networking.Messages.*;
 import Networking.Peer.Peer;
 import Networking.Swarm.NetworkSwarm;
 import Networking.Swarm.NetworkSwarmManager;
+import javafx.util.Pair;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
@@ -137,6 +138,11 @@ public class ConnectionHandler implements Runnable{
                         }
                         int latestIndex = dataPipelineMap.get(dataMessage.getSwarmID()).getLatestIndexOfPeer(dataMessage.getSenderID());
                         dataPipelineMap.get(dataMessage.getSwarmID()).addData(dataMessage.getSenderID(), dataMessage.getData(), latestIndex);
+                        break;
+                    }
+                    case MessageHeader.DATA_REQUEST -> {
+                        DataRequestMessage dataRequestMessage = new DataRequestMessage(incoming.getRawMessage());
+                        networkSwarmManager.getSwarms().get(dataRequestMessage.getSwarmID()).getRequests().add(new Pair<Integer, String>(dataRequestMessage.getSenderID(), dataRequestMessage.getPath()));
                         break;
                     }
                 }
