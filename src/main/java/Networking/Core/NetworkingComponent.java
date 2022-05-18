@@ -10,6 +10,7 @@ import Networking.Swarm.NetworkSwarmManager;
 import Networking.Utils.*;
 import javafx.util.Pair;
 
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -21,6 +22,7 @@ import java.util.*;
 public class NetworkingComponent {
 
     private NetworkSwarmManager networkSwarmManager;
+    private Map<Integer, NetworkSwarm> definitiveNetworkSwarms;
     private NetworkManager networkManager;
     private BroadcastSender broadcastSender;
     private BroadcastReceiver broadcastReceiver;
@@ -36,6 +38,7 @@ public class NetworkingComponent {
             networkSwarmManager = new NetworkSwarmManager();
             dataPipelineMap = new HashMap<>();
             networkManager = new NetworkManager(port, networkSwarmManager, dataPipelineMap);
+
 
             broadcastSender = new BroadcastSender(UDP_PORT,10);
             broadcastReceiver = new BroadcastReceiver(UDP_PORT,10);
@@ -120,7 +123,6 @@ public class NetworkingComponent {
 
         networkSwarmManager.getInvitations().remove(invitation);
     }
-
     // will soon be deprecated
     public void sendDataToPeers(byte[] data, int swarmID) throws IOException {
         NetworkSwarm swarm = networkSwarmManager.getSwarms().get(swarmID);
@@ -189,5 +191,4 @@ public class NetworkingComponent {
         DataRequestMessage dataRequestMessage = new DataRequestMessage(MessageHeader.DATA_REQUEST, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, path);
         networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).getPeerSocket().getOutputStream().write(dataRequestMessage.toPacket());
     }
-
 }

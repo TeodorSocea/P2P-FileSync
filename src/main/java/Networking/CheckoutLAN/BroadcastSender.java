@@ -1,5 +1,7 @@
 package Networking.CheckoutLAN;
 
+import Networking.Utils.LanIP;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -13,8 +15,10 @@ import java.util.concurrent.TimeUnit;
 
 public class BroadcastSender{
     private int port,delay;
-    private String broadcastMsg = "check";
+    private String broadcastMsg;
+    private String broadcastAddr;
     private static final int SIZE_BYTES = 100;
+
     /**
      * This method is used for initialization.
      * @param port the port on which the socket will send packets
@@ -23,6 +27,16 @@ public class BroadcastSender{
     public BroadcastSender(int port, int delay) {
         this.port = port;
         this.delay = delay;
+
+        try {
+            broadcastAddr=LanIP.getBroadcastAddress();
+            broadcastMsg=LanIP.getLanIP();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+
     }
     /**
      * This method creates a socket and broadcast on the LAN a packet for all BroadcastReceiver
@@ -31,14 +45,12 @@ public class BroadcastSender{
         @Override
         public void run() {
             try {
-
-                //sends a broadcast on predefined port LAN
                 DatagramSocket socket = new DatagramSocket();
                 socket.setBroadcast(true);
                 byte[] buffer = broadcastMsg.getBytes();
 
                 DatagramPacket packet = new DatagramPacket(buffer, buffer.length,
-                        InetAddress.getByName("255.255.255.255"), port);
+                        InetAddress.getByName(broadcastAddr), port);
                 socket.send(packet);
                 socket.close();
             } catch (SocketException e) {
