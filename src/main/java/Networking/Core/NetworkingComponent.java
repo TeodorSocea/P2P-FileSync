@@ -36,7 +36,6 @@ public class NetworkingComponent {
             networkSwarmManager = new NetworkSwarmManager();
             dataPipelineMap = new HashMap<>();
             networkManager = new NetworkManager(port, networkSwarmManager, dataPipelineMap);
-            dataPipelineMap = new HashMap<>();
 
             broadcastSender = new BroadcastSender(UDP_PORT,10);
             broadcastReceiver = new BroadcastReceiver(UDP_PORT,10);
