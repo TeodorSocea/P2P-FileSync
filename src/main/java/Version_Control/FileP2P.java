@@ -4,46 +4,30 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Objects;
+import java.sql.Timestamp;
+import java.util.Date;
 
 public class FileP2P {
     String fileName;
-    String userName;
     String data = "";
-    int hash;
+    Timestamp timestamp;
 
-    public FileP2P(String filename, String username) {
+    public FileP2P(String filename) {
         this.fileName = filename;
-        this.userName = username;
-        this.hash = hashCode();
         readFile(filename);
+        this.timestamp = time();
     }
 
-    public FileP2P(String fileName, String userName, String data) {
+    public FileP2P(String fileName, String data) {
         this.fileName = fileName;
-        this.userName = userName;
         this.data = data;
-        this.hash = hashCode();
+        this.timestamp = time();
     }
 
-    public FileP2P(String fileName, String userName, String data, int hash) {
-        this.fileName = fileName;
-        this.userName = userName;
-        this.data = data;
-        this.hash = hash;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FileP2P fileP2P = (FileP2P) o;
-        return hash == fileP2P.hash && Objects.equals(fileName, fileP2P.fileName) && Objects.equals(userName, fileP2P.userName) && Objects.equals(data, fileP2P.data);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(fileName, userName, data, hash);
+    private Timestamp time() {
+        Date date = new Date();
+        Timestamp timest = new Timestamp(date.getTime());
+        return timest;
     }
 
     public boolean binaryCheck() {
@@ -73,16 +57,12 @@ public class FileP2P {
         return this.fileName;
     }
 
-    public String getUserName() {
-        return this.userName;
-    }
-
     public String getData() {
         return this.data;
     }
 
-    public int getHash() {
-        return this.hash;
+    public Timestamp getTimestamp() {
+        return this.timestamp;
     }
 
     public void setData(String data) {
@@ -93,12 +73,5 @@ public class FileP2P {
         this.fileName = fileName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setHash(int hash) {
-        this.hash = hash;
-    }
 
 }
