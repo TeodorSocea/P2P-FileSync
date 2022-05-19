@@ -4,10 +4,7 @@ import Networking.Utils.DataBuffer;
 import Networking.Peer.Peer;
 import javafx.util.Pair;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class NetworkSwarm {
 
@@ -27,6 +24,7 @@ public class NetworkSwarm {
         this.selfID = selfID;
         this.peers = new HashMap<>();
         this.dataBufferMap = new HashMap<>();
+        this.requests = new ArrayList<>();
     }
 
     public List<Pair<Integer, String>> getRequests() {
