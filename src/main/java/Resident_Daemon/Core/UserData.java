@@ -10,6 +10,7 @@ public class UserData {
     private List<Invitation> userInvitations;
     private List<String> nearbyIPs;
     private Map<Integer, NetworkSwarm> mySwarms;
+    private boolean isConnected = false;
 
 
     //region Getters & Setters
@@ -36,6 +37,14 @@ public class UserData {
 
     public void setMySwarms(Map<Integer, NetworkSwarm> mySwarms) {
         this.mySwarms = mySwarms;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public void setConnected(boolean connected) {
+        isConnected = connected;
     }
 
     //endregion

@@ -30,45 +30,45 @@ public class RespondToInvitation extends ExceptionModule implements Command {
         return data.substring(data.indexOf("!") + 1);
     }
 
-    private void getSyncedFolder(NetworkingComponent networkingComponent){
-
-        Input.confScanner();
-        System.out.println("Input the swarmID: ");
-        String swarmID = Input.nextLine();
-        System.out.println("Input the peerID: ");
-        String peerID = Input.nextLine();
-
-        try {
-            int sID = Integer.parseInt(swarmID);
-            int pID = Integer.parseInt(peerID);
-
-
-            List<byte[]> dataList = null;
-            while(dataList == null){
-                dataList = networkingComponent.getDataFromDataPipeline(sID, pID);
-            }
-            for(var data : dataList){
-                String str_data = new String(data);
-                String fileRelPath = getFilePath(str_data);
-                Path dir = Singleton.getSingletonObject().getFolderToSyncPath();
-                Path fileFullPath = Paths.get(dir.toString(),fileRelPath);
-                String fileContent = getContent(str_data);
-
-
-                try {
-                    Files.writeString(fileFullPath, fileContent);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-        } catch (NumberFormatException e){
-            System.out.println("Invalid number");
-        }
-
-
-    }
+//    private void getSyncedFolder(NetworkingComponent networkingComponent){
+//
+//        Input.confScanner();
+//        System.out.println("Input the swarmID: ");
+//        String swarmID = Input.nextLine();
+//        System.out.println("Input the peerID: ");
+//        String peerID = Input.nextLine();
+//
+//        try {
+//            int sID = Integer.parseInt(swarmID);
+//            int pID = Integer.parseInt(peerID);
+//
+//
+//            List<byte[]> dataList = null;
+//            while(dataList == null){
+//                dataList = networkingComponent.getDataFromDataPipeline(sID, pID);
+//            }
+//            for(var data : dataList){
+//                String str_data = new String(data);
+//                String fileRelPath = getFilePath(str_data);
+//                Path dir = Singleton.getSingletonObject().getFolderToSyncPath();
+//                Path fileFullPath = Paths.get(dir.toString(),fileRelPath);
+//                String fileContent = getContent(str_data);
+//
+//
+//                try {
+//                    Files.writeString(fileFullPath, fileContent);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//
+//        } catch (NumberFormatException e){
+//            System.out.println("Invalid number");
+//        }
+//
+//
+//    }
 
     @Override
     public boolean execute() {
