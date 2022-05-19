@@ -162,7 +162,7 @@ public class NetworkingComponent {
 
     public byte[] getDataFromDataPipeline(int swarmID, int peerID){
         List<Data> allDataFromPeer = dataPipelineMap.get(swarmID).getDataInPipeline(peerID);
-        Data data = allDataFromPeer.get(0);
+        Data data = allDataFromPeer.remove(0);
         ByteBuffer byteBuffer = ByteBuffer.allocate(data.getData().size()*1024);
         int index = 0;
         for(byte[] byteArray : data.getData()){
