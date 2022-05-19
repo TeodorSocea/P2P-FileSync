@@ -10,26 +10,23 @@ import java.io.IOException;
 
 public class InviteToSwarm extends ExceptionModule implements Command {
 
+    private String IP;
+    private int swarmID;
+
+    public InviteToSwarm(String IP, int swarmID) {
+        this.IP = IP;
+        this.swarmID = swarmID;
+    }
+
     @Override
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        Input.confScanner();
-
-        System.out.println("Input IP: ");
-        String sIP = Input.nextLine();
-        System.out.println("Input swarm's ID: ");
-        String sID = Input.nextLine();
-
-
         try {
-            int ID = Integer.parseInt(sID);
-            networkingComponent.inviteIPToSwarm(sIP, ID);
+            networkingComponent.inviteIPToSwarm(IP, swarmID);
         } catch (IOException e) {
             System.out.println("Error at inviting!");
-            return false;
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number!");
+            setException(e);
             return false;
         }
 

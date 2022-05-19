@@ -14,6 +14,14 @@ import java.util.List;
 
 public class RespondToInvitation extends ExceptionModule implements Command {
 
+    private Integer invitationIndex;
+    private boolean invitationResponse;
+
+    public RespondToInvitation(Integer invitationIndex, boolean invitationResponse) {
+        this.invitationIndex = invitationIndex;
+        this.invitationResponse = invitationResponse;
+    }
+
     private String getFilePath(String data){
         return data.substring(0, data.indexOf("!"));
     }
@@ -66,29 +74,12 @@ public class RespondToInvitation extends ExceptionModule implements Command {
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        Input.confScanner();
-
-        System.out.println("Input the index of the invitation(PrintInvitations to identify the index): ");
-        String sIndex = Input.nextLine();
-        System.out.println("Respond! true/false?: ");
-        String sResponse = Input.nextLine();
-
 
         try {
-            int index = Integer.parseInt(sIndex);
-            boolean response = Boolean.parseBoolean(sResponse);
 
-            networkingComponent.respondToInvitationToSwarm(index, response);
+            networkingComponent.respondToInvitationToSwarm(invitationIndex, invitationResponse);
         } catch (IOException e) {
             System.out.println("Error at responding!");
-            setException(e);
-            return false;
-        } catch (NumberFormatException e) {
-            System.out.println("Please enter a valid number!");
-            setException(e);
-            return false;
-        } catch (IndexOutOfBoundsException e) {
-            System.out.println("Invalid index!");
             setException(e);
             return false;
         }

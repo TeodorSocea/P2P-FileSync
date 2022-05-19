@@ -2,6 +2,7 @@ package Resident_Daemon.Core;
 
 
 import Networking.Core.NetworkingComponent;
+import Networking.Utils.Invitation;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.Utils.BasicFileUtils;
 
@@ -9,6 +10,8 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Singleton
 {
@@ -19,6 +22,8 @@ public class Singleton
     private Path folderToSyncPath = null;
     private static Singleton singletonObject;
 
+    private UserData userData;
+
     private NetworkingComponent networkingComponent;
     CommandExecutor commandExecutor;
 
@@ -28,8 +33,23 @@ public class Singleton
         this.operatingSystem = "unknown";
         commandExecutor = new CommandExecutor();
         this.networkingComponent = new NetworkingComponent(30000);
+
+        this.userData = new UserData();
+
     }
 
+
+
+    public static Singleton getSingletonObject()
+    {
+        if (singletonObject == null)
+        {
+            singletonObject = new Singleton();
+        }
+        return singletonObject;
+    }
+
+    //region Save & Load
     public static void saveSingletonData() throws IOException {
         saveSingletonData(EXPORT_IMPORT_FOLDER);
     }
@@ -63,15 +83,7 @@ public class Singleton
         getSingletonObject().setFolderToSyncPath(in.readUTF());
         getSingletonObject().setFolderToSyncPath(in.readUTF());
     }
-
-    public static Singleton getSingletonObject()
-    {
-        if (singletonObject == null)
-        {
-            singletonObject = new Singleton();
-        }
-        return singletonObject;
-    }
+    //endregion
 
     //region Getters & Setters
     public CommandExecutor getCommandExecutor() {
@@ -115,7 +127,7 @@ public class Singleton
 
     public void setFolderToSyncPath(String folderToSyncPath) throws InvalidPathException {
 
-        if (!BasicFileUtils.isDirectory(folderToSyncPath)) {
+        if (!Files.exists(Path.of(folderToSyncPath)) || folderToSyncPath.equals("")) {
             throw new InvalidPathException(folderToSyncPath, "Trying to set an invalid folder path!");
         }
         this.folderToSyncPath = Path.of(folderToSyncPath);
@@ -125,6 +137,10 @@ public class Singleton
         return networkingComponent;
     }
 
-    //endregion
+    public UserData getUserData() {
+        return userData;
+    }
+
+//endregion
 
 }

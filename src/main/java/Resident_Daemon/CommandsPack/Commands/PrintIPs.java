@@ -11,7 +11,7 @@ public class PrintIPs extends ExceptionModule implements Command {
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        networkingComponent.printCommonIPPool();
+        Singleton.getSingletonObject().getUserData().setNearbyIPs(networkingComponent.getCommonIPPool());
 
         return true;
     }

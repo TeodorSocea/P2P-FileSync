@@ -1,14 +1,11 @@
 package Resident_Daemon.CommandsPack.Commands;
 
 import Resident_Daemon.CommandsPack.Command;
-import Resident_Daemon.CommandsPack.ConsolePageSwitch;
-import Resident_Daemon.Core.Input;
+import Resident_Daemon.MenuPack.ConsolePageSwitch;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.MenuPack.ConsoleMenu;
-import Resident_Daemon.Utils.BasicFileUtils;
 import Resident_Daemon._UnitTests.ExceptionModule;
 
-import java.io.FileNotFoundException;
 import java.nio.file.InvalidPathException;
 
 public class ChooseFolder extends ExceptionModule implements Command, ConsolePageSwitch {

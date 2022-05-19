@@ -11,7 +11,7 @@ public class PrintSwarms extends ExceptionModule implements Command {
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        networkingComponent.printSwarms();
+        Singleton.getSingletonObject().getUserData().setMySwarms(networkingComponent.getSwarms());
 
         return true;
     }
