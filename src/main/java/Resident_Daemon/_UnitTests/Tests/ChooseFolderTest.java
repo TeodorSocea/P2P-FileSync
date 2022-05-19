@@ -1,8 +1,8 @@
 //package Resident_Daemon.UnitTests;
 //
-//import Resident_Daemon.CommandsPack.Commands.Command;
-//import Resident_Daemon.CommandsPack.Commands.Console.ChooseFileToSync;
-//import Resident_Daemon.CommandsPack.Commands.Console.ChooseFolder;
+//import Resident_Daemon.CommandsPack.Command;
+//import Resident_Daemon.CommandsPack.Console.ChooseFileToSync;
+//import Resident_Daemon.CommandsPack.Console.ChooseFolder;
 //import org.junit.jupiter.api.Test;
 //
 //import java.io.ByteArrayInputStream;
@@ -15,7 +15,7 @@
 package Resident_Daemon._UnitTests.Tests;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
-import Resident_Daemon.CommandsPack.Commands.Console.ChooseFolder;
+import Resident_Daemon.CommandsPack.Console.AuxChooseFolder;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.Input;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ public class ChooseFolderTest {
     Exception runChooseFolderCommand(String folderPath) {
         Input.setIn(folderPath);
         CommandExecutor commandExecutor = new CommandExecutor();
-        ChooseFolder command = new ChooseFolder();
+        AuxChooseFolder command = new AuxChooseFolder();
         commandExecutor.ExecuteOperation(command);
 
         return command.getException();

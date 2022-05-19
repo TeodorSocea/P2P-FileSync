@@ -3,9 +3,11 @@ package Resident_Daemon.Core;
 
 import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.Utils.BasicFileUtils;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 
 public class Singleton
@@ -111,10 +113,10 @@ public class Singleton
         return folderToSyncPath;
     }
 
-    public void setFolderToSyncPath(String folderToSyncPath) throws FileNotFoundException {
+    public void setFolderToSyncPath(String folderToSyncPath) throws InvalidPathException {
 
-        if (Files.notExists(Path.of(folderToSyncPath))) {
-            throw new FileNotFoundException("Trying to set a folder to sync that does not exits!");
+        if (!BasicFileUtils.isDirectory(folderToSyncPath)) {
+            throw new InvalidPathException(folderToSyncPath, "Trying to set an invalid folder path!");
         }
         this.folderToSyncPath = Path.of(folderToSyncPath);
     }

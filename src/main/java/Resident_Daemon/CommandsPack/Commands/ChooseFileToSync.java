@@ -1,18 +1,29 @@
-package Resident_Daemon.CommandsPack.Commands.Console;
+package Resident_Daemon.CommandsPack.Commands;
 
 import Networking.Core.NetworkingComponent;
-import Resident_Daemon.Utils.BasicFileUtils;
-import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon._UnitTests.ExceptionModule;
+import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Exceptions.NoFolderIsSelected;
-import Resident_Daemon.Core.Input;
+import Resident_Daemon.Utils.BasicFileUtils;
+import Resident_Daemon._UnitTests.ExceptionModule;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-public class ChooseFileToSync extends ExceptionModule implements Command{
+public class ChooseFileToSync extends ExceptionModule implements Command {
+
+    private String fileRelativePath;
+    private Integer swarmID;
+
+    public ChooseFileToSync(String fileRelativePath, Integer swarmID) {
+        this.fileRelativePath = fileRelativePath;
+        this.swarmID = swarmID;
+    }
+
 
     private void IsFolderSelected() throws NoFolderIsSelected {
         String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
@@ -23,13 +34,6 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
 
     }
 
-    private String GetFilePath(){
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
-
-        System.out.println("Input file relative path from \"" + folderPath + "\": ");
-
-        return Input.nextLine();
-    }
 
     private byte[] GetBytesToSend(String fileRelativePath) throws InvalidPathException{
 
@@ -48,49 +52,25 @@ public class ChooseFileToSync extends ExceptionModule implements Command{
         return out;
     }
 
-    private int GetSwarmID(){
-
-        System.out.println("Input swarm's ID: ");
-
-        String sID = Input.nextLine();
-        int swarmID = Integer.parseInt(sID);
-
-        return swarmID;
-    }
-
     @Override
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        Input.confScanner();
-
         try {
             IsFolderSelected();
-        } catch (NoFolderIsSelected e) {
-            e.getMessage();
-            setException(e);
-            return false;
-        }
-
-        String fileRelativePath = GetFilePath();
-
-        try {
 
             byte[] out = GetBytesToSend(fileRelativePath);
-            int swarmID = GetSwarmID();
 
             networkingComponent.sendDataToPeers(out, swarmID);
 
-        } catch (InvalidPathException e) {
-            System.out.println("Invalid file path! " + e.getMessage());
-            setException(e);
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            setException(e);
-            return false;
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid ID!");
+        } catch (NoFolderIsSelected | InvalidPathException | IOException e) {
+            if(e instanceof NoFolderIsSelected){
+                System.out.println(e.getMessage());
+            } else if(e instanceof IOException) {
+                e.printStackTrace();
+            } else if(e instanceof InvalidPathException){
+                System.out.println("Invalid file path! " + e.getMessage());
+            }
             setException(e);
             return false;
         }

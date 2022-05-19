@@ -1,66 +1,58 @@
-package Resident_Daemon.CommandsPack.Commands.Console;
+package Resident_Daemon.CommandsPack.Commands;
 
-import Resident_Daemon.Utils.BasicFileUtils;
-import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon._UnitTests.ExceptionModule;
-import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.CommandsPack.Command;
+import Resident_Daemon.CommandsPack.ConsolePageSwitch;
 import Resident_Daemon.Core.Input;
+import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.MenuPack.ConsoleMenu;
+import Resident_Daemon.Utils.BasicFileUtils;
+import Resident_Daemon._UnitTests.ExceptionModule;
 
 import java.io.FileNotFoundException;
 import java.nio.file.InvalidPathException;
 
-public class ChooseFolder extends ExceptionModule implements Command {
+public class ChooseFolder extends ExceptionModule implements Command, ConsolePageSwitch {
 
-    private String GetFolderPath() throws InvalidPathException{
-        System.out.println("Input folder path: ");
+    String folderPath;
 
-        String folderPath = Input.nextLine();
-
-        if (!BasicFileUtils.isDirectory(folderPath)) {
-            throw new InvalidPathException(folderPath, "Wrong path");
-        }
-
-        return folderPath;
+    public ChooseFolder(String folderPath) {
+        this.folderPath = folderPath;
     }
+
+
 
     @Override
     public boolean execute() {
 
-        Input.confScanner();
-
-        String folderPath;
 
         try {
-            folderPath = GetFolderPath();
+            Singleton.getSingletonObject().setFolderToSyncPath(folderPath);
         } catch (InvalidPathException e) {
-            System.out.println("The path is not a directory!");
+            System.out.println("Invalid path!");
 
             setException(e);
 
             return false;
         }
 
-        try {
-            Singleton.getSingletonObject().setFolderToSyncPath(folderPath);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
         String path = Singleton.getSingletonObject().getFolderToSyncPath().toString();
         System.out.println("The folder path is: " + path);
 
-        ConsoleMenu.pageNumber += 1 % 2;
         return true;
+    }
+
+    @Override
+    public void ChangePage() {
+        ConsoleMenu.pageNumber += 1 % 2;
     }
 }
 
 
 /*
-package Resident_Daemon.CommandsPack.Commands.Console;
+package Resident_Daemon.CommandsPack.Console;
 
 import Resident_Daemon.FileAux.BasicFileUtils;
-import Resident_Daemon.CommandsPack.Commands.Command;
+import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
 
 import java.util.Scanner;

@@ -1,7 +1,7 @@
 package Resident_Daemon._UnitTests.Tests;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
-import Resident_Daemon.CommandsPack.Commands.Console.RespondToInvitation;
+import Resident_Daemon.CommandsPack.Console.RespondToInvitation;
 import Resident_Daemon.Core.Input;
 import org.junit.jupiter.api.Test;
 

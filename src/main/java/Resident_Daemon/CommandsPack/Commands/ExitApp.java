@@ -1,8 +1,8 @@
-package Resident_Daemon.CommandsPack.Commands.Console;
+package Resident_Daemon.CommandsPack.Commands;
 
-import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon._UnitTests.ExceptionModule;
+import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon._UnitTests.ExceptionModule;
 
 import java.io.IOException;
 

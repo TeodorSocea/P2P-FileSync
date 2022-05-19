@@ -9,6 +9,7 @@ public class Main {
     CommandExecutor commandExecutor;
 
     public Main() {
+        Input.confScanner();
         commandExecutor = new CommandExecutor();
 
         mainData = Singleton.getSingletonObject();
