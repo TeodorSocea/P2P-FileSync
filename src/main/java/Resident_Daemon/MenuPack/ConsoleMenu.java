@@ -153,6 +153,10 @@ public class ConsoleMenu {
 
         page.add(new Option("Print swarms", new AuxPrintSwarms()));
 
+        page.add(new Option("Sync swarm (send request)", new AuxSyncSwarm()));
+
+        page.add(new Option("Print requests", new AuxPrintFullFilledRequests()));
+
 //        page.add(new Option("Disconnect", () -> {
 //            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;
 //            return null;

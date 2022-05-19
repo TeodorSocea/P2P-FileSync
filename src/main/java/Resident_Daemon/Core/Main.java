@@ -51,8 +51,9 @@ public class Main {
         System.out.println("System name: " + name);
 
 
-        ThreadToSend threadToSend = new ThreadToSend();
-        new Thread(threadToSend).start();
+        SignalReceiver signalReceiver = new SignalReceiver();
+
+        new Thread(signalReceiver).start();
 
         ConsoleMenu.startToInteractWithTheUser();
 
