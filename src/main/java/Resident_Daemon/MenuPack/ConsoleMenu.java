@@ -1,7 +1,7 @@
 package Resident_Daemon.MenuPack;
 
-import Resident_Daemon.CommandsPack.Commands.Command;
-import Resident_Daemon.CommandsPack.Commands.Console.*;
+import Resident_Daemon.CommandsPack.Command;
+import Resident_Daemon.CommandsPack.Console.*;
 import Resident_Daemon.Core.Singleton;
 
 import java.nio.file.Path;
@@ -88,9 +88,15 @@ public class ConsoleMenu {
 
                 args.remove(0);
                 List<Option> page = userOptions.get(pageNumber);
-                Command choosedComm = page.get(cmdIxd).getWhatToExecute();
+                Command choosedComm = page.get(cmdIxd).getWhatToExecute().run();
 
-                Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(choosedComm);
+                if(choosedComm != null){
+                    boolean valid = Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(choosedComm);
+
+                    if(choosedComm instanceof ConsolePageSwitch && valid){
+                        ((ConsolePageSwitch) choosedComm).ChangePage();
+                    }
+                }
 
             } else {
                 System.out.println("Invalid input!");
@@ -128,39 +134,31 @@ public class ConsoleMenu {
 //      pagina 0
         page = userOptions.get(0);
 
-        page.add(new Option("Choose folder to sync", new ChooseFolder()));
+        page.add(new Option("Choose folder to sync", new AuxChooseFolder()));
 
 //      pagina 1
         page = userOptions.get(1);
 
-        page.add(new Option("Create new swarm", new CreateSwarm()));
+        page.add(new Option("Create new swarm", new AuxCreateSwarm()));
 
-//        page.add(new Option("Connect to network", new ConnectToIP()));
+        page.add(new Option("Send to Synchronize file", new AuxChooseFileToSync()));
 
-        page.add(new Option("Print IPs", new PrintIPs()));
+        page.add(new Option("Print IPs", new AuxPrintIPs()));
 
-        page.add(new Option("Print sockets", new PrintSockets()));
+        page.add(new Option("Invite to swarm", new AuxInviteToSwarm()));
 
-        page.add(new Option("Invite to swarm", new InviteToSwarm()));
+        page.add(new Option("Print invitations", new AuxPrintInvitations()));
 
-        page.add(new Option("Print invitations", new PrintInvitations()));
+        page.add(new Option("Respond to invitation", new AuxRespondToInvitation()));
 
-        page.add(new Option("Respond to invitation", new RespondToInvitation()));
-
-        page.add(new Option("Print swarms", new PrintSwarms()));
-
-        page.add(new Option("Send to Synchronize file", new ChooseFileToSync()));
-
-        page.add(new Option("Receive Synced file", new ReceiveSyncedFile()));
-
-//        page.add(new Option("Create new file", new NewFile()));
+        page.add(new Option("Print swarms", new AuxPrintSwarms()));
 
 //        page.add(new Option("Disconnect", () -> {
 //            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;
-//            return true;
+//            return null;
 //        }));
 
-        page.add(new Option("Exit", new ExitApp()));
+        page.add(new Option("Exit", new AuxExitApp()));
     }
 
     private static void display() {
