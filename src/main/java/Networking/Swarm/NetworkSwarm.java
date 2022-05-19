@@ -18,6 +18,7 @@ public class NetworkSwarm {
     private Map<Integer, Peer> peers;
     private Map<Integer, DataBuffer> dataBufferMap;
     private List<Pair<Integer, String>> requests;
+    private List<Integer> fulfilledRequests;
 
     public NetworkSwarm(int swarmID, int selfID){
         this.swarmID = swarmID;
@@ -25,10 +26,15 @@ public class NetworkSwarm {
         this.peers = new HashMap<>();
         this.dataBufferMap = new HashMap<>();
         this.requests = new ArrayList<>();
+        this.fulfilledRequests = new ArrayList<>();
     }
 
     public List<Pair<Integer, String>> getRequests() {
         return requests;
+    }
+
+    public List<Integer> getFulfilledRequests() {
+        return fulfilledRequests;
     }
 
     public int getSwarmID() {

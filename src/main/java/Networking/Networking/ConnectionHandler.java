@@ -131,6 +131,7 @@ public class ConnectionHandler implements Runnable{
                         DataMessage dataMessage = new DataMessage(incoming.getRawMessage());
                         if(dataMessage.getChunkID() == -1){
                             dataPipelineMap.get(dataMessage.getSwarmID()).updateLatestIndexOfPeer(dataMessage.getSenderID());
+                            networkSwarmManager.getSwarms().get(dataMessage.getSwarmID()).getFulfilledRequests().add(dataMessage.getSenderID());
                             break;
                         }
                         if (!dataPipelineMap.containsKey(dataMessage.getSwarmID())){

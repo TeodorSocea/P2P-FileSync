@@ -39,7 +39,6 @@ public class NetworkingComponent {
             dataPipelineMap = new HashMap<>();
             networkManager = new NetworkManager(port, networkSwarmManager, dataPipelineMap);
 
-
             broadcastSender = new BroadcastSender(UDP_PORT,10);
             broadcastReceiver = new BroadcastReceiver(UDP_PORT,10);
 
@@ -161,19 +160,17 @@ public class NetworkingComponent {
         return output;
     }
 
-    public List<byte[]> getDataFromDataPipeline(int swarmID, int peerID){
-        List<byte[]>output = new ArrayList<>();
+    public byte[] getDataFromDataPipeline(int swarmID, int peerID){
         List<Data> allDataFromPeer = dataPipelineMap.get(swarmID).getDataInPipeline(peerID);
-        for(Data data : allDataFromPeer){
-            ByteBuffer byteBuffer = ByteBuffer.allocate(data.getData().size()*1024);
-            int index = 0;
-            for(byte[] byteArray : data.getData()){
-                byteBuffer.put(index * 1024, byteArray);
-                index++;
-            }
-            output.add(byteBuffer.array());
+        Data data = allDataFromPeer.get(0);
+        ByteBuffer byteBuffer = ByteBuffer.allocate(data.getData().size()*1024);
+        int index = 0;
+        for(byte[] byteArray : data.getData()){
+            byteBuffer.put(index * 1024, byteArray);
+            index++;
         }
-        return output;
+        networkSwarmManager.getSwarms().get(swarmID).getFulfilledRequests().remove(peerID);
+        return byteBuffer.array();
     }
 
     public int getLatestIndex(int swarmID, int peerID){
@@ -190,5 +187,17 @@ public class NetworkingComponent {
     public void requestDataFromSwarm(int swarmID, int peerID, String path) throws IOException {
         DataRequestMessage dataRequestMessage = new DataRequestMessage(MessageHeader.DATA_REQUEST, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, path);
         networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).getPeerSocket().getOutputStream().write(dataRequestMessage.toPacket());
+    }
+    public List<Pair<Integer, Integer>> getFulfilledRequests(){
+        List<Pair<Integer, Integer>> output = new ArrayList<>();
+        for(Map.Entry<Integer, NetworkSwarm> swarm : networkSwarmManager.getSwarms().entrySet()){
+            if (swarm.getValue().getFulfilledRequests().size() == 0)
+                continue;
+            for (int peerID : swarm.getValue().getFulfilledRequests()){
+                output.add(new Pair<Integer, Integer>(swarm.getKey(), peerID));
+            }
+        }
+        System.out.println(output);
+        return output;
     }
 }
