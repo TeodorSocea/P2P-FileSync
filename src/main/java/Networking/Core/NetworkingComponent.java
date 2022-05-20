@@ -76,8 +76,8 @@ public class NetworkingComponent {
         networkManager.connectToIP(ip);
     }
 
-    public void createNewSwarm(){
-        networkSwarmManager.createNewSwarm();
+    public int createNewSwarm(){
+        return networkSwarmManager.createNewSwarm();
     }
 
     public void printSwarms(){

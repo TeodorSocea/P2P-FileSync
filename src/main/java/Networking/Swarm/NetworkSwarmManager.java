@@ -19,7 +19,7 @@ public class NetworkSwarmManager {
     }
 
     // we can add parameters to specify a folder for example
-    public void createNewSwarm(){
+    public int createNewSwarm(){
         Random rand = new Random();
         int nextID;
         do{
@@ -28,6 +28,7 @@ public class NetworkSwarmManager {
         int selfID = rand.nextInt(MAX);
         swarms.put(nextID, new NetworkSwarm(nextID,selfID));
         System.out.println("Created swarm " + nextID);
+        return nextID;
     }
 
     public void joinNewSwarm(int swarmID, int selfID){
