@@ -5,43 +5,43 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import static java.lang.System.exit;
+
+// Resident Daemon IMPORTS, keep commented for now:
+/*import Resident_Daemon.CommandsPack.Command;
+import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.*;
+import Resident_Daemon.Core.Singleton;*/
+// --
 
 public class WorkScreen extends JFrame implements ActionListener{
     private final GUI_Component frame;
-    JLabel title;
-    JButton testButton;
+    // Declared elements:
 
+    // --
     // Button functions:
     public void actionPerformed(ActionEvent e) {
-        // MEW SWARM BUTTON PRESS:
-        if (e.getSource() == testButton) {
-            System.out.println("// TEST");
-        }
+
     }
     // --
-
     public WorkScreen(GUI_Component frame){
         this.frame = frame;
-        // Test Button:
-        testButton = new JButton();
-        testButton.setText("TEST");
-        testButton.setBounds(540, 350, 200, 30);
-        testButton.setForeground(new Color(0x000000));
-        testButton.setBackground(new Color(0xB1B6A6));
-        testButton.setFocusable(false);
-        testButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
-        testButton.addActionListener(this);
-        // Title:
-        title = new JLabel();
-        title.setText("Work Screen");
-        title.setForeground(new Color(0xB1B6A6));
-        title.setFont(new Font("Radio Canada", Font.BOLD, 96));
-        title.setBounds(330, -100, 884, 500);
+
+        // Declaration for use of Commands, keep commented for now:
+        // CommandExecutor commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
+        // If you need to use a command from the Resident Daemon team, you must do the following steps:
+        // 1. Declare the command of your choice like:
+        // Command nameofyourchoice = new NameOfCommand();
+        // 2. Execute it like so:
+        // commandExecutor.ExecuteOperation(nameofyourchoice).
+        // Some commands require you to insert data, others send you the data, look at the command
+        // you have to implement to understand what it does.
+        // --
+
+        // Elements:
+
         // --
         // Added elements:
-        frame.add(title);
-        frame.add(testButton);
+
         // --
         frame.revalidate();
         frame.repaint();

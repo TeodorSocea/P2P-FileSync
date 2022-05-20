@@ -7,25 +7,46 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import static java.lang.System.exit;
 
+// Resident Daemon IMPORTS, keep commented for now:
+/*import Resident_Daemon.CommandsPack.Command;
+import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.*;
+import Resident_Daemon.Core.Singleton;*/
+// --
+
 public class ConnectScreen extends JFrame implements ActionListener {
     private final GUI_Component frame;
     WorkScreen workScreen;
     JLabel title;
-    JButton newSwarmButton;
-    JButton viewInvitesButton;
     JButton printSwarmsButton;
+    JPanel swarmList;
+    JButton[] swarmElements;
+    JButton viewInvitesButton;
+    JPanel invitationList;
+    JButton[] invitationElements;
+    JButton newSwarmButton;
     JButton helpButton;
     JButton quitButton;
     JButton backButton;
     JButton tempTransitionButton;
     JLabel helpContents;
-    JList inviteList;
 
     @Override
     public void actionPerformed(ActionEvent e){
-        // MEW SWARM BUTTON PRESS:
-        if (e.getSource() == newSwarmButton){
-            System.out.println("// CREATE NEW SWARM BUTTON PRESSED");
+        // PRINT SWARMS PRESS:
+        if (e.getSource() == printSwarmsButton){
+            System.out.println("// PRINT SWARMS BUTTON PRESSED");
+            frame.remove(newSwarmButton);
+            frame.remove(viewInvitesButton);
+            frame.remove(printSwarmsButton);
+            frame.remove(helpButton);
+            frame.remove(quitButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(backButton);
+            frame.add(swarmList);
+            frame.revalidate();
+            frame.repaint();
         }
         // VIEW INVITES BUTTON PRESS:
         if (e.getSource() == viewInvitesButton){
@@ -38,13 +59,24 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.revalidate();
             frame.repaint();
             frame.add(backButton);
-            frame.add(inviteList);
+            frame.add(invitationList);
             frame.revalidate();
             frame.repaint();
         }
-        // PRINT SWARMS PRESS:
-        if (e.getSource() == printSwarmsButton){
-            System.out.println("// PRINT SWARMS BUTTON PRESSED");
+        // MEW SWARM BUTTON PRESS:
+        if (e.getSource() == newSwarmButton){
+            System.out.println("// CREATE NEW SWARM BUTTON PRESSED");
+            frame.remove(newSwarmButton);
+            frame.remove(viewInvitesButton);
+            frame.remove(printSwarmsButton);
+            frame.remove(helpButton);
+            frame.remove(quitButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(backButton);
+            frame.add(invitationList);
+            frame.revalidate();
+            frame.repaint();
         }
         // HELP PRESS:
         if (e.getSource() == helpButton){
@@ -61,11 +93,13 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.revalidate();
             frame.repaint();
         }
-        // BACK HELP BUTTON:
+        // BACK BUTTON:
         if (e.getSource() == backButton){
             System.out.println("// BACK HELP BUTTON PRESSED");
             frame.remove(helpContents);
             frame.remove(backButton);
+            frame.remove(invitationList);
+            frame.remove(swarmList);
             frame.revalidate();
             frame.repaint();
             frame.add(newSwarmButton);
@@ -90,6 +124,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.remove(helpButton);
             frame.remove(tempTransitionButton);
             frame.remove(title);
+            frame.remove(quitButton);
             frame.revalidate();
             frame.repaint();
             workScreen = new WorkScreen(frame);
@@ -117,6 +152,24 @@ public class ConnectScreen extends JFrame implements ActionListener {
         printSwarmsButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
         printSwarmsButton.addActionListener(this);
         // --
+        // SWARM LIST:
+        // INVITE LIST:
+        swarmList = new JPanel();
+        swarmList.setLocation(530, 300);
+        swarmList.setSize(200, 350);
+        swarmList.setBackground(new Color(0x363946));
+        swarmElements = new JButton[10];
+        for (int i = 0; i <= 4; i ++){
+            swarmElements[i] = new JButton();
+            swarmElements[i].setBounds(10, 5 * (11*i + 19), 200, 30);
+            swarmElements[i].setForeground(new Color(0x000000));
+            swarmElements[i].setBackground(new Color(0xB1B6A6));
+            swarmElements[i].setFocusable(false);
+            swarmElements[i].setFont(new Font("Radio Canada", Font.BOLD, 15));
+            swarmElements[i].setText("Swarm " + (i + 1));
+            swarmList.add(swarmElements[i]);
+        }
+        // --
         // VIEW INVITATIONS BUTTON:
         viewInvitesButton = new JButton();
         viewInvitesButton.setText("VIEW INVITES");
@@ -128,7 +181,22 @@ public class ConnectScreen extends JFrame implements ActionListener {
         viewInvitesButton.addActionListener(this);
         // --
         // INVITE LIST:
-
+        invitationList = new JPanel();
+        invitationList.setLocation(530, 300);
+        invitationList.setSize(200, 350);
+        invitationList.setBackground(new Color(0x363946));
+        invitationElements = new JButton[10];
+        for (int i = 0; i <= 5; i ++){
+            invitationElements[i] = new JButton();
+            invitationElements[i].setBounds(10, 5 * (11*i + 19), 200, 30);
+            invitationElements[i].setForeground(new Color(0x000000));
+            invitationElements[i].setBackground(new Color(0xB1B6A6));
+            invitationElements[i].setFocusable(false);
+            invitationElements[i].setFont(new Font("Radio Canada", Font.BOLD, 15));
+            invitationElements[i].setText("Invite " + (i + 1));
+            invitationList.add(invitationElements[i]);
+        }
+        // --
         // CREATE NEW SWARM BUTTON:
         newSwarmButton = new JButton();
         newSwarmButton.setText("CREATE NEW SWARM");
