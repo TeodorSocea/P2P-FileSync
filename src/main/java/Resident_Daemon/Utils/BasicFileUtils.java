@@ -1,10 +1,10 @@
 package Resident_Daemon.Utils;
 
+import Resident_Daemon.Core.Singleton;
+
 import java.io.IOException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -112,6 +112,58 @@ public class BasicFileUtils {
             e.printStackTrace();
             return null;
         }
+
+    }
+
+    private static byte[] codeFile(String fileRelPath, byte[] fileContent){
+
+        String SfileContent = new String(fileContent, StandardCharsets.UTF_8);
+        StringBuilder stringBuilder = new StringBuilder(fileRelPath + "!" + fileContent);
+
+        return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
+    }
+
+
+
+/////////////
+
+    public static byte[] GetBytesToSend(String fileRelPath){
+
+        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
+
+        Path filePath = Paths.get(folderPath, fileRelPath);
+
+        if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
+        byte[] fileContent = file2bytes(filePath);
+
+        return codeFile(fileRelPath, fileContent);
+
+    }
+
+    private static String getFilePath(String data){
+        return data.substring(0, data.indexOf("!"));
+    }
+    private static String getContent(String data){
+        return data.substring(data.indexOf("!") + 1);
+    }
+
+    public static void WriteFileToFolder(byte[] dataReceived) throws IOException {
+
+        String folderPath = String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath());
+
+        String receivedData = new String(dataReceived);
+
+        String receivedPath = getFilePath(receivedData);
+        Path filePath = Paths.get(folderPath, receivedPath);
+
+        String whatToWrite = getContent(receivedData);
+
+        try {
+            Files.writeString(filePath, whatToWrite);
+        } catch (IOException e) {
+            throw e;
+        }
+
 
     }
 

@@ -12,13 +12,8 @@ public class CreateSwarm extends ExceptionModule implements Command {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
         networkingComponent.createNewSwarm();
-//        NetworkingComponent nc = new NetworkingComponent(33531);
-//        nc.start();
-//
-//        nc.joinSwarm(18);
-//        nc.getSwarmManager().getByID(18).setSelfID(69);
-//
-//        ConsoleMenu.pageNumber += 1 % 2;
+
+        Singleton.getSingletonObject().getUserData().setConnected(true, networkingComponent.getSwarms());
 
         return true;
     }

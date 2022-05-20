@@ -22,54 +22,6 @@ public class RespondToInvitation extends ExceptionModule implements Command {
         this.invitationResponse = invitationResponse;
     }
 
-    private String getFilePath(String data){
-        return data.substring(0, data.indexOf("!"));
-    }
-
-    private String getContent(String data){
-        return data.substring(data.indexOf("!") + 1);
-    }
-
-//    private void getSyncedFolder(NetworkingComponent networkingComponent){
-//
-//        Input.confScanner();
-//        System.out.println("Input the swarmID: ");
-//        String swarmID = Input.nextLine();
-//        System.out.println("Input the peerID: ");
-//        String peerID = Input.nextLine();
-//
-//        try {
-//            int sID = Integer.parseInt(swarmID);
-//            int pID = Integer.parseInt(peerID);
-//
-//
-//            List<byte[]> dataList = null;
-//            while(dataList == null){
-//                dataList = networkingComponent.getDataFromDataPipeline(sID, pID);
-//            }
-//            for(var data : dataList){
-//                String str_data = new String(data);
-//                String fileRelPath = getFilePath(str_data);
-//                Path dir = Singleton.getSingletonObject().getFolderToSyncPath();
-//                Path fileFullPath = Paths.get(dir.toString(),fileRelPath);
-//                String fileContent = getContent(str_data);
-//
-//
-//                try {
-//                    Files.writeString(fileFullPath, fileContent);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//
-//        } catch (NumberFormatException e){
-//            System.out.println("Invalid number");
-//        }
-//
-//
-//    }
-
     @Override
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
@@ -78,6 +30,9 @@ public class RespondToInvitation extends ExceptionModule implements Command {
         try {
 
             networkingComponent.respondToInvitationToSwarm(invitationIndex, invitationResponse);
+            if(invitationResponse == true){
+                Singleton.getSingletonObject().getUserData().setConnected(true, networkingComponent.getSwarms());
+            }
         } catch (IOException e) {
             System.out.println("Error at responding!");
             setException(e);

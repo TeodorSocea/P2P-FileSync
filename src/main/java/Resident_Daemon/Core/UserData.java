@@ -43,8 +43,9 @@ public class UserData {
         return isConnected;
     }
 
-    public void setConnected(boolean connected) {
+    public void setConnected(boolean connected, Map<Integer, NetworkSwarm> mySwarms) {
         isConnected = connected;
+        this.mySwarms = mySwarms;
     }
 
     //endregion
