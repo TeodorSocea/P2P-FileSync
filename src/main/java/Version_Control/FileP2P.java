@@ -8,7 +8,7 @@ public class FileP2P {
     String data = "";
     long timestamp;
 
-
+    public FileP2P(){}
     public FileP2P(FileInputStream file, String fileName, long timestamp) throws IOException {
         int content;
         while((content = file.read()) != -1) {
@@ -34,6 +34,10 @@ public class FileP2P {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public void setTimestamp(long timestamp){
+        this.timestamp = timestamp;
     }
 
     public void setFileName(String fileName) {

@@ -30,7 +30,7 @@ public class Version_Control_Component {
         this.otherFiles = otherFiles;
     }
     public void compare() throws IOException {
-        comparatorul = new ComparatorP2PFiles(originalFiles, otherFiles);
+        /*comparatorul = new ComparatorP2PFiles(originalFiles, otherFiles);
        // System.out.println(comparatorul.compare().getKey());
         fisierVersiuni.setVersionFileData(comparatorul.compare().getKey());
         System.out.println("Fisiere originale inainte de modificare: " );
@@ -39,7 +39,7 @@ public class Version_Control_Component {
         ModifiedFiles modify = new ModifiedFiles();
         this.originalFiles = modify.buildModifiedFiles(originalFiles, comparatorul.compare().getKey());
         System.out.println(this.originalFiles);
-        System.out.println(fisierVersiuni.getVersionFileData());
+        System.out.println(fisierVersiuni.getVersionFileData());*/
     }
     public void initVersionFileData(){
         versionFileData = """
