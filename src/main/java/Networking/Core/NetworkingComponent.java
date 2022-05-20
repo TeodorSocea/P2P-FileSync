@@ -100,7 +100,7 @@ public class NetworkingComponent {
         List<Triple<Integer, Integer, String>> output = new ArrayList<>();
         for(Map.Entry<Integer, NetworkSwarm> swarm : networkSwarmManager.getSwarms().entrySet()){
             for(Pair<Integer, String> request : swarm.getValue().getRequests()){
-                System.out.println("Peer " + request.getKey() + " in swarm " + swarm.getKey() + " wants " + request.getValue());
+//                System.out.println("Peer " + request.getKey() + " in swarm " + swarm.getKey() + " wants " + request.getValue());
                 output.add(new MutableTriple<Integer, Integer, String>(request.getKey(),swarm.getKey(),request.getValue()));
             }
         }
@@ -202,7 +202,7 @@ public class NetworkingComponent {
                 output.add(new Pair<Integer, Integer>(swarm.getKey(), peerID));
             }
         }
-        System.out.println(output);
+//        System.out.println(output);
         return output;
     }
 }
