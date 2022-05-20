@@ -9,6 +9,8 @@ import Networking.Swarm.NetworkSwarm;
 import Networking.Swarm.NetworkSwarmManager;
 import Networking.Utils.*;
 import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.MutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 
 
 import java.io.IOException;
@@ -94,12 +96,15 @@ public class NetworkingComponent {
         return networkSwarmManager.getInvitations();
     }
 
-    public void printRequests(){
+    public List<Triple<Integer, Integer, String>> getRequests(){
+        List<Triple<Integer, Integer, String>> output = new ArrayList<>();
         for(Map.Entry<Integer, NetworkSwarm> swarm : networkSwarmManager.getSwarms().entrySet()){
             for(Pair<Integer, String> request : swarm.getValue().getRequests()){
                 System.out.println("Peer " + request.getKey() + " in swarm " + swarm.getKey() + " wants " + request.getValue());
+                output.add(new MutableTriple<Integer, Integer, String>(request.getKey(),swarm.getKey(),request.getValue()));
             }
         }
+        return output;
     }
 
     public void inviteIPToSwarm(String ip, int swarmID) throws IOException {
@@ -169,7 +174,7 @@ public class NetworkingComponent {
             byteBuffer.put(index * 1024, byteArray);
             index++;
         }
-        networkSwarmManager.getSwarms().get(swarmID).getFulfilledRequests().remove(peerID);
+        networkSwarmManager.getSwarms().get(swarmID).popFulfilledRequests(peerID);
         return byteBuffer.array();
     }
 

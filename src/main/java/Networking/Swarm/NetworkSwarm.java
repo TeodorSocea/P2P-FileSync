@@ -37,6 +37,15 @@ public class NetworkSwarm {
         return fulfilledRequests;
     }
 
+    public void popFulfilledRequests(int peerID){
+        for(int i = 0; i < fulfilledRequests.size(); i++){
+            if (fulfilledRequests.get(i) == peerID){
+                fulfilledRequests.remove(i);
+                break;
+            }
+        }
+    }
+
     public int getSwarmID() {
         return swarmID;
     }
