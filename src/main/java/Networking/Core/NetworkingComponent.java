@@ -101,7 +101,7 @@ public class NetworkingComponent {
         for(Map.Entry<Integer, NetworkSwarm> swarm : networkSwarmManager.getSwarms().entrySet()){
             for(Pair<Integer, String> request : swarm.getValue().getRequests()){
 //                System.out.println("Peer " + request.getKey() + " in swarm " + swarm.getKey() + " wants " + request.getValue());
-                output.add(new MutableTriple<Integer, Integer, String>(request.getKey(),swarm.getKey(),request.getValue()));
+                output.add(new MutableTriple<Integer, Integer, String>(swarm.getKey(),request.getKey(),request.getValue()));
             }
         }
         return output;
