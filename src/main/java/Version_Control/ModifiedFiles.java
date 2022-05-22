@@ -8,14 +8,14 @@ import java.io.StringReader;
 import java.util.*;
 
 public class ModifiedFiles {
-    public List<Pair<String,String>> buildModifiedFiles(List<Pair<String,String>> originalFiles, Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> modifications) throws IOException {
-        List<Pair<String,String>> modifiedFiles = new ArrayList<>();
-        for(Pair<String,String> file : originalFiles){
+    public List<FileP2P> buildModifiedFiles(List<FileP2P> originalFiles, Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> modifications) throws IOException {
+        List<FileP2P> modifiedFiles = new ArrayList<>();
+        for(FileP2P file : originalFiles){
             List<String> newModifiedFile = new ArrayList<>();
-            Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>> value = modifications.get(file.getKey());
+            Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>> value = modifications.get(file.getFileName());
             List<Pair<Integer,String>> added = value.getKey();
             List<Pair<Integer,String>> removed = value.getValue();
-            BufferedReader bf = new BufferedReader(new StringReader(file.getValue()));
+            BufferedReader bf = new BufferedReader(new StringReader(file.getData()));
             String lineFile = "";
             int counter = 0;
             int positionAdded = 0;
@@ -64,7 +64,9 @@ public class ModifiedFiles {
             for (String s : newModifiedFile) {
                 modifiedFileAsString = modifiedFileAsString.concat(s + "\n");
             }
-            modifiedFiles.add(new Pair<>(file.getKey(),modifiedFileAsString));
+            FileP2P newFile = new FileP2P(file);
+            newFile.setData(modifiedFileAsString);
+            modifiedFiles.add(newFile);
         }
         return modifiedFiles;
     }

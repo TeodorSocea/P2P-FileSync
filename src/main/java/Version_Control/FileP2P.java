@@ -18,8 +18,11 @@ public class FileP2P {
 
         this.timestamp = timestamp;
     }
-
-
+    public FileP2P(FileP2P file){
+        this.fileName = file.getFileName();
+        this.data=file.getData();
+        this.timestamp= file.getTimestamp();
+    }
     public String getFileName() {
         return this.fileName;
     }
