@@ -7,6 +7,7 @@ import Resident_Daemon.Utils.BasicFileUtils;
 import Resident_Daemon.Utils.GetTextFiles;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 public class SendFilesToPeer implements Command {

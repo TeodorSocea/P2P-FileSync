@@ -5,6 +5,7 @@ import Networking.Core.NetworkingComponent;
 import Networking.Utils.Invitation;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.Utils.BasicFileUtils;
+import Version_Control.Version_Control_Component;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -16,6 +17,7 @@ import java.util.List;
 public class Singleton
 {
     private static final String EXPORT_IMPORT_FOLDER = "data_singleton.txt";
+    public static final String VERSION_FILE_DATA_NAME = "versionfile.version";
 
     private String currentPath;
     private String operatingSystem;
@@ -25,6 +27,7 @@ public class Singleton
     private UserData userData;
 
     private NetworkingComponent networkingComponent;
+    private Version_Control_Component version;
     CommandExecutor commandExecutor;
 
     private Singleton()
@@ -32,13 +35,14 @@ public class Singleton
         setCurrentPath();
         this.operatingSystem = "unknown";
         commandExecutor = new CommandExecutor();
+
         this.networkingComponent = new NetworkingComponent(30000);
+
+        this.version = new Version_Control_Component();
 
         this.userData = new UserData();
 
     }
-
-
 
     public static Singleton getSingletonObject()
     {
@@ -141,6 +145,10 @@ public class Singleton
         return userData;
     }
 
-//endregion
+    public Version_Control_Component getVersion() {
+        return version;
+    }
+
+    //endregion
 
 }

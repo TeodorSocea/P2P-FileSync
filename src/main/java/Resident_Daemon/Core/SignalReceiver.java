@@ -2,6 +2,7 @@ package Resident_Daemon.Core;
 
 import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.ProcessRecievedFile;
 import Resident_Daemon.CommandsPack.Commands.ReceiveFiles;
 import Resident_Daemon.CommandsPack.Commands.SendFilesToPeer;
 
@@ -10,6 +11,7 @@ import java.util.concurrent.TimeUnit;
 public class SignalReceiver implements Runnable {
     UserData userData = Singleton.getSingletonObject().getUserData();
     CommandExecutor commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
+
 
     @Override
     public void run() {
@@ -29,10 +31,18 @@ public class SignalReceiver implements Runnable {
                 }
                 // Daca a primit
                 for(var pair : networkingComponent.getFulfilledRequests()){
+                    if(!userData.isEnableToWriteAllFiles()){
+                        userData.resetFileLists();
+                    }
                     int swarmID = pair.getKey();
                     int peerID = pair.getValue();
 
-                    commandExecutor.ExecuteOperation(new ReceiveFiles(swarmID, peerID));
+                    commandExecutor.ExecuteOperation(new ProcessRecievedFile(swarmID, peerID));
+                    userData.setEnableToWriteAllFiles(true);
+                }
+
+                if(userData.isEnableToWriteAllFiles()){
+                    commandExecutor.ExecuteOperation(new ReceiveFiles());
                 }
             }
             try {

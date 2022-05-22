@@ -155,7 +155,7 @@ public class ConsoleMenu {
 
         page.add(new Option("Sync swarm (send request)", new AuxSyncSwarm()));
 
-        page.add(new Option("Print requests", new AuxPrintRequests()));
+        page.add(new Option("Print my IP", new AuxPrintSelfIP()));
 
 //        page.add(new Option("Disconnect", () -> {
 //            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;

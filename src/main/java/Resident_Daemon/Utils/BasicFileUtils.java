@@ -1,6 +1,7 @@
 package Resident_Daemon.Utils;
 
 import Resident_Daemon.Core.Singleton;
+import javafx.util.Pair;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -147,6 +148,24 @@ public class BasicFileUtils {
         return data.substring(data.indexOf("!") + 1);
     }
 
+    public static void WriteFileToFolder(String fileRelPath, String data) throws IOException {
+
+        String folderPath = String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath());
+
+        Path filePath = Paths.get(folderPath, fileRelPath);
+
+        if(filePath.toString().contains("\\")){
+            filePath.getParent().toFile().mkdirs();
+        }
+
+        try {
+            Files.writeString(filePath, data);
+        } catch (IOException e) {
+            throw e;
+        }
+
+    }
+
     public static void WriteFileToFolder(byte[] dataReceived) throws IOException {
 
         String folderPath = String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath());
@@ -154,7 +173,13 @@ public class BasicFileUtils {
         String receivedData = new String(dataReceived);
 
         String receivedPath = getFilePath(receivedData);
+        System.out.println("Fisier: " + receivedPath);
+
         Path filePath = Paths.get(folderPath, receivedPath);
+
+        if(filePath.toString().contains("\\")){
+            filePath.getParent().toFile().mkdirs();
+        }
 
         String whatToWrite = getContent(receivedData);
 
@@ -164,6 +189,14 @@ public class BasicFileUtils {
             throw e;
         }
 
+    }
+
+    public static Pair<String, String> GetFileData(byte[] dataReceived){
+        String receivedData = new String(dataReceived, StandardCharsets.UTF_8);
+
+        Pair<String, String> fileData = new Pair<>(getFilePath(receivedData), getContent(receivedData));
+
+        return fileData;
 
     }
 

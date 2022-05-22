@@ -64,24 +64,4 @@ public class GetTextFiles
             }
         }
     };
-
-    public static void main(String[] args)
-    {
-        Input.confScanner();
-        // Reading data using readLine
-        try {
-            Singleton.loadSingletonData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Path p = Singleton.getSingletonObject().getFolderToSyncPath();
-        var g = getTextFiles(p);
-
-        for(var entry : g.entrySet()){
-            System.out.println(entry.getKey() + " data:");
-
-            String fileContent = new String(entry.getValue(), StandardCharsets.UTF_8);
-            System.out.println(fileContent);
-        }
-    }
 }
