@@ -80,8 +80,8 @@ public class ComparatorP2PFiles {
     // <5, Continutul liniei> - ce poate reprezenta fie added fie removed lines.
     //Map ul contine si un FileP2P pentru a sti la care fisier se face referire
     //Sper ca ajuta :)
-    public static Map<FileP2P, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>> compare() throws IOException {
-        Map<FileP2P, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>> mapNumeAddedRemoved = new HashMap<>();
+    public static Map<String, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>> compare() throws IOException {
+        Map<String, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>> mapNumeAddedRemoved = new HashMap<>();
 
         for (FileP2P i : originalFiles) {
             Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> temp;
@@ -118,7 +118,7 @@ public class ComparatorP2PFiles {
                 }
             });
             temp = new Pair<>(tempAdded, tempRemoved);
-            mapNumeAddedRemoved.put(i, temp);
+            mapNumeAddedRemoved.put(i.getFileName(), temp);
         }
         return mapNumeAddedRemoved;
     }

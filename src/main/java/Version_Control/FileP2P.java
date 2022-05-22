@@ -47,5 +47,12 @@ public class FileP2P {
         this.fileName = fileName;
     }
 
-
+    @Override
+    public String toString() {
+        return "FileP2P{" +
+                "fileName='" + fileName + '\'' +
+                ", data='" + data + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
+    }
 }
