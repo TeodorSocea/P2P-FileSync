@@ -9,18 +9,16 @@ public class FileP2P {
     long timestamp;
 
     public FileP2P(){}
-    public FileP2P(FileInputStream file, String fileName, long timestamp) throws IOException {
-        int content;
-        while((content = file.read()) != -1) {
-            this.data += (char)content;
-        }
+    public FileP2P(String fileName, String data, long timestamp) {
         this.fileName = fileName;
+
+        this.data = data;
 
         this.timestamp = timestamp;
     }
     public FileP2P(FileP2P file){
         this.fileName = file.getFileName();
-        this.data=file.getData();
+        this.data = file.getData();
         this.timestamp= file.getTimestamp();
     }
     public String getFileName() {

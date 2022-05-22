@@ -2,7 +2,10 @@ package Resident_Daemon.Core;
 
 import Networking.Swarm.NetworkSwarm;
 import Networking.Utils.Invitation;
+import Version_Control.FileP2P;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +15,8 @@ public class UserData {
     private Map<Integer, NetworkSwarm> mySwarms;
     private boolean isConnected = false;
     private String selfIP;
+    private List<FileP2P> localFiles;
+    private List<FileP2P> otherFiles;
 
 
     //region Getters & Setters
@@ -55,6 +60,23 @@ public class UserData {
 
     public void setSelfIP(String selfIP) {
         this.selfIP = selfIP;
+    }
+
+    public void resetFileLists(){
+        localFiles = new ArrayList<>();
+        otherFiles = new ArrayList<>();
+    }
+
+    public void addToOtherFilesList(FileP2P file){
+        otherFiles.add(file);
+    }
+
+    public List<FileP2P> getLocalFiles() {
+        return localFiles;
+    }
+
+    public List<FileP2P> getOtherFiles() {
+        return otherFiles;
     }
 
     //endregion

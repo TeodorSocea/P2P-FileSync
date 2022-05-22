@@ -12,8 +12,8 @@ public class VersionFile {
     String VersionFileData;
     public VersionFile(String VersionFileData){
         this.VersionFileData = VersionFileData;
-        System.out.println("fisierul de versiuni este:");
-        System.out.println(getVersionFileData());
+//        System.out.println("fisierul de versiuni este:");
+//        System.out.println(getVersionFileData());
     }
     public void setVersionFileData(Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> map)
     {

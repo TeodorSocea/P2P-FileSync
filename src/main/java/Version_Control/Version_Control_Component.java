@@ -14,11 +14,12 @@ public class Version_Control_Component {
     private String versionFileData;
     ComparatorP2PFiles comparatorul;
     VersionFile fisierVersiuni;
-    Version_Control_Component(){
+
+    public Version_Control_Component(){
         initVersionFileData();
         fisierVersiuni = new VersionFile(versionFileData);
     }
-    Version_Control_Component(String versionFileData){
+    public Version_Control_Component(String versionFileData){
         this.versionFileData = versionFileData;
         fisierVersiuni = new VersionFile(versionFileData);
     }
@@ -33,14 +34,19 @@ public class Version_Control_Component {
         comparatorul = new ComparatorP2PFiles(originalFiles, otherFiles);
        // System.out.println(comparatorul.compare().getKey());
         fisierVersiuni.setVersionFileData(comparatorul.compare());
-        System.out.println("Fisiere originale inainte de modificare: " );
-        System.out.println(this.originalFiles.toString());
-        System.out.println("Fisiere originale dupa modificare: ");
+//        System.out.println("Fisiere originale inainte de modificare: " );
+//        System.out.println(this.originalFiles.toString());
+//        System.out.println("Fisiere originale dupa modificare: ");
         ModifiedFiles modify = new ModifiedFiles();
         this.originalFiles = modify.buildModifiedFiles(originalFiles, comparatorul.compare());
-        System.out.println(this.originalFiles.toString());
-        System.out.println(fisierVersiuni.getVersionFileData());
+//        System.out.println(this.originalFiles.toString());
+//        System.out.println(fisierVersiuni.getVersionFileData());
     }
+
+    public void setVersionFileData(String versionFileData) {
+        this.versionFileData = versionFileData;
+    }
+
     public void initVersionFileData(){
         versionFileData = """
                             {
@@ -50,6 +56,15 @@ public class Version_Control_Component {
                             }
                 """;
     }
+
+    public List<FileP2P> getOriginalFiles() {
+        return originalFiles;
+    }
+
+    public String getVersionFileData() {
+        return versionFileData;
+    }
+
     public static void main(String[] args) throws IOException {
         //Merge
         /*System.out.println(fileDifferences("Mama\nare\nmere", "Tata\nare\nmere\nsi\npere").getKey().toString());
@@ -84,6 +99,10 @@ public class Version_Control_Component {
       //  version.setOriginalFiles(temp2);
       //  version.setOtherFiles(temp1);
         version.compare();
+
+        version.getOriginalFiles();
+
+        //scriere
     }
 }
 
