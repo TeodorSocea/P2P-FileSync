@@ -1,10 +1,12 @@
 package GUI;
 import GUI.GUI_Component;
-
+import java.util.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ArrayList;
 
 // Resident Daemon IMPORTS, keep commented for now:
 /*import Resident_Daemon.CommandsPack.Command;
@@ -22,11 +24,35 @@ public class WorkScreen extends JFrame implements ActionListener{
     JButton quitButton;
     JPanel membersText;
     JPanel ipList;
-    JPanel swarm;
+    JButton changeSyncFolderButton;
+    JButton inviteToSwarm;
+    String activeFolderPath=null;
     JTextArea topText = new JTextArea("Members: ");
+    List<String> invitedIPs;
     // --
     // Button functions:
     public void actionPerformed(ActionEvent e) {
+        if (e.getSource()==changeSyncFolderButton){
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new java.io.File("."));
+            chooser.setDialogTitle("Change Sync Folder");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                activeFolderPath=chooser.getCurrentDirectory().getAbsolutePath();
+                System.out.println(activeFolderPath);
+            }
+            else{
+                //aici apare un pop-up cu No Selection.
+            }
+        }
+        if(e.getSource()==inviteToSwarm){
+            String invited=null;
+            invited=JOptionPane.showInputDialog("Send invitation to IP:");
+            invitedIPs.add(invited);
+            System.out.println(invited);
+            //Command invite=new InviteToSwarm(invited);
+        }
         if (e.getSource() == syncButton) {
             //SyncSwarm(Integer swarmID, Integer peerID) i dont know what is the meaning of the parameters
             //Command sync = new SyncSwarm();
@@ -68,6 +94,27 @@ public class WorkScreen extends JFrame implements ActionListener{
         // --
 
         // Elements:
+        // Change Sync Folder:
+        changeSyncFolderButton = new JButton();
+        changeSyncFolderButton.setText("Change Sync Folder");
+        changeSyncFolderButton.setBounds(30,590,200,30);
+        changeSyncFolderButton.setForeground(new Color(0x000000));
+        changeSyncFolderButton.setBackground(new Color(0xB1B6A6));
+        changeSyncFolderButton.setFocusable(false);
+        changeSyncFolderButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+        changeSyncFolderButton.addActionListener(this);
+        changeSyncFolderButton.setAlignmentX(-1);
+        // --
+        // Invite To Swarm:
+        inviteToSwarm = new JButton("Invite2Swarm");
+        inviteToSwarm.setBounds(30,490,200,30);
+        inviteToSwarm.setForeground(new Color(0x000000));
+        inviteToSwarm.setBackground(new Color(0xB1B6A6));
+        inviteToSwarm.setFocusable(false);
+        inviteToSwarm.setFont(new Font("Radio Canada", Font.BOLD, 15));
+        inviteToSwarm.addActionListener(this);
+        inviteToSwarm.setAlignmentX(-1);
+        // --
         // Sync Button:
         syncButton = new JButton();
         syncButton.setText("Sync with Swarm");
@@ -102,7 +149,6 @@ public class WorkScreen extends JFrame implements ActionListener{
         membersText = new JPanel();
         membersText.setBounds(1050,50,200,50);
         membersText.setForeground(Color.BLACK);
-        membersText.setBackground(new Color(0xB1B6A6));
         membersText.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
         topText.setFont(new Font("Radio Canada", Font.ITALIC, 25));
         topText.setForeground(new Color(0x000000));
@@ -134,6 +180,8 @@ public class WorkScreen extends JFrame implements ActionListener{
         }
         // --
         // Added elements:
+        frame.add(changeSyncFolderButton);
+        frame.add(inviteToSwarm);
         frame.add(syncButton);
         frame.add(disconnectButton);
         frame.add(quitButton);
