@@ -18,18 +18,24 @@ public class ConnectScreen extends JFrame implements ActionListener {
     private final GUI_Component frame;
     WorkScreen workScreen;
     JLabel title;
+    // SWARM BUTTONS:
     JButton printSwarmsButton;
     JPanel swarmList;
-    JButton[] swarmElements;
+    JButton[] swarmIPS;
+    JButton backSwarmButton;
+    // --
+    // INVITES ELEMENTS:
     JButton viewInvitesButton;
     JPanel inviteList;
+    JButton[] inviteIPS;
+    JButton backInvitesButton;
+    // --
     JButton newSwarmButton;
     JButton helpButton;
+    JButton backHelpButton;
     JButton quitButton;
-    JButton backButton;
     JButton tempTransitionButton;
     JLabel helpContents;
-
 
     @Override
     public void actionPerformed(ActionEvent e){
@@ -43,62 +49,22 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.remove(quitButton);
             frame.revalidate();
             frame.repaint();
-            frame.add(backButton);
+            frame.add(backHelpButton);
             frame.add(swarmList);
             frame.revalidate();
             frame.repaint();
         }
-        // VIEW INVITES BUTTON PRESS:
-        if (e.getSource() == viewInvitesButton){
-            System.out.println("// VIEW INVITATIONS BUTTON PRESSED");
-            frame.remove(newSwarmButton);
-            frame.remove(viewInvitesButton);
-            frame.remove(printSwarmsButton);
-            frame.remove(helpButton);
-            frame.remove(quitButton);
-            frame.revalidate();
-            frame.repaint();
-            frame.add(backButton);
-            frame.add(inviteList);
-            frame.revalidate();
-            frame.repaint();
+        // --
+        // INVITE SWARMS BUTTON PRESSED:
+        for (int i = 0; i < swarmIPS.length; i++) {
+            if (e.getSource() == swarmIPS[i]){
+                System.out.println("// SWARM IP PRESSED: " + swarmIPS[i].getText());
+            }
         }
-        // MEW SWARM BUTTON PRESS:
-        if (e.getSource() == newSwarmButton){
-            System.out.println("// CREATE NEW SWARM BUTTON PRESSED");
-            frame.remove(newSwarmButton);
-            frame.remove(viewInvitesButton);
-            frame.remove(printSwarmsButton);
-            frame.remove(helpButton);
-            frame.remove(quitButton);
-            frame.revalidate();
-            frame.repaint();
-            frame.add(backButton);
-            frame.add(inviteList);
-            frame.revalidate();
-            frame.repaint();
-        }
-        // HELP PRESS:
-        if (e.getSource() == helpButton){
-            System.out.println("// HELP BUTTON PRESSED");
-            frame.remove(newSwarmButton);
-            frame.remove(viewInvitesButton);
-            frame.remove(printSwarmsButton);
-            frame.remove(helpButton);
-            frame.remove(quitButton);
-            frame.revalidate();
-            frame.repaint();
-            frame.add(helpContents);
-            frame.add(backButton);
-            frame.revalidate();
-            frame.repaint();
-        }
-        // BACK BUTTON:
-        if (e.getSource() == backButton){
-            System.out.println("// BACK HELP BUTTON PRESSED");
-            frame.remove(helpContents);
-            frame.remove(backButton);
-            frame.remove(inviteList);
+        // BACK : SWARM IPS SCREEN:
+        if (e.getSource() == backSwarmButton){
+            System.out.println("// BACK SWARM IPS BUTTON PRESSED");
+            frame.remove(backSwarmButton);
             frame.remove(swarmList);
             frame.revalidate();
             frame.repaint();
@@ -110,11 +76,87 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.revalidate();
             frame.repaint();
         }
+        // VIEW INVITES BUTTON PRESS:
+        if (e.getSource() == viewInvitesButton) {
+            System.out.println("// VIEW INVITATIONS BUTTON PRESSED");
+            frame.remove(newSwarmButton);
+            frame.remove(viewInvitesButton);
+            frame.remove(printSwarmsButton);
+            frame.remove(helpButton);
+            frame.remove(quitButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(backInvitesButton);
+            frame.add(inviteList);
+            frame.revalidate();
+            frame.repaint();
+        }
+        // --
+        // INVITE IP BUTTON PRESSED:
+        for (int j = 0; j < inviteIPS.length; j++) {
+            if (e.getSource() == inviteIPS[j]){
+                System.out.println("I AM HERE" + j);
+            }
+        }
+        // BACK : INVITES IPS SCREEN:
+        if (e.getSource() == backInvitesButton) {
+            System.out.println("// BACK SWARM IPS BUTTON PRESSED");
+            frame.remove(backInvitesButton);
+            frame.remove(inviteList);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(newSwarmButton);
+            frame.add(viewInvitesButton);
+            frame.add(printSwarmsButton);
+            frame.add(helpButton);
+            frame.add(quitButton);
+            frame.revalidate();
+            frame.repaint();
+        }
+        // --
+        // MEW SWARM BUTTON PRESS:
+        if (e.getSource() == newSwarmButton){
+            System.out.println("// CREATE NEW SWARM BUTTON PRESSED");
+        }
+        // --
+        // HELP PRESS:
+        if (e.getSource() == helpButton){
+            System.out.println("// HELP BUTTON PRESSED");
+            frame.remove(newSwarmButton);
+            frame.remove(viewInvitesButton);
+            frame.remove(printSwarmsButton);
+            frame.remove(helpButton);
+            frame.remove(quitButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(helpContents);
+            frame.add(backHelpButton);
+            frame.revalidate();
+            frame.repaint();
+        }
+        // --
+        // BACK HELP BUTTON:
+        if (e.getSource() == backHelpButton){
+            System.out.println("// BACK HELP BUTTON PRESSED");
+            frame.remove(helpContents);
+            frame.remove(backHelpButton);
+            frame.revalidate();
+            frame.repaint();
+            frame.add(newSwarmButton);
+            frame.add(viewInvitesButton);
+            frame.add(printSwarmsButton);
+            frame.add(helpButton);
+            frame.add(quitButton);
+            frame.revalidate();
+            frame.repaint();
+        }
+        // --
         // QUIT PRESS:
         if (e.getSource() == quitButton){
             System.out.println("// QUIT BUTTON PRESSED, BYE!");
             exit(1);
         }
+        // --
         // TRANSITION BUTTON TEMP:
         if (e.getSource() == tempTransitionButton){
             System.out.println("// switching...");
@@ -129,6 +171,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.repaint();
             workScreen = new WorkScreen(frame);
         }
+        // --
     }
 
     public ConnectScreen(GUI_Component frame) {
@@ -142,6 +185,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
         tempTransitionButton.setFocusable(false);
         tempTransitionButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
         tempTransitionButton.addActionListener(this);
+        // --
         // PRINT SWARMS BUTTON:
         printSwarmsButton = new JButton();
         printSwarmsButton.setText("VIEW SWARMS");
@@ -154,20 +198,37 @@ public class ConnectScreen extends JFrame implements ActionListener {
         // --
         // SWARM LIST:
         swarmList = new JPanel();
-        swarmList.setLocation(530, 300);
-        swarmList.setSize(200, 350);
-        swarmList.setBackground(new Color(0x363946));
-        swarmElements = new JButton[10];
-        for (int i = 0; i <= 4; i ++){
-            swarmElements[i] = new JButton();
-            swarmElements[i].setBounds(10, 5 * (11*i + 19), 200, 30);
-            swarmElements[i].setForeground(new Color(0x000000));
-            swarmElements[i].setBackground(new Color(0xB1B6A6));
-            swarmElements[i].setFocusable(false);
-            swarmElements[i].setFont(new Font("Radio Canada", Font.BOLD, 15));
-            swarmElements[i].setText("Swarm " + (i + 1));
-            swarmList.add(swarmElements[i]);
+        JPanel pSwm = new JPanel(new GridBagLayout());
+        swarmList.add(new JScrollPane(pSwm, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        GridBagConstraints gbcSwarm = new GridBagConstraints();
+        swarmList.setLayout(new BoxLayout(swarmList, BoxLayout.PAGE_AXIS));
+        swarmList.setBounds(566,250,150,250);
+        swarmList.setMaximumSize(new Dimension(100, 200));
+        swarmList.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, new Color(0x363946)));
+        pSwm.setFont(new Font("Radio Canada", Font.ITALIC, 25));
+        pSwm.setForeground(new Color(0x000000));
+        pSwm.setBackground(new Color(0x363946));
+        swarmList.setAutoscrolls(true);
+        gbcSwarm.insets = new Insets(5,5,5,180);
+        swarmIPS = new JButton[10];
+        for (int ii=0; ii<10; ii++) {
+            gbcSwarm.gridy = ii;
+            gbcSwarm.gridx = 0;
+            swarmIPS[ii] = new JButton("Button " + ii);
+            pSwm.add(swarmIPS[ii], gbcSwarm);
+            swarmIPS[ii].addActionListener(this);
+            gbcSwarm.gridx = 1;
         }
+        // --
+        // BACK SWARM BUTTON:
+        backSwarmButton = new JButton();
+        backSwarmButton.setText("BACK");
+        backSwarmButton.setBounds(590, 635, 85, 30);
+        backSwarmButton.setForeground(new Color(0x000000));
+        backSwarmButton.setBackground(new Color(0xB1B6A6));
+        backSwarmButton.setFocusable(false);
+        backSwarmButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+        backSwarmButton.addActionListener(this);
         // --
         // VIEW INVITATIONS BUTTON:
         viewInvitesButton = new JButton();
@@ -181,9 +242,27 @@ public class ConnectScreen extends JFrame implements ActionListener {
         // --
         // INVITE LIST:
         inviteList = new JPanel();
-        inviteList.setBackground(new Color(0xB1B6A6));
-        JScrollPane inviteScroll = new JScrollPane(inviteList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-
+        JPanel pInv = new JPanel(new GridBagLayout());
+        inviteList.add(new JScrollPane(pInv, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        GridBagConstraints gbcInvite = new GridBagConstraints();
+        inviteList.setLayout(new BoxLayout(inviteList, BoxLayout.PAGE_AXIS));
+        inviteList.setBounds(566,250,150,250);
+        inviteList.setMaximumSize(new Dimension(100, 200));
+        inviteList.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, new Color(0x363946)));
+        pInv.setFont(new Font("Radio Canada", Font.ITALIC, 25));
+        pInv.setForeground(new Color(0x000000));
+        pInv.setBackground(new Color(0x363946));
+        inviteList.setAutoscrolls(true);
+        gbcInvite.insets = new Insets(5,5,5,180);
+        inviteIPS = new JButton[10];
+        for (int ii=0; ii<10; ii++) {
+            gbcInvite.gridy = ii;
+            gbcInvite.gridx = 0;
+            inviteIPS[ii] = new JButton("Button " + ii);
+            pInv.add(inviteIPS[ii], gbcInvite);
+            inviteIPS[ii].addActionListener(this);
+            gbcInvite.gridx = 1;
+        }
         // --
         // CREATE NEW SWARM BUTTON:
         newSwarmButton = new JButton();
@@ -213,14 +292,15 @@ public class ConnectScreen extends JFrame implements ActionListener {
         helpContents.setFont(new Font("Radio Canada", Font.PLAIN, 32));
         // --
         // BACK HELP BUTTON:
-        backButton = new JButton();
-        backButton.setText("BACK");
-        backButton.setBounds(590, 635, 85, 30);
-        backButton.setForeground(new Color(0x000000));
-        backButton.setBackground(new Color(0xB1B6A6));
-        backButton.setFocusable(false);
-        backButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
-        backButton.addActionListener(this);
+        backHelpButton = new JButton();
+        backHelpButton.setText("BACK");
+        backHelpButton.setBounds(590, 635, 85, 30);
+        backHelpButton.setForeground(new Color(0x000000));
+        backHelpButton.setBackground(new Color(0xB1B6A6));
+        backHelpButton.setFocusable(false);
+        backHelpButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+        backHelpButton.addActionListener(this);
+        // --
         // QUIT BUTTON:
         quitButton = new JButton();
         quitButton.setText("QUIT");
@@ -231,13 +311,14 @@ public class ConnectScreen extends JFrame implements ActionListener {
         quitButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
         quitButton.addActionListener(this);
         // --
-        // Title:
+        // TITLE:
         title = new JLabel();
         title.setText("P2P File Sync");
         title.setForeground(new Color(0xB1B6A6));
         title.setFont(new Font("Radio Canada", Font.BOLD, 96));
         title.setBounds(330, -100, 884, 500);
         // --
+        // Added elements:
         frame.add(title);
         frame.add(newSwarmButton);
         frame.add(viewInvitesButton);
