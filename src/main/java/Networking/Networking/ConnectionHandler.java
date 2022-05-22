@@ -11,6 +11,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +33,18 @@ public class ConnectionHandler implements Runnable{
 
     private Message readIncomingMessage() throws IOException {
         byte[] messageSize = new byte[4];
-        selfSocket.getInputStream().read(messageSize);
-        int definitiveMessageSize = Messages.getIntFromByteArray(messageSize, 0);
-        byte[] buf = new byte[definitiveMessageSize];
-        int readBytes = selfSocket.getInputStream().read(buf);
-        byte[] rawMessage = ArrayUtils.addAll(messageSize, buf);
-        Message incoming = new Message(Arrays.copyOfRange(rawMessage, 0, definitiveMessageSize));
+        int definitiveMessageSize;
+        do{
+            selfSocket.getInputStream().read(messageSize);
+            definitiveMessageSize = Messages.getIntFromByteArray(messageSize, 0);
+        }while(definitiveMessageSize == 0);
+        byte[] buf = new byte[definitiveMessageSize - 4];
+        int readBytes = selfSocket.getInputStream().read(buf, 0, buf.length);
+        ByteBuffer buffer = ByteBuffer.allocate(definitiveMessageSize);
+        buffer.putInt(definitiveMessageSize);
+        buffer.put(buf);
+        //byte[] rawMessage = ArrayUtils.addAll(messageSize, buf);
+        Message incoming = new Message(buffer.array());
 
         return incoming;
     }
@@ -94,7 +101,7 @@ public class ConnectionHandler implements Runnable{
                     }
                     case MessageHeader.RESPONSE_INVITE_TO_SWARM -> {
                         InviteResponseMessage responseMessage = new InviteResponseMessage(incoming.getRawMessage());
-                        if(responseMessage.getResponse() == 1){
+                        if (responseMessage.getResponse() == 1) {
                             Peer sender = new Peer(selfSocket, selfSocket.getRemoteSocketAddress().toString(), responseMessage.getSenderID());
                             sendSwarmData(responseMessage.getSwarmID(), getSelfIDFromSwarm(responseMessage.getSwarmID()));
                             networkSwarmManager.addPeerToSwarm(responseMessage.getSwarmID(), sender);
@@ -106,7 +113,7 @@ public class ConnectionHandler implements Runnable{
                         String ip = inetToString(swarmDataMessage.getPeerIP());
                         Socket newSocket = isInCommonSocketPool(ip);
 
-                        if(newSocket == null) {
+                        if (newSocket == null) {
                             newSocket = new Socket(ip, selfSocket.getPort());
 
                             commonSocketPool.add(newSocket);
@@ -129,12 +136,12 @@ public class ConnectionHandler implements Runnable{
                     }
                     case MessageHeader.DATA -> {
                         DataMessage dataMessage = new DataMessage(incoming.getRawMessage());
-                        if(dataMessage.getChunkID() == -1){
+                        if (dataMessage.getChunkID() == -1) {
                             dataPipelineMap.get(dataMessage.getSwarmID()).updateLatestIndexOfPeer(dataMessage.getSenderID(), true);
                             networkSwarmManager.getSwarms().get(dataMessage.getSwarmID()).getFulfilledRequests().add(dataMessage.getSenderID());
                             break;
                         }
-                        if (!dataPipelineMap.containsKey(dataMessage.getSwarmID())){
+                        if (!dataPipelineMap.containsKey(dataMessage.getSwarmID())) {
                             dataPipelineMap.put(dataMessage.getSwarmID(), new DataPipeline());
                         }
                         int latestIndex = dataPipelineMap.get(dataMessage.getSwarmID()).getLatestIndexOfPeer(dataMessage.getSenderID());
@@ -147,6 +154,7 @@ public class ConnectionHandler implements Runnable{
                         break;
                     }
                 }
+                System.gc();
             }
         } catch (IOException e) {
             e.printStackTrace();
