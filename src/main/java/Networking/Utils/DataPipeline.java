@@ -36,8 +36,11 @@ public class DataPipeline {
         return latestIndex.get(peerID);
     }
 
-    public void updateLatestIndexOfPeer(int peerID){
+    public void updateLatestIndexOfPeer(int peerID, boolean direction){
         int index = latestIndex.get(peerID);
-        latestIndex.put(peerID, index+1);
+        if(direction == true)
+            latestIndex.put(peerID, index+1);
+        else
+            latestIndex.put(peerID, index-1);
     }
 }

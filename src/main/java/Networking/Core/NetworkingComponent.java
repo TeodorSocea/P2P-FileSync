@@ -103,7 +103,9 @@ public class NetworkingComponent {
 //                System.out.println("Peer " + request.getKey() + " in swarm " + swarm.getKey() + " wants " + request.getValue());
                 output.add(new MutableTriple<Integer, Integer, String>(swarm.getKey(),request.getKey(),request.getValue()));
             }
+            swarm.getValue().setRequests(new ArrayList<Pair<Integer, String>>());
         }
+
         return output;
     }
 
@@ -141,12 +143,12 @@ public class NetworkingComponent {
 
     public void sentDataToPeer(byte[] data, int swarmID, int peerID) throws IOException {
         Peer peer = networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID);
-        for(int i = 0; i < data.length / 1024; i++){
+        for(int i = 0; i < data.length / 1024 + 1 ; i++){
             byte[] dataToSend = Arrays.copyOfRange(data, i * 1024, Math.min((i+1) * 1024, data.length));
             DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, i, dataToSend);
             peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
         }
-        DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, -1, new byte[1]);
+        DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, -1, new byte[1024]);
         peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
     }
 
@@ -168,6 +170,7 @@ public class NetworkingComponent {
     public byte[] getDataFromDataPipeline(int swarmID, int peerID){
         List<Data> allDataFromPeer = dataPipelineMap.get(swarmID).getDataInPipeline(peerID);
         Data data = allDataFromPeer.remove(0);
+        dataPipelineMap.get(swarmID).updateLatestIndexOfPeer(peerID, false);
         ByteBuffer byteBuffer = ByteBuffer.allocate(data.getData().size()*1024);
         int index = 0;
         for(byte[] byteArray : data.getData()){
@@ -193,6 +196,7 @@ public class NetworkingComponent {
         DataRequestMessage dataRequestMessage = new DataRequestMessage(MessageHeader.DATA_REQUEST, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, path);
         networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).getPeerSocket().getOutputStream().write(dataRequestMessage.toPacket());
     }
+
     public List<Pair<Integer, Integer>> getFulfilledRequests(){
         List<Pair<Integer, Integer>> output = new ArrayList<>();
         for(Map.Entry<Integer, NetworkSwarm> swarm : networkSwarmManager.getSwarms().entrySet()){

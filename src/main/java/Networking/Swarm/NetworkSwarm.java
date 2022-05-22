@@ -33,6 +33,10 @@ public class NetworkSwarm {
         return requests;
     }
 
+    public void setRequests(List<Pair<Integer, String>> requests) {
+        this.requests = requests;
+    }
+
     public List<Integer> getFulfilledRequests() {
         return fulfilledRequests;
     }

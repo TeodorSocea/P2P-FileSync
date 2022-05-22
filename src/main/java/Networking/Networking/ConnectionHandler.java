@@ -130,7 +130,7 @@ public class ConnectionHandler implements Runnable{
                     case MessageHeader.DATA -> {
                         DataMessage dataMessage = new DataMessage(incoming.getRawMessage());
                         if(dataMessage.getChunkID() == -1){
-                            dataPipelineMap.get(dataMessage.getSwarmID()).updateLatestIndexOfPeer(dataMessage.getSenderID());
+                            dataPipelineMap.get(dataMessage.getSwarmID()).updateLatestIndexOfPeer(dataMessage.getSenderID(), true);
                             networkSwarmManager.getSwarms().get(dataMessage.getSwarmID()).getFulfilledRequests().add(dataMessage.getSenderID());
                             break;
                         }
