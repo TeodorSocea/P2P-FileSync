@@ -95,7 +95,7 @@ public class WorkScreen extends JFrame implements ActionListener{
 
         // Elements:
         // Change Sync Folder:
-        changeSyncFolderButton=new JButton();
+        changeSyncFolderButton = new JButton();
         changeSyncFolderButton.setText("Change Sync Folder");
         changeSyncFolderButton.setBounds(30,590,200,30);
         changeSyncFolderButton.setForeground(new Color(0x000000));
@@ -106,7 +106,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         changeSyncFolderButton.setAlignmentX(-1);
         // --
         // Invite To Swarm:
-        inviteToSwarm=new JButton("Invite2Swarm");
+        inviteToSwarm = new JButton("Invite2Swarm");
         inviteToSwarm.setBounds(30,490,200,30);
         inviteToSwarm.setForeground(new Color(0x000000));
         inviteToSwarm.setBackground(new Color(0xB1B6A6));
