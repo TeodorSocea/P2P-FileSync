@@ -12,11 +12,14 @@ public class VersionFile {
     String VersionFileData;
     public VersionFile(String VersionFileData){
         this.VersionFileData = VersionFileData;
+        System.out.println("fisierul de versiuni este:");
+        System.out.println(getVersionFileData());
     }
     public void setVersionFileData(Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> map)
     {
         JSONObject files = new JSONObject(VersionFileData);
-        JSONObject fileList = new JSONObject(files.getJSONObject("files"));
+        JSONObject fileList = new JSONObject();
+        fileList = files.getJSONObject("files");
         for(Map.Entry<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> entry : map.entrySet()){
             JSONObject obj = fileList.optJSONObject(entry.getKey());
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");

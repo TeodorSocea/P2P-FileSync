@@ -7,12 +7,13 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ComparatorP2PFiles {
-    private static List<Pair<String, String>> originalFiles;
-    private static Map<String,List<String>> otherFiles;
+    private static List<FileP2P> originalFiles;
+    private static List<FileP2P> otherFiles;
 
-    public ComparatorP2PFiles(List<Pair<String, String>> originalFiles, Map<String,List<String>> otherFiles){
+    public ComparatorP2PFiles(List<FileP2P> originalFiles, List<FileP2P> otherFiles){
         this.originalFiles = originalFiles;
         this.otherFiles = otherFiles;
     }
@@ -26,15 +27,15 @@ public class ComparatorP2PFiles {
         fd.close();
     }
 
-    public static Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> fileDifferences(String a, String b) throws IOException {
+    public static Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> fileDifferences(FileP2P a, FileP2P b) throws IOException {
         List<Pair<Integer, String>> addedLines = new ArrayList<>();
         List<Pair<Integer, String>> removedLines = new ArrayList<>();
 
         Map<String, Integer> liniiFisier1 = new ConcurrentHashMap<>();
         Map<String, Integer> liniiFisier2 = new ConcurrentHashMap<>();
 
-        BufferedReader fd1 = new BufferedReader(new StringReader(a));
-        BufferedReader fd2 = new BufferedReader(new StringReader(b));
+        BufferedReader fd1 = new BufferedReader(new StringReader(a.getData()));
+        BufferedReader fd2 = new BufferedReader(new StringReader(b.getData()));
 
         String lineFile1 = "", lineFile2 = "";
         int contor = 0;
@@ -75,24 +76,35 @@ public class ComparatorP2PFiles {
         });
         return new Pair<>(addedLines, removedLines);
     }
-    //La map-ul de conflicte am pus doar numele fisierului si o lista de intregi ce reprezinta lista numerelor liniilor la care au loc conflicte
-    public static Pair< Map<String, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>>, Map<String, List<Integer>>> compare() throws IOException {
+    //In map vom avea doar added si removed lines adica List<Pair<Integer, String>> reprezinta o lista in care vom adauga perechi de tipul
+    // <5, Continutul liniei> - ce poate reprezenta fie added fie removed lines.
+    //Map ul contine si un FileP2P pentru a sti la care fisier se face referire
+    //Sper ca ajuta :)
+    public static Map<String, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>> compare() throws IOException {
         Map<String, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>> mapNumeAddedRemoved = new HashMap<>();
-        Map<String, List<Integer>> mapConflicte = new HashMap<>();
 
-        for (Pair<String, String> i : originalFiles){
+        for (FileP2P i : originalFiles) {
             Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> temp;
             List<Pair<Integer, String>> tempAdded = new ArrayList<>();
             List<Pair<Integer, String>> tempRemoved = new ArrayList<>();
-            for(String j : otherFiles.get(i.getKey())){
-                Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> diferente = fileDifferences(i.getValue(), j);
-                diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
-                diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
-                /*
-                tempAdded.addAll(diferente.getKey());
-                tempRemoved.addAll(diferente.getValue());
-                */
+            List<FileP2P> toBeSorted = new ArrayList<>();
+            for (FileP2P j : otherFiles){
+                if (j.getFileName().equals(i.getFileName())){
+                    toBeSorted.add(j);
+                }
             }
+            toBeSorted.stream().sorted((o1, o2) -> {
+                if (o1.getTimestamp() > o2.getTimestamp())
+                    return 1;
+                else if (o1.getTimestamp() < o2.getTimestamp())
+                    return -1;
+                else
+                    return 0;
+            }).collect(Collectors.toList());
+            Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size()-1));
+            diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
+            diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
+
             tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
                 @Override
                 public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
@@ -106,18 +118,39 @@ public class ComparatorP2PFiles {
                 }
             });
             temp = new Pair<>(tempAdded, tempRemoved);
-            mapNumeAddedRemoved.put(i.getKey(), temp);
+            mapNumeAddedRemoved.put(i.getFileName(), temp);
         }
-
-        return new Pair<>(mapNumeAddedRemoved, mapConflicte);
+        return mapNumeAddedRemoved;
     }
 
     public static void main(String[] args) throws IOException {
         //Merge
         /*System.out.println(fileDifferences("Mama\nare\nmere", "Tata\nare\nmere\nsi\npere").getKey().toString());
         System.out.println(fileDifferences("Mama\nare\nmere", "Tata\nare\nmere\nsi\npere").getValue().toString());*/
+        List<FileP2P> prima = new ArrayList<>();
+        List<FileP2P> aDoua = new ArrayList<>();
+        FileP2P a = new FileP2P();
+        a.setData("Mama\nare\nmere");
+        a.setFileName("primul");
+        a.setTimestamp(1555);
+        prima.add(a);
 
-        ArrayList<Pair<String, String>> temp2 = new ArrayList<>();
+        FileP2P b = new FileP2P();
+        b.setData("Mama\nare\nmere\nsi\npere");
+        b.setFileName("primul");
+        b.setTimestamp(1666);
+
+        FileP2P c = new FileP2P();
+        c.setData("Tata\nare\nmere\nsi\npere");
+        c.setFileName("primul");
+        c.setTimestamp(1777);
+
+        aDoua.add(b);
+        aDoua.add(c);
+
+        ComparatorP2PFiles ceva = new ComparatorP2PFiles(prima, aDoua);
+        System.out.println(ceva.compare().toString());
+        /*ArrayList<Pair<String, String>> temp2 = new ArrayList<>();
         temp2.add(new Pair<String, String>("primul", "Mama\nare\nmere"));
 
         ArrayList<String> temp = new ArrayList<>();
@@ -126,7 +159,7 @@ public class ComparatorP2PFiles {
         Map<String, List<String>> temp1 = new HashMap<>();
         temp1.put("primul", temp);
 
-        ComparatorP2PFiles a = new ComparatorP2PFiles(temp2, temp1);
+        ComparatorP2PFiles a = new ComparatorP2PFiles(temp2, temp1);*/
        /// Pair< Map<String, Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>>>, Map<String, List<Integer>>>
         //Map<String, Pair<List<Pair<Integer, String>>
         //System.out.println(compare().getKey().get("primul").getValue().get(0).getValue());

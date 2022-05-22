@@ -1,69 +1,58 @@
 package Version_Control;
 
-import java.util.Objects;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 public class FileP2P {
     String fileName;
-    String userName;
-    String data;
-    int hash;
+    String data = "";
+    long timestamp;
 
-    public FileP2P(String fileName, String userName, String data) {
+    public FileP2P(){}
+    public FileP2P(FileInputStream file, String fileName, long timestamp) throws IOException {
+        int content;
+        while((content = file.read()) != -1) {
+            this.data += (char)content;
+        }
         this.fileName = fileName;
-        this.userName = userName;
-        this.data = data;
-        this.hash = hashCode();
-    }
 
-    public FileP2P(String fileName, String userName, String data, int hash) {
-        this.fileName = fileName;
-        this.userName = userName;
-        this.data = data;
-        this.hash = hash;
+        this.timestamp = timestamp;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        FileP2P fileP2P = (FileP2P) o;
-        return hash == fileP2P.hash && Objects.equals(fileName, fileP2P.fileName) && Objects.equals(userName, fileP2P.userName) && Objects.equals(data, fileP2P.data);
+    public FileP2P(FileP2P file){
+        this.fileName = file.getFileName();
+        this.data=file.getData();
+        this.timestamp= file.getTimestamp();
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(fileName, userName, data, hash);
-    }
-
     public String getFileName() {
         return this.fileName;
-    }
-
-    public String getUserName() {
-        return this.userName;
     }
 
     public String getData() {
         return this.data;
     }
 
-    public int getHash() {
-        return this.hash;
+    public Long getTimestamp() {
+        return this.timestamp;
     }
 
     public void setData(String data) {
         this.data = data;
     }
 
+    public void setTimestamp(long timestamp){
+        this.timestamp = timestamp;
+    }
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setHash(int hash) {
-        this.hash = hash;
+    @Override
+    public String toString() {
+        return "FileP2P{" +
+                "fileName='" + fileName + '\'' +
+                ", data='" + data + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }
