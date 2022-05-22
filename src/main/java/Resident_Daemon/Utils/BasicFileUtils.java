@@ -118,7 +118,7 @@ public class BasicFileUtils {
     private static byte[] codeFile(String fileRelPath, byte[] fileContent){
 
         String SfileContent = new String(fileContent, StandardCharsets.UTF_8);
-        StringBuilder stringBuilder = new StringBuilder(fileRelPath + "!" + fileContent);
+        StringBuilder stringBuilder = new StringBuilder(fileRelPath + "!" + SfileContent);
 
         return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
     }
