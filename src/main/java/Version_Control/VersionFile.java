@@ -12,13 +12,16 @@ public class VersionFile {
     String VersionFileData;
     public VersionFile(String VersionFileData){
         this.VersionFileData = VersionFileData;
+        System.out.println("fisierul de versiuni este:");
+        System.out.println(getVersionFileData());
     }
-    public void setVersionFileData(Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> map)
+    public void setVersionFileData(Map<FileP2P,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> map)
     {
         JSONObject files = new JSONObject(VersionFileData);
-        JSONObject fileList = new JSONObject(files.getJSONObject("files"));
-        for(Map.Entry<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> entry : map.entrySet()){
-            JSONObject obj = fileList.optJSONObject(entry.getKey());
+        JSONObject fileList = new JSONObject();
+        fileList = files.getJSONObject("files");
+        for(Map.Entry<FileP2P,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> entry : map.entrySet()){
+            JSONObject obj = fileList.optJSONObject(entry.getKey().getFileName());
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm");
             LocalDateTime time = LocalDateTime.now();
             String timestamp = time.format(dtf);
@@ -36,13 +39,13 @@ public class VersionFile {
             if(obj==null){
                 obj = new JSONObject();
                 obj.put(timestamp,details);
-                fileList.put(entry.getKey(),obj);
+                fileList.put(entry.getKey().getFileName(),obj);
             }
             else
             {
                 obj.put(timestamp,details);
-                fileList.remove(entry.getKey());
-                fileList.put(entry.getKey(),obj);
+                fileList.remove(entry.getKey().getFileName());
+                fileList.put(entry.getKey().getFileName(),obj);
             }
         }
         JSONObject finalForm = new JSONObject();
