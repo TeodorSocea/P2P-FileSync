@@ -29,9 +29,6 @@ public class SendFilesToPeer implements Command {
 
         for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
             byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()));
-            System.out.println("In SendFiles: ");
-            System.out.println(new String(bytesToSend, StandardCharsets.UTF_8));
-            System.out.println("----------------------------------------------");
 
             try {
 

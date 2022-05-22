@@ -65,6 +65,11 @@ public class Version_Control_Component {
         return fisierVersiuni.getVersionFileData();
     }
 
+    public void setFisierVersiuni(String fisierVersiuni) {
+        this.versionFileData = fisierVersiuni;
+        this.fisierVersiuni.setVersionFileData(fisierVersiuni);
+    }
+
     public static void main(String[] args) throws IOException {
         //Merge
         /*System.out.println(fileDifferences("Mama\nare\nmere", "Tata\nare\nmere\nsi\npere").getKey().toString());

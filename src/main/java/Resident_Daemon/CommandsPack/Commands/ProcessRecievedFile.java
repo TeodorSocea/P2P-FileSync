@@ -32,8 +32,6 @@ public class ProcessRecievedFile implements Command {
 
         byte[] dataReceived = networkingComponent.getDataFromDataPipeline(swarmID, peerID);
 
-        System.out.println(new String(dataReceived, StandardCharsets.UTF_8));
-
         Pair<String, String> fileData = BasicFileUtils.GetFileData(dataReceived);
 
         FileP2P fileP2P = new FileP2P(fileData.getKey(), fileData.getValue(), 1000);

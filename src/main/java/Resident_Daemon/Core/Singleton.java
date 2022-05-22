@@ -17,6 +17,7 @@ import java.util.List;
 public class Singleton
 {
     private static final String EXPORT_IMPORT_FOLDER = "data_singleton.txt";
+    public static final String VERSION_FILE_DATA_NAME = "versionfile.version";
 
     private String currentPath;
     private String operatingSystem;
@@ -36,6 +37,7 @@ public class Singleton
         commandExecutor = new CommandExecutor();
 
         this.networkingComponent = new NetworkingComponent(30000);
+
         this.version = new Version_Control_Component();
 
         this.userData = new UserData();

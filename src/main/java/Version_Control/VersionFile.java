@@ -56,5 +56,9 @@ public class VersionFile {
     public String getVersionFileData() {
         return VersionFileData;
     }
+
+    public void setVersionFileData(String versionFileData) {
+        VersionFileData = versionFileData;
+    }
 }
 
