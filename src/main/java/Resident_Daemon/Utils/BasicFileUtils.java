@@ -192,7 +192,7 @@ public class BasicFileUtils {
     }
 
     public static Pair<String, String> GetFileData(byte[] dataReceived){
-        String receivedData = new String(dataReceived);
+        String receivedData = new String(dataReceived, StandardCharsets.UTF_8);
 
         Pair<String, String> fileData = new Pair<>(getFilePath(receivedData), getContent(receivedData));
 

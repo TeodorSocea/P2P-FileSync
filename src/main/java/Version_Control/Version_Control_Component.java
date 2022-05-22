@@ -38,7 +38,7 @@ public class Version_Control_Component {
 //        System.out.println(this.originalFiles.toString());
 //        System.out.println("Fisiere originale dupa modificare: ");
         ModifiedFiles modify = new ModifiedFiles();
-        this.originalFiles = modify.buildModifiedFiles(originalFiles, comparatorul.compare());
+        this.originalFiles = modify.buildModifiedFiles(originalFiles, otherFiles, comparatorul.compare());
 //        System.out.println(this.originalFiles.toString());
 //        System.out.println(fisierVersiuni.getVersionFileData());
     }
@@ -62,7 +62,7 @@ public class Version_Control_Component {
     }
 
     public String getVersionFileData() {
-        return versionFileData;
+        return fisierVersiuni.getVersionFileData();
     }
 
     public static void main(String[] args) throws IOException {

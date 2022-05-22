@@ -39,13 +39,13 @@ public class ReceiveFiles implements Command {
 
 //        vcc.setVersionFileData(vcc.getVersionFileData()); trebuie sa il scriu aici
 
-
         vcc.setOriginalFiles(getLocalFiles());
         vcc.setOtherFiles(userData.getOtherFiles());
 
         try {
 
             vcc.compare();
+            System.out.println(vcc.getVersionFileData());
             List<FileP2P> fileToWrite = vcc.getOriginalFiles();
 
             for(var fileData : fileToWrite){
@@ -56,6 +56,8 @@ public class ReceiveFiles implements Command {
             System.out.println("Eroare la scriere fisier");
             e.printStackTrace();
         }
+
+        userData.setEnableToWriteAllFiles(false);
 
         return true;
     }

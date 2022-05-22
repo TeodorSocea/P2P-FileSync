@@ -31,13 +31,19 @@ public class SignalReceiver implements Runnable {
                 }
                 // Daca a primit
                 for(var pair : networkingComponent.getFulfilledRequests()){
+                    if(!userData.isEnableToWriteAllFiles()){
+                        userData.resetFileLists();
+                    }
                     int swarmID = pair.getKey();
                     int peerID = pair.getValue();
 
                     commandExecutor.ExecuteOperation(new ProcessRecievedFile(swarmID, peerID));
+                    userData.setEnableToWriteAllFiles(true);
                 }
 
-                commandExecutor.ExecuteOperation(new ReceiveFiles());
+                if(userData.isEnableToWriteAllFiles()){
+                    commandExecutor.ExecuteOperation(new ReceiveFiles());
+                }
             }
             try {
                 TimeUnit.SECONDS.sleep(notificationTime);

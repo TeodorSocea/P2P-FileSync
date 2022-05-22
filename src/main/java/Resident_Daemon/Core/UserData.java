@@ -17,6 +17,7 @@ public class UserData {
     private String selfIP;
     private List<FileP2P> localFiles;
     private List<FileP2P> otherFiles;
+    private boolean isEnableToWriteAllFiles;
 
 
     //region Getters & Setters
@@ -77,6 +78,14 @@ public class UserData {
 
     public List<FileP2P> getOtherFiles() {
         return otherFiles;
+    }
+
+    public boolean isEnableToWriteAllFiles() {
+        return isEnableToWriteAllFiles;
+    }
+
+    public void setEnableToWriteAllFiles(boolean enableToWriteAllFiles) {
+        isEnableToWriteAllFiles = enableToWriteAllFiles;
     }
 
     //endregion

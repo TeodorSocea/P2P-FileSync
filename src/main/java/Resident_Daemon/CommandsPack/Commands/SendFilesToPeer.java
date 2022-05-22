@@ -7,6 +7,7 @@ import Resident_Daemon.Utils.BasicFileUtils;
 import Resident_Daemon.Utils.GetTextFiles;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 public class SendFilesToPeer implements Command {
@@ -28,6 +29,9 @@ public class SendFilesToPeer implements Command {
 
         for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
             byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()));
+            System.out.println("In SendFiles: ");
+            System.out.println(new String(bytesToSend, StandardCharsets.UTF_8));
+            System.out.println("----------------------------------------------");
 
             try {
 
