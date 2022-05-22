@@ -8,7 +8,7 @@ import java.io.StringReader;
 import java.util.*;
 
 public class ModifiedFiles {
-    public List<FileP2P> buildModifiedFiles(List<FileP2P> originalFiles, Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> modifications) throws IOException {
+    public List<FileP2P> buildModifiedFiles(List<FileP2P> originalFiles,List<FileP2P> otherFiles, Map<String,Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>>> modifications) throws IOException {
         List<FileP2P> modifiedFiles = new ArrayList<>();
         for(FileP2P file : originalFiles){
             List<String> newModifiedFile = new ArrayList<>();
@@ -67,6 +67,19 @@ public class ModifiedFiles {
             FileP2P newFile = new FileP2P(file);
             newFile.setData(modifiedFileAsString);
             modifiedFiles.add(newFile);
+        }
+        boolean ok;
+        for(FileP2P file : otherFiles){
+            ok=false;
+            for(FileP2P file1 : originalFiles){
+                if (file.getFileName().equals(file1.getFileName())) {
+                    ok = true;
+                    break;
+                }
+            }
+            if(!ok){
+                modifiedFiles.add(file);
+            }
         }
         return modifiedFiles;
     }
