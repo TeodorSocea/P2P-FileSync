@@ -86,7 +86,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.remove(quitButton);
             frame.revalidate();
             frame.repaint();
-            frame.add(backInvitesButton);
+            frame.add(backSwarmButton);
             frame.add(inviteList);
             frame.revalidate();
             frame.repaint();
@@ -263,6 +263,16 @@ public class ConnectScreen extends JFrame implements ActionListener {
             inviteIPS[ii].addActionListener(this);
             gbcInvite.gridx = 1;
         }
+        // --
+        // BACK INVITES BUTTON:
+        backInvitesButton = new JButton();
+        backInvitesButton.setText("BACK");
+        backInvitesButton.setBounds(590, 635, 85, 30);
+        backInvitesButton.setForeground(new Color(0x000000));
+        backInvitesButton.setBackground(new Color(0xB1B6A6));
+        backInvitesButton.setFocusable(false);
+        backInvitesButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+        backInvitesButton.addActionListener(this);
         // --
         // CREATE NEW SWARM BUTTON:
         newSwarmButton = new JButton();
