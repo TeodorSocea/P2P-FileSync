@@ -11,11 +11,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ConnectionHandler implements Runnable{
 
@@ -91,7 +89,21 @@ public class ConnectionHandler implements Runnable{
     public void run() {
         try {
             while(true) {
-                Message incoming = readIncomingMessage();
+                Message incoming = null;
+                try{
+                    incoming = readIncomingMessage();
+                }catch(SocketException e){
+                    for(Map.Entry<Integer, NetworkSwarm> entrySwarm : networkSwarmManager.getSwarms().entrySet()){
+                        Iterator<Map.Entry<Integer, Peer>> iter = entrySwarm.getValue().getPeers().entrySet().iterator();
+                        while(iter.hasNext()){
+                            Map.Entry<Integer, Peer> item = iter.next();
+                            if(item.getValue().getPeerSocket() == selfSocket){
+                                iter.remove();
+                            }
+                        }
+                    }
+                    break;
+                }
                 switch (incoming.getHeader()) {
                     case MessageHeader.INVITE_TO_SWARM -> {
                         InviteMessage invitationMessage = new InviteMessage(incoming.getRawMessage());
