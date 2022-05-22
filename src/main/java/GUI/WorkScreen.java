@@ -1,5 +1,10 @@
 package GUI;
 import GUI.GUI_Component;
+import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.ChooseFolder;
+import Resident_Daemon.CommandsPack.Commands.InviteToSwarm;
+import Resident_Daemon.Core.Singleton;
+
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
@@ -29,6 +34,9 @@ public class WorkScreen extends JFrame implements ActionListener{
     String activeFolderPath=null;
     JTextArea topText = new JTextArea("Members: ");
     List<String> invitedIPs;
+
+    CommandExecutor commandExecutor;
+
     // --
     // Button functions:
     public void actionPerformed(ActionEvent e) {
@@ -39,8 +47,9 @@ public class WorkScreen extends JFrame implements ActionListener{
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             chooser.setAcceptAllFileFilterUsed(false);
             if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-                activeFolderPath=chooser.getCurrentDirectory().getAbsolutePath();
-                System.out.println(activeFolderPath);
+                activeFolderPath=chooser.getSelectedFile().getAbsolutePath();
+                commandExecutor.ExecuteOperation(new ChooseFolder(activeFolderPath));
+                System.out.println(Singleton.getSingletonObject().getFolderToSyncPath());
             }
             else{
                 //aici apare un pop-up cu No Selection.
@@ -83,7 +92,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         this.frame = frame;
 
         // Declaration for use of Commands, keep commented for now:
-        // CommandExecutor commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
+         commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
         // If you need to use a command from the Resident Daemon team, you must do the following steps:
         // 1. Declare the command of your choice like:
         // Command nameofyourchoice = new NameOfCommand();
@@ -104,6 +113,8 @@ public class WorkScreen extends JFrame implements ActionListener{
         changeSyncFolderButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
         changeSyncFolderButton.addActionListener(this);
         changeSyncFolderButton.setAlignmentX(-1);
+
+
         // --
         // Invite To Swarm:
         inviteToSwarm = new JButton("Invite2Swarm");

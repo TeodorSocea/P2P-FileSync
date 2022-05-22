@@ -1,5 +1,8 @@
 package GUI;
 import GUI.GUI_Component;
+import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.CreateSwarm;
+import Resident_Daemon.Core.Singleton;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,6 +39,8 @@ public class ConnectScreen extends JFrame implements ActionListener {
     JButton quitButton;
     JButton tempTransitionButton;
     JLabel helpContents;
+
+    CommandExecutor commandExecutor;
 
     @Override
     public void actionPerformed(ActionEvent e){
@@ -117,6 +122,9 @@ public class ConnectScreen extends JFrame implements ActionListener {
         // MEW SWARM BUTTON PRESS:
         if (e.getSource() == newSwarmButton){
             System.out.println("// CREATE NEW SWARM BUTTON PRESSED");
+            commandExecutor.ExecuteOperation(new CreateSwarm());
+
+
         }
         // --
         // HELP PRESS:
@@ -175,6 +183,8 @@ public class ConnectScreen extends JFrame implements ActionListener {
     }
 
     public ConnectScreen(GUI_Component frame) {
+        //Chestii
+        commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
         this.frame = frame;
         // TEMP TRANSITION BUTTON:
         tempTransitionButton = new JButton();
