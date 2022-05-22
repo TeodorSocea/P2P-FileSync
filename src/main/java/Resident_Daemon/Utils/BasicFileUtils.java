@@ -154,7 +154,13 @@ public class BasicFileUtils {
         String receivedData = new String(dataReceived);
 
         String receivedPath = getFilePath(receivedData);
+        System.out.println("Fisier: " + receivedPath);
+
         Path filePath = Paths.get(folderPath, receivedPath);
+
+        if(filePath.toString().contains("\\")){
+            filePath.getParent().toFile().mkdirs();
+        }
 
         String whatToWrite = getContent(receivedData);
 
@@ -163,7 +169,6 @@ public class BasicFileUtils {
         } catch (IOException e) {
             throw e;
         }
-
 
     }
 

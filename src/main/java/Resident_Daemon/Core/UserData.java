@@ -11,6 +11,7 @@ public class UserData {
     private List<String> nearbyIPs;
     private Map<Integer, NetworkSwarm> mySwarms;
     private boolean isConnected = false;
+    private String selfIP;
 
 
     //region Getters & Setters
@@ -46,6 +47,14 @@ public class UserData {
     public void setConnected(boolean connected, Map<Integer, NetworkSwarm> mySwarms) {
         isConnected = connected;
         this.mySwarms = mySwarms;
+    }
+
+    public String getSelfIP() {
+        return selfIP;
+    }
+
+    public void setSelfIP(String selfIP) {
+        this.selfIP = selfIP;
     }
 
     //endregion

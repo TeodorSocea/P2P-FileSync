@@ -21,7 +21,6 @@ public class ReceiveFiles implements Command {
 
     @Override
     public boolean execute() {
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
         byte[] dataReceived = networkingComponent.getDataFromDataPipeline(swarmID, peerID);
