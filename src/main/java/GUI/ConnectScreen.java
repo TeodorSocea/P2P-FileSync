@@ -22,14 +22,14 @@ public class ConnectScreen extends JFrame implements ActionListener {
     JPanel swarmList;
     JButton[] swarmElements;
     JButton viewInvitesButton;
-    JPanel invitationList;
-    JButton[] invitationElements;
+    JPanel inviteList;
     JButton newSwarmButton;
     JButton helpButton;
     JButton quitButton;
     JButton backButton;
     JButton tempTransitionButton;
     JLabel helpContents;
+
 
     @Override
     public void actionPerformed(ActionEvent e){
@@ -59,7 +59,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.revalidate();
             frame.repaint();
             frame.add(backButton);
-            frame.add(invitationList);
+            frame.add(inviteList);
             frame.revalidate();
             frame.repaint();
         }
@@ -74,7 +74,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
             frame.revalidate();
             frame.repaint();
             frame.add(backButton);
-            frame.add(invitationList);
+            frame.add(inviteList);
             frame.revalidate();
             frame.repaint();
         }
@@ -98,7 +98,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
             System.out.println("// BACK HELP BUTTON PRESSED");
             frame.remove(helpContents);
             frame.remove(backButton);
-            frame.remove(invitationList);
+            frame.remove(inviteList);
             frame.remove(swarmList);
             frame.revalidate();
             frame.repaint();
@@ -153,7 +153,6 @@ public class ConnectScreen extends JFrame implements ActionListener {
         printSwarmsButton.addActionListener(this);
         // --
         // SWARM LIST:
-        // INVITE LIST:
         swarmList = new JPanel();
         swarmList.setLocation(530, 300);
         swarmList.setSize(200, 350);
@@ -181,21 +180,10 @@ public class ConnectScreen extends JFrame implements ActionListener {
         viewInvitesButton.addActionListener(this);
         // --
         // INVITE LIST:
-        invitationList = new JPanel();
-        invitationList.setLocation(530, 300);
-        invitationList.setSize(200, 350);
-        invitationList.setBackground(new Color(0x363946));
-        invitationElements = new JButton[10];
-        for (int i = 0; i <= 5; i ++){
-            invitationElements[i] = new JButton();
-            invitationElements[i].setBounds(10, 5 * (11*i + 19), 200, 30);
-            invitationElements[i].setForeground(new Color(0x000000));
-            invitationElements[i].setBackground(new Color(0xB1B6A6));
-            invitationElements[i].setFocusable(false);
-            invitationElements[i].setFont(new Font("Radio Canada", Font.BOLD, 15));
-            invitationElements[i].setText("Invite " + (i + 1));
-            invitationList.add(invitationElements[i]);
-        }
+        inviteList = new JPanel();
+        inviteList.setBackground(new Color(0xB1B6A6));
+        JScrollPane inviteScroll = new JScrollPane(inviteList, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
         // --
         // CREATE NEW SWARM BUTTON:
         newSwarmButton = new JButton();
