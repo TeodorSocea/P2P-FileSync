@@ -11,10 +11,11 @@ public class CreateSwarm extends ExceptionModule implements Command {
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        networkingComponent.createNewSwarm();
+        int SwarmId = networkingComponent.createNewSwarm();
 
         Singleton.getSingletonObject().getUserData().setConnected(true, networkingComponent.getSwarms());
 
+        Singleton.getSingletonObject().getUserData().setLastCreatedSwarm(SwarmId);
         return true;
     }
 }

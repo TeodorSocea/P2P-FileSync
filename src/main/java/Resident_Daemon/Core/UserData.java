@@ -18,6 +18,7 @@ public class UserData {
     private List<FileP2P> localFiles;
     private List<FileP2P> otherFiles;
     private boolean isEnableToWriteAllFiles;
+    private int lastCreatedSwarm;
 
 
     //region Getters & Setters
@@ -88,5 +89,12 @@ public class UserData {
         isEnableToWriteAllFiles = enableToWriteAllFiles;
     }
 
-    //endregion
+    public int getLastCreatedSwarm() {
+        return lastCreatedSwarm;
+    }
+
+    public void setLastCreatedSwarm(int lastCreatedSwarm) {
+        this.lastCreatedSwarm = lastCreatedSwarm;
+    }
+//endregion
 }
