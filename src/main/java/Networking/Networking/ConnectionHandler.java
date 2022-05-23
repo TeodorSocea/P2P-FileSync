@@ -80,7 +80,7 @@ public class ConnectionHandler implements Runnable{
     private void sendSwarmData(int swarmID, int senderID) throws IOException {
         NetworkSwarm swarm = networkSwarmManager.getSwarms().get(swarmID);
         for(Map.Entry<Integer, Peer> entry : swarm.getPeers().entrySet()){
-            SwarmDataMessage swarmDataMessage = new SwarmDataMessage(MessageHeader.SWARM_DATA, senderID, entry.getValue());
+            SwarmDataMessage swarmDataMessage = new SwarmDataMessage(MessageHeader.SWARM_DATA, senderID, swarmID, entry.getValue());
             selfSocket.getOutputStream().write(swarmDataMessage.toPacket());
         }
     }
@@ -126,7 +126,7 @@ public class ConnectionHandler implements Runnable{
                         Socket newSocket = isInCommonSocketPool(ip);
 
                         if (newSocket == null) {
-                            newSocket = new Socket(ip, selfSocket.getPort());
+                            newSocket = new Socket(ip, 30000);
 
                             commonSocketPool.add(newSocket);
 
