@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Triple;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -212,10 +213,12 @@ public class NetworkingComponent {
     }
 
     public String getSelfIp() throws UnknownHostException {
-       return InetAddress.getLocalHost().getHostAddress();
-       //need changes on linux doesn't work return 127.0.0.1
-       //it may be because of file in /etc/hosts
-       //I will do an iteration over all network interfaces and return a good one
+        try {
+            return LanIP.getLanIP();
+        } catch (SocketException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void requestDataFromSwarm(int swarmID, int peerID, String path) throws IOException {
