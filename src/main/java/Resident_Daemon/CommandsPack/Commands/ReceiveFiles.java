@@ -56,7 +56,7 @@ public class ReceiveFiles implements Command {
 
         byte[] versionFileBytes = BasicFileUtils.file2bytes(versionFile);
 
-        if(versionFile != null){
+        if(versionFileBytes != null){
             String versionFileData = new String(versionFileBytes, StandardCharsets.UTF_8);
             vcc.setFisierVersiuni(versionFileData);
         }
