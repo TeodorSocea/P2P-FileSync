@@ -6,6 +6,7 @@ import Resident_Daemon.CommandsPack.CommandExecutor;
 
 public class Singleton
 {
+    // abcd
     private String currentPath;
     private String operatingSystem;
     private String folderToSyncPath;
