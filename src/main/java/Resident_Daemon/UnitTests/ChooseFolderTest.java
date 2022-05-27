@@ -51,7 +51,7 @@ public class ChooseFolderTest {
 //        Check if there is no problem
         assertEquals(exception, null);
 
-        String path = Singleton.getSingletonObject().getFolderToSyncPath();
+        String path = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         assertEquals(path, validFolderPath);
     }
