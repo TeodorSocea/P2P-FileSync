@@ -24,9 +24,13 @@ public class WorkScreen extends JFrame implements ActionListener{
     JButton disconnectButton;
     JButton quitButton;
     JPanel ipTab;
+    JLabel swarmInfo;
+    JLabel yourIp;
     JButton changeSyncFolderButton;
     JButton inviteToSwarm;
     JButton[] ipList;
+    JPanel filesTab;
+    JButton[] filesList;
     String activeFolderPath=null;
     int currentSwarmId;
     String selectedIP;
@@ -70,10 +74,21 @@ public class WorkScreen extends JFrame implements ActionListener{
             }
         }
 
+        if (filesList != null) {
+            for (int i = 0; i < filesList.length; i++) {
+                if (e.getSource() == filesList[i]) {
+                    selectedIP = ipList[i].getText();
+                    System.out.println("// FILE INFO BUTTON PRESSED: " + filesList[i].getText());
+                    frame.revalidate();
+                    frame.repaint();
+                }
+            }
+        }
+
         if (e.getSource() == syncButton) {
             System.out.print(selectedIP);
             // commandExecutor.ExecuteOperation(new SyncSwarm(currentSwarmId, selectedIP));
-            syncButton.setText("Synced");
+            syncButton.setText("Synced. Select IP...");
             frame.revalidate();
             frame.repaint();
         }
@@ -85,6 +100,8 @@ public class WorkScreen extends JFrame implements ActionListener{
             frame.remove(inviteToSwarm);
             frame.remove(changeSyncFolderButton);
             frame.remove(ipTab);
+            frame.remove(yourIp);
+            frame.remove(swarmInfo);
             frame.revalidate();
             frame.repaint();
             connectScreen = new ConnectScreen(frame);
@@ -103,7 +120,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         ipTab.add(new JScrollPane(p, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
         GridBagConstraints gbc = new GridBagConstraints();
         ipTab.setLayout(new BoxLayout(ipTab, BoxLayout.PAGE_AXIS));
-        ipTab.setBounds(770,118,200,425);
+        ipTab.setBounds(770,118,160,425);
         ipTab.setMaximumSize(new Dimension(100, 200));
         p.setFont(new Font("Radio Canada", Font.ITALIC, 25));
         p.setForeground(new Color(0x000000));
@@ -127,14 +144,60 @@ public class WorkScreen extends JFrame implements ActionListener{
         frame.add(ipTab);
     }
 
+    // File list function:
+    public void fileListGenerator() {
+        filesTab = new JPanel();
+        JPanel m = new JPanel(new GridBagLayout());
+        filesTab.add(new JScrollPane(m, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
+        GridBagConstraints gbcc = new GridBagConstraints();
+        filesTab.setLayout(new BoxLayout(filesTab, BoxLayout.PAGE_AXIS));
+        filesTab.setBounds(350,118,160,425);
+        filesTab.setMaximumSize(new Dimension(100, 200));
+        m.setFont(new Font("Radio Canada", Font.ITALIC, 25));
+        m.setForeground(new Color(0x000000));
+        m.setBackground(new Color(0xB1B6A6));
+        filesTab.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
+        filesTab.setAutoscrolls(true);
+        filesList = new JButton[10];
+        gbcc.insets = new Insets(5,5,5,180);
+        // int ji = 0;
+        for (int ji = 0; ji < 10; ji++) {
+            // for (var swarmEntry : userData.getMySwarms().entrySet()) {
+            // NetworkSwarm temp = swarmEntry.getValue();
+            gbcc.gridy = ji;
+            gbcc.gridx = 0;
+            filesList[ji] = new JButton("file " + ji + ".smth");
+            m.add(filesList[ji], gbcc);
+            filesList[ji].addActionListener(this);
+            gbcc.gridx = 1;
+            ji++;
+        }
+        frame.add(filesTab);
+    }
+
     public WorkScreen(GUI_Component frame, int readSwarmId){
         this.frame = frame;
         currentSwarmId = readSwarmId;
         commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
 
+        // Current IP:
+        yourIp = new JLabel();
+        yourIp.setText("Your Ip: 999.999.999.999");
+        yourIp.setForeground(new Color(0xB1B6A6));
+        yourIp.setFont(new Font("Radio Canada", Font.BOLD, 16));
+        yourIp.setBounds(550, 200, 200, 30);
+
+        // Current Swarm:
+        swarmInfo = new JLabel();
+        swarmInfo.setText("Swarm ID: " + currentSwarmId);
+        swarmInfo.setForeground(new Color(0xB1B6A6));
+        swarmInfo.setFont(new Font("Radio Canada", Font.BOLD, 16));
+        swarmInfo.setBounds(585, 230, 200, 30);
+
+        // Change Sync Folder:
         changeSyncFolderButton = new JButton();
         changeSyncFolderButton.setText("Change Sync Folder");
-        changeSyncFolderButton.setBounds(30,590,200,30);
+        changeSyncFolderButton.setBounds(530,330,220,30);
         changeSyncFolderButton.setForeground(new Color(0x000000));
         changeSyncFolderButton.setBackground(new Color(0xB1B6A6));
         changeSyncFolderButton.setFocusable(false);
@@ -143,8 +206,8 @@ public class WorkScreen extends JFrame implements ActionListener{
         changeSyncFolderButton.setAlignmentX(-1);
 
         // Invite To Swarm:
-        inviteToSwarm = new JButton("Invite2Swarm");
-        inviteToSwarm.setBounds(30,490,200,30);
+        inviteToSwarm = new JButton("Invite to Swarm");
+        inviteToSwarm.setBounds(530,370,220,30);
         inviteToSwarm.setForeground(new Color(0x000000));
         inviteToSwarm.setBackground(new Color(0xB1B6A6));
         inviteToSwarm.setFocusable(false);
@@ -155,7 +218,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         // Sync Button:
         syncButton = new JButton();
         syncButton.setText("Select IP to Sync");
-        syncButton.setBounds(770, 543, 200, 30);
+        syncButton.setBounds(530, 290, 220, 30);
         syncButton.setForeground(new Color(0x000000));
         syncButton.setBackground(new Color(0xB1B6A6));
         syncButton.setFocusable(false);
@@ -165,7 +228,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         // Logout Button:
         disconnectButton = new JButton();
         disconnectButton.setText("Logout");
-        disconnectButton.setBounds(420, 450, 125, 30);
+        disconnectButton.setBounds(530, 410, 100, 30);
         disconnectButton.setForeground(new Color(0x000000));
         disconnectButton.setBackground(new Color(0xB1B6A6));
         disconnectButton.setFocusable(false);
@@ -175,7 +238,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         // Quit Button:
         quitButton = new JButton();
         quitButton.setText("Quit");
-        quitButton.setBounds(595, 450, 125, 30);
+        quitButton.setBounds(650, 410, 100, 30);
         quitButton.setForeground(new Color(0x000000));
         quitButton.setBackground(new Color(0xB1B6A6));
         quitButton.setFocusable(false);
@@ -188,7 +251,10 @@ public class WorkScreen extends JFrame implements ActionListener{
         frame.add(syncButton);
         frame.add(disconnectButton);
         frame.add(quitButton);
+        frame.add(yourIp);
+        frame.add(swarmInfo);
         ipGenerator();
+        fileListGenerator();
 
         // --
         frame.revalidate();
