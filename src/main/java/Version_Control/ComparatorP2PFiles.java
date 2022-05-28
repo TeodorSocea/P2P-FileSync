@@ -89,7 +89,7 @@ public class ComparatorP2PFiles {
             List<Pair<Integer, String>> tempRemoved = new ArrayList<>();
             List<FileP2P> toBeSorted = new ArrayList<>();
             Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> diferente = null;
-            if (!otherFiles.isEmpty() && otherFiles.stream().anyMatch(e -> e.getFileName()!=null && e.getFileName().equals(i.getFileName()))) {
+            if (!otherFiles.isEmpty() && otherFiles.stream().anyMatch(e -> e.getFileName() != null && e.getFileName().equals(i.getFileName()))) {
                 for (FileP2P j : otherFiles) {
                     if (j.getFileName().equals(i.getFileName())) {
                         toBeSorted.add(j);
@@ -104,27 +104,26 @@ public class ComparatorP2PFiles {
                         return 0;
                 }).collect(Collectors.toList());
                 diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size() - 1));
-            }
-            else {
-                diferente = fileDifferences(i, new FileP2P(i.getFileName(), "", System.currentTimeMillis()/1000L));
-            }
-            diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
-            diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
+                diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
+                diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
 
-            tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
-                @Override
-                public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
-                    return o1.getKey().compareTo(o2.getKey());
-                }
-            });
-            tempRemoved.sort(new java.util.Comparator<Pair<Integer, String>>() {
-                @Override
-                public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
-                    return o1.getKey().compareTo(o2.getKey());
-                }
-            });
-            temp = new Pair<>(tempAdded, tempRemoved);
-            mapNumeAddedRemoved.put(i.getFileName(), temp);
+                tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
+                    @Override
+                    public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
+                        return o1.getKey().compareTo(o2.getKey());
+                    }
+                });
+                tempRemoved.sort(new java.util.Comparator<Pair<Integer, String>>() {
+                    @Override
+                    public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
+                        return o1.getKey().compareTo(o2.getKey());
+                    }
+                });
+                temp = new Pair<>(tempAdded, tempRemoved);
+                mapNumeAddedRemoved.put(i.getFileName(), temp);
+            } else {
+                //diferente = fileDifferences(i, new FileP2P(i.getFileName(), "", System.currentTimeMillis() / 1000L));
+            }
         }
         return mapNumeAddedRemoved;
     }
@@ -141,6 +140,12 @@ public class ComparatorP2PFiles {
         a.setTimestamp(1555);
         prima.add(a);
 
+        FileP2P a1 = new FileP2P();
+        //a1.setData("Mama\nare\nmere");
+        //a1.setFileName("primul");
+        //a1.setTimestamp(1555);
+        prima.add(a1);
+
         FileP2P b = new FileP2P();
         b.setData("Mama\nare\nmere\nsi\npere");
         b.setFileName("primul");
@@ -153,9 +158,9 @@ public class ComparatorP2PFiles {
 
         FileP2P d = new FileP2P();
 
-        aDoua.add(d);
-        //aDoua.add(b);
-        //aDoua.add(c);
+        //aDoua.add(d);
+        aDoua.add(b);
+        aDoua.add(c);
 
         ComparatorP2PFiles ceva = new ComparatorP2PFiles(prima, aDoua);
         System.out.println(ceva.compare().toString());
