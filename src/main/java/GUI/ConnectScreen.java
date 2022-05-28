@@ -64,7 +64,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
         if (swarmIPS != null) {
             for (int i = 0; i < swarmIPS.length; i++) {
                 if (e.getSource() == swarmIPS[i]) {
-                    joinSwarmSend = swarmIPS[i].toString();
+                    joinSwarmSend = swarmIPS[i].getText();
                     System.out.println("// SWARM IP PRESSED: " + swarmIPS[i].getText());
                     frame.remove(joinButton);
                     frame.revalidate();
@@ -77,8 +77,13 @@ public class ConnectScreen extends JFrame implements ActionListener {
         // SWARMS - JOIN ACTION:
         if (e.getSource() == joinButton) {
             System.out.print(joinSwarmSend);
-            int swarm = Integer.parseInt(joinSwarmSend);
+            int swarm = Integer.parseInt(joinSwarmSend.replaceAll("[^0-9]", ""));
             workScreen = new WorkScreen(frame, swarm);
+            frame.remove(joinButton);
+            frame.remove(title);
+            frame.remove(swarmList);
+            frame.remove(backSwarmButton);
+            frame.repaint();
         }
 
         // SWARMS - BACK ACTION:
@@ -247,7 +252,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
             int ij = 0;
 
             for (var swarmEntry : userData.getMySwarms().entrySet()) {
-                NetworkSwarm temp = swarmEntry.getValue();
+                int temp = swarmEntry.getValue().getSwarmID();
                 gbcSwarm.gridy = ij;
                 gbcSwarm.gridx = 0;
                 swarmIPS[ij] = new JButton("Swarm " + temp);
@@ -424,6 +429,7 @@ public class ConnectScreen extends JFrame implements ActionListener {
         nullContents.setForeground(new Color(0xB1B6A6));
         nullContents.setFont(new Font("Radio Canada", Font.BOLD, 16));
         nullContents.setBounds(480, 560, 100, 30);
+        nullContents.setVisible(true);
 
         // Invitation response buttons:
         acceptButton = new JButton();
