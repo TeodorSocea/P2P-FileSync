@@ -22,10 +22,9 @@ class ChooseFileToSyncTest {
 
         ChooseFileToSync command = new ChooseFileToSync();
         commandExecutor.ExecuteOperation(command);
-
         Exception exception = command.getException();
         assertInstanceOf(NoFolderIsSelected.class, exception);
-//        assertTrue(exception instanceof NoFolderIsSelected);
+    //    assertTrue(exception instanceof NoFolderIsSelected);
     }
 
     @Test
