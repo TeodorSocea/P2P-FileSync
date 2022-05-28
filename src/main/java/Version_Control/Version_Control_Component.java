@@ -11,8 +11,11 @@ import java.util.Map;
 public class Version_Control_Component {
     private List<FileP2P> originalFiles;
     private List<FileP2P> otherFiles;
+    private List<Pair<String,Long>> localMasterFile;
+    private List<Pair<String,Long>> otherMasterFile;
     private String versionFileData;
     ComparatorP2PFiles comparatorul;
+    ComparatorMasterFile comparatorulMasterFile;
     VersionFile fisierVersiuni;
 
     public Version_Control_Component(){
@@ -42,7 +45,10 @@ public class Version_Control_Component {
 //        System.out.println(this.originalFiles.toString());
 //        System.out.println(fisierVersiuni.getVersionFileData());
     }
-
+    public void compareMasterFile(){
+        comparatorulMasterFile = new ComparatorMasterFile(localMasterFile, otherMasterFile);
+        this.localMasterFile = comparatorulMasterFile.listaFinala();
+    }
     public void setVersionFileData(String versionFileData) {
         this.versionFileData = versionFileData;
     }
@@ -70,6 +76,22 @@ public class Version_Control_Component {
         this.fisierVersiuni.setVersionFileData(fisierVersiuni);
     }
 
+    public List<Pair<String, Long>> getLocalMasterFile() {
+        return localMasterFile;
+    }
+
+    public void setLocalMasterFile(List<Pair<String, Long>> localMasterFile) {
+        this.localMasterFile = localMasterFile;
+    }
+
+    public List<Pair<String, Long>> getOtherMasterFile() {
+        return otherMasterFile;
+    }
+
+    public void setOtherMasterFile(List<Pair<String, Long>> otherMasterFile) {
+        this.otherMasterFile = otherMasterFile;
+    }
+
     public static void main(String[] args) throws IOException {
         //Merge
         /*System.out.println(fileDifferences("Mama\nare\nmere", "Tata\nare\nmere\nsi\npere").getKey().toString());
@@ -79,34 +101,29 @@ public class Version_Control_Component {
                 {"files":{"primul":{"2022/05/15 16:01":{"added_content":{"0":"Tata","3":"si","4":"pere"},"deleted_content":{"0":"Mama"}}}}}""");*/ //constructor version file data
         Version_Control_Component version = new Version_Control_Component();
 
-        List<FileP2P> prima = new ArrayList<>();
-        List<FileP2P> aDoua = new ArrayList<>();
-        FileP2P a = new FileP2P();
-        a.setData("Mama\nare\nmere");
-        a.setFileName("primul");
-        a.setTimestamp(1555);
-        prima.add(a);
+        List<Pair<String, Long>> primaLista = new ArrayList<>();
 
-        FileP2P b = new FileP2P();
-        b.setData("Mama\nare\nmere\nsi\npere");
-        b.setFileName("primul");
-        b.setTimestamp(1666);
+        Pair<String, Long> b = new Pair<String, Long>("alDoilea", 6L);
+        Pair<String, Long> c = new Pair<String, Long>("alTreilea", 7L);
+        Pair<String, Long> d = new Pair<String, Long>("alPatrulea", 8L);
+        //primaLista.add(a);
+        primaLista.add(b);
+        primaLista.add(c);
+        primaLista.add(d);
 
-        FileP2P c = new FileP2P();
-        c.setData("Tata\nare\nmere\nsi\npere");
-        c.setFileName("primul");
-        c.setTimestamp(1777);
-
-        aDoua.add(b);
-        aDoua.add(c);
-        version.setOriginalFiles(prima);
-        version.setOtherFiles(aDoua);
-      //  version.setOriginalFiles(temp2);
-      //  version.setOtherFiles(temp1);
-        version.compare();
-
-        version.getOriginalFiles();
-
+        List<Pair<String, Long>> aDouaLista = new ArrayList<>();
+        Pair<String, Long> g = new Pair<String, Long>("primul", 7L);
+        Pair<String, Long> j = new Pair<String, Long>("alPatrulea", 6L);
+        Pair<String, Long> k = new Pair<String, Long>("alPatrulea", 7L);
+        Pair<String, Long> l = new Pair<String, Long>("alCincilea", 8L);
+        aDouaLista.add(g);
+        aDouaLista.add(j);
+        aDouaLista.add(k);
+        aDouaLista.add(l);
+        version.setLocalMasterFile(primaLista);
+        version.setOtherMasterFile(aDouaLista);
+        version.compareMasterFile();
+        System.out.println(version.getLocalMasterFile());
         //scriere
     }
 }
