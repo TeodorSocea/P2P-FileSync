@@ -2,9 +2,11 @@ package Resident_Daemon.Core;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.MenuPack.ConsoleMenu;
+import Resident_Daemon.Utils.GetTextFiles;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -45,26 +47,23 @@ public class Main {
 
     public static void testSaveRecordToMasterFile() {
 
+        Singleton.getSingletonObject().setFolderToSyncPath("C:\\Users\\tnae\\Desktop\\Fac");
+        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+
         List<SyncRecord> records = new LinkedList<>();
-        records.add(new SyncRecord("a", true));
-        records.add(new SyncRecord("b", true));
-        records.add(new SyncRecord("c", true));
-        int varA = 0;
-        for (int i = 0; i < 1000000; i++) {
-//            System.out.println("here");
-            varA += 1;
+
+        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
+            records.add(new SyncRecord (file.getKey().toString(), true));
         }
-        records.add(new SyncRecord("d", true));
-        records.add(new SyncRecord("e", true));
-        records.add(new SyncRecord("f", true));
+
         Singleton.saveRecordsToMasterFile(records);
 
 //        Am implementat metoda saveRecordsToMasterFile si metoda getSyncRecordWithPath ce vor fi de folos pentru sincronizarea corecta a fisierelor
 
-        try {
-            System.out.println(Singleton.getSyncRecordWithPath("a"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        var syncRecordList = Singleton.getRecordsFromMasterFile();
+        for(var c : syncRecordList){
+            System.out.println("fileRelPath: " + c.getFileRelPath());
+            System.out.println("timestamp: " + c.getLastModifiedTimeStamp());
         }
 
 //        for (Object obj: objs)
@@ -77,7 +76,7 @@ public class Main {
     public static void main(String[] args) {
 
 //        testSerialization();
-//        testSaveRecordToMasterFile();
+        testSaveRecordToMasterFile();
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;

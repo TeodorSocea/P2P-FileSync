@@ -1,6 +1,7 @@
 package Resident_Daemon.Utils;
 
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Core.SyncRecord;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.nio.file.*;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -123,10 +125,10 @@ public class BasicFileUtils {
 
     }
 
-    private static byte[] codeFile(String fileRelPath, byte[] fileContent){
+    private static byte[] codeFile(String fileRelPath, long timestamp, byte[] fileContent){
 
         String SfileContent = new String(fileContent, StandardCharsets.UTF_8);
-        StringBuilder stringBuilder = new StringBuilder(fileRelPath + "!" + SfileContent);
+        StringBuilder stringBuilder = new StringBuilder(fileRelPath + "!" + timestamp + "!" + SfileContent);
 
         return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
     }
@@ -134,6 +136,22 @@ public class BasicFileUtils {
 
 
 /////////////
+
+    private static long GetTimeStamp(Path file) {
+        long timestamp;
+
+        try {
+            BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
+            timestamp = attrs.lastModifiedTime().toMillis();
+
+            //            System.out.println(attrs.lastModifiedTime().toString());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return timestamp;
+    }
 
     public static byte[] GetBytesToSend(String fileRelPath){
 
@@ -144,12 +162,15 @@ public class BasicFileUtils {
         if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
         byte[] fileContent = file2bytes(filePath);
 
-        return codeFile(fileRelPath, fileContent);
+        return codeFile(fileRelPath, GetTimeStamp(filePath), fileContent);
 
     }
 
     private static String getFilePath(String data){
         return data.substring(0, data.indexOf("!"));
+    }
+    private static String getTimeStamp(String data){
+        return data.substring(data.indexOf("!"), data.indexOf("!") + 1);
     }
     private static String getContent(String data){
         return data.substring(data.indexOf("!") + 1);
@@ -198,10 +219,14 @@ public class BasicFileUtils {
 
     }
 
-    public static Pair<String, String> GetFileData(byte[] dataReceived){
+    public static FileData GetFileData(byte[] dataReceived){
         String receivedData = new String(dataReceived, StandardCharsets.UTF_8);
 
-        Pair<String, String> fileData = new Pair<>(getFilePath(receivedData), getContent(receivedData));
+        String fileRelPath = getFilePath(receivedData);
+        long timeStamp = Long.parseLong(getTimeStamp(receivedData));
+        String fileContent = getContent(receivedData);
+
+        FileData fileData = new FileData(fileRelPath, timeStamp, fileContent);
 
         return fileData;
 
@@ -236,6 +261,46 @@ public class BasicFileUtils {
 
         ois.close();
         return objs;
+    }
+
+    public static List<SyncRecord> readMasterFile_FromString(String fileData) {
+        try {
+            byte[] fileData_bytes = fileData.getBytes(StandardCharsets.UTF_8);
+            ByteArrayInputStream bis = new ByteArrayInputStream(fileData_bytes);
+            ObjectInputStream ois = null;
+
+            ois = new ObjectInputStream(bis);
+
+            List<SyncRecord> syncRecordList = new ArrayList<>();
+
+            int numOfRecords = ois.readInt();
+
+            for (int i = 0; i < numOfRecords; i++)
+                syncRecordList.add((SyncRecord) ois.readObject());
+
+            return syncRecordList;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    public static String GetMasterFilePath(){
+        String relMFPath = Singleton.filePathMasterSyncFile;
+        String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
+
+        String absoluteMFPath = Paths.get(absoluteFolderPath, relMFPath).toString();
+
+        return absoluteMFPath;
+    }
+
+    public static String GetAbsolutePath_FromRelative(String relPath){
+
+        String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
+        return Paths.get(absoluteFolderPath, relPath).toString();
     }
 
 }

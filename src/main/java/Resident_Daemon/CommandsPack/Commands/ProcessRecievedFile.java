@@ -3,8 +3,10 @@ package Resident_Daemon.CommandsPack.Commands;
 import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Core.SyncRecord;
 import Resident_Daemon.Core.UserData;
 import Resident_Daemon.Utils.BasicFileUtils;
+import Resident_Daemon.Utils.FileData;
 import Resident_Daemon.Utils.GetTextFiles;
 import Version_Control.FileP2P;
 import javafx.util.Pair;
@@ -32,11 +34,23 @@ public class ProcessRecievedFile implements Command {
 
         byte[] dataReceived = networkingComponent.getDataFromDataPipeline(swarmID, peerID);
 
-        Pair<String, String> fileData = BasicFileUtils.GetFileData(dataReceived);
+        FileData fileData = BasicFileUtils.GetFileData(dataReceived);
 
-        FileP2P fileP2P = new FileP2P(fileData.getKey(), fileData.getValue(), 1000);
+        if(fileData.getFileRelPath().contains(Singleton.filePathMasterSyncFile)) {
+            userData.setReceivedMasterFile(true);
+            List<SyncRecord> syncRecordList = BasicFileUtils.readMasterFile_FromString(fileData.getFileContent());
+            for(SyncRecord syncRecord : syncRecordList){
+                userData.getOtherMasterFile().add(syncRecord);
+            }
+        } else {
 
-        userData.addToOtherFilesList(fileP2P);
+            FileP2P fileP2P = new FileP2P(fileData.getFileRelPath(), fileData.getFileContent(), fileData.getTimeStamp());
+
+            userData.addToOtherFilesList(fileP2P);
+        }
+
+
+
 
         return true;
     }

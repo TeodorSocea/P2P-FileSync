@@ -17,10 +17,8 @@ public class AuxSyncSwarm implements AuxiliarCommand {
             System.out.println("SwarmID: ");
             int swarmID = Integer.parseInt(Input.nextLine());
 
-            System.out.println("PeerID: ");
-            int peerID = Integer.parseInt(Input.nextLine());
 
-            return new SyncSwarm(swarmID, peerID);
+            return new SyncSwarm(swarmID);
 
         } catch (Exception e){
             e.printStackTrace();

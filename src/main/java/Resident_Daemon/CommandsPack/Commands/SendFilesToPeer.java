@@ -9,6 +9,8 @@ import Resident_Daemon.Utils.GetTextFiles;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 public class SendFilesToPeer implements Command {
 
@@ -22,22 +24,50 @@ public class SendFilesToPeer implements Command {
         this.path = path;
     }
 
+    private void SendData(byte[] bytesToSend){
+
+        NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
+        try {
+
+            networkingComponent.sentDataToPeer(bytesToSend, swarmID, peerID);
+
+        } catch (IOException e) {
+            System.out.println("Eroare la trimitere fisier");
+            e.printStackTrace();
+        }
+    }
+
+    private final String ALL_FILES = ".";
+    private final String MASTER_FILE = Singleton.filePathMasterSyncFile;
+
+
     @Override
     public boolean execute() {
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-        NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
-            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()));
 
-            try {
+        if(path.equals(ALL_FILES)){
 
-                networkingComponent.sentDataToPeer(bytesToSend, swarmID, peerID);
+            for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
+                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()));
 
-            } catch (IOException e) {
-                System.out.println("Eroare la trimitere fisier");
-                e.printStackTrace();
-                return false;
+                SendData(bytesToSend);
+
+            }
+        } else if (path.equals(MASTER_FILE)) {
+            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(Singleton.filePathMasterSyncFile);
+
+            SendData(bytesToSend);
+
+        } else {
+            StringTokenizer st = new StringTokenizer(path, "!");
+
+            for (Iterator<Object> it = st.asIterator(); it.hasNext(); ) {
+                String fileRelPath = (String) it.next();
+
+                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(fileRelPath);
+
+                SendData(bytesToSend);
             }
         }
 

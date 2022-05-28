@@ -2,6 +2,7 @@ package Resident_Daemon.Core;
 
 import Networking.Swarm.NetworkSwarm;
 import Networking.Utils.Invitation;
+import Resident_Daemon.CommandsPack.Commands.SyncSwarm;
 import Version_Control.FileP2P;
 
 import java.io.File;
@@ -17,8 +18,14 @@ public class UserData {
     private String selfIP;
     private List<FileP2P> localFiles;
     private List<FileP2P> otherFiles;
+
     private boolean isEnableToWriteAllFiles;
 
+    private List<SyncRecord> localMasterFile;
+
+    private List<SyncRecord> otherMasterFile;
+
+    private boolean isReceivedMasterFile;
 
     //region Getters & Setters
 
@@ -86,6 +93,27 @@ public class UserData {
 
     public void setEnableToWriteAllFiles(boolean enableToWriteAllFiles) {
         isEnableToWriteAllFiles = enableToWriteAllFiles;
+    }
+
+    public void resetMasterFiles(){
+        localMasterFile = new ArrayList<>();
+        otherMasterFile = new ArrayList<>();
+    }
+
+    public boolean isReceivedMasterFile() {
+        return isReceivedMasterFile;
+    }
+
+    public void setReceivedMasterFile(boolean receivedMasterFile) {
+        isReceivedMasterFile = receivedMasterFile;
+    }
+
+    public List<SyncRecord> getLocalMasterFile() {
+        return localMasterFile;
+    }
+
+    public List<SyncRecord> getOtherMasterFile() {
+        return otherMasterFile;
     }
 
     //endregion
