@@ -102,6 +102,7 @@ public class WorkScreen extends JFrame implements ActionListener{
             frame.remove(ipTab);
             frame.remove(yourIp);
             frame.remove(swarmInfo);
+            frame.remove(filesTab);
             frame.revalidate();
             frame.repaint();
             connectScreen = new ConnectScreen(frame);
