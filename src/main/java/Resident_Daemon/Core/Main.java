@@ -81,7 +81,5 @@ public class Main {
 
         ConsoleMenu.startToInteractWithTheUser();
 
-
-
     }
 }
