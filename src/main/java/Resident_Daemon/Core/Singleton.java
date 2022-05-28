@@ -13,9 +13,83 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Paths;
+import java.sql.Timestamp;
+import java.util.*;
+import java.util.stream.Collectors;
+
+class SyncRecord implements Serializable, Comparable<SyncRecord>{
+    public String filePath;
+    public boolean isSynced;
+    public long timestampOfLastSync;
+    public SyncRecord(String filePath, boolean isSynced) {
+        this.filePath = filePath;
+        this.isSynced = isSynced;
+        Timestamp ts = new Timestamp(System.currentTimeMillis());
+        this.timestampOfLastSync = ts.getTime();
+    }
+
+    public SyncRecord(String filePath, boolean isSynced, long timestampOfLastSync) {
+        this.filePath = filePath;
+        this.isSynced = isSynced;
+        this.timestampOfLastSync = timestampOfLastSync;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setSynced(boolean synced) {
+        isSynced = synced;
+    }
+
+    public void setTimestampOfLastSync(long timestampOfLastSync) {
+        this.timestampOfLastSync = timestampOfLastSync;
+    }
+
+    public boolean getSynced() {
+        return this.isSynced;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public long getTimestampOfLastSync() {
+        return timestampOfLastSync;
+    }
+
+    @Override
+    public String toString() {
+        return "SyncRecord{" +
+                "filePath=" + filePath +
+                ", isSynced=" + isSynced +
+                ", timestampOfLastSync=" + timestampOfLastSync +
+                '}';
+    }
+
+    @Override
+    public int compareTo(SyncRecord rhs) {
+        if (this.getFilePath().equals(rhs.getFilePath()))
+            return 0;
+
+        return 1;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SyncRecord that = (SyncRecord) o;
+//        return isSynced == that.isSynced && timestampOfLastSync == that.timestampOfLastSync && filePath.equals(that.filePath);
+        return isSynced == that.isSynced && filePath.equals(that.filePath);
+    }
+
+}
 
 public class Singleton
 {
+    //region Fields
     private static final String EXPORT_IMPORT_FOLDER = "data_singleton.txt";
     public static final String VERSION_FILE_DATA_NAME = "versionfile.version";
 
@@ -29,6 +103,7 @@ public class Singleton
     private NetworkingComponent networkingComponent;
     private Version_Control_Component version;
     CommandExecutor commandExecutor;
+    //endregion
 
     private Singleton()
     {
@@ -52,6 +127,78 @@ public class Singleton
         }
         return singletonObject;
     }
+
+    public static String filePathMasterSyncFile = "sync_files_evidence.txt";
+
+    public static void
+    saveRecordsToMasterFile(List<SyncRecord> records) {
+
+//        WRITE STUFF
+//                Object obj = "abc";
+//        String filePath = Singleton.filePathMasterSyncFile;
+//        try {
+//            List<Object> objs = new ArrayList<Object>();
+//            SyncRecord syncRecord = new SyncRecord(Paths.get(".").toString(), true, 12);
+//            objs.add(syncRecord);
+//            BasicFileUtils.writeListOfObjectsToFileInOverwriteMode(objs, filePath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+///*
+//        1. fetch the current records
+        List<Object> oldObjs = Singleton.getRecordsFromMasterFile();
+
+        SyncRecord first = (SyncRecord)oldObjs.get(0);
+        SyncRecord sr = new SyncRecord(first.getFilePath(), first.getSynced(), first.getTimestampOfLastSync());
+        records.add(first);
+
+//       2. merge the old records with the new ones
+        boolean found;
+        for (SyncRecord record: records) {
+            found = false;
+            for (Object oldObj : oldObjs) {
+                if (oldObj.equals(record)) {
+                    ((SyncRecord) oldObj).setTimestampOfLastSync(record.getTimestampOfLastSync());
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                oldObjs.add(record);
+        }
+
+//          3. call the write method
+        String filePath = Singleton.filePathMasterSyncFile;
+        try {
+            BasicFileUtils.writeListOfObjectsToFileInOverwriteMode(oldObjs, filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//*/
+    }
+
+    public static List<Object> getRecordsFromMasterFile() {
+
+        List<Object> objs = null;
+        try {
+            objs = BasicFileUtils.readListOfObjectsFromFile(Singleton.filePathMasterSyncFile);
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return objs;
+    }
+    public static SyncRecord getSyncRecordWithPath(String path) throws FileNotFoundException {
+
+        List<Object> objs = Singleton.getRecordsFromMasterFile();
+        for(Object obj : objs)
+            if (((SyncRecord)obj).getFilePath().equals(path))
+                return (SyncRecord) obj;
+
+        throw new FileNotFoundException();
+    }
+
 
     //region Save & Load
     public static void saveSingletonData() throws IOException {

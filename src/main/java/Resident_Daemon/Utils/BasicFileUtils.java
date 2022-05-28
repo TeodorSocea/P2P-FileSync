@@ -6,6 +6,13 @@ import javafx.util.Pair;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.io.*;
+import java.net.URI;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.IntStream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -198,6 +205,37 @@ public class BasicFileUtils {
 
         return fileData;
 
+    }
+
+    public static void writeListOfObjectsToFileInOverwriteMode(List<Object> objs, String filePath) throws IOException {
+
+        if (objs.size() == 0)
+            return;
+
+        FileOutputStream fos = new FileOutputStream(filePath);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+
+        oos.writeInt(objs.size());
+        for (Object obj: objs)
+            oos.writeObject(obj);
+
+        oos.flush();
+        oos.close();
+    }
+
+
+    public static List<Object> readListOfObjectsFromFile(String filePath) throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(filePath);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+
+        List<Object> objs = new LinkedList<>();
+        int numOfRecords = ois.readInt();
+
+        for (int i = 0; i < numOfRecords; i++)
+            objs.add(ois.readObject());
+
+        ois.close();
+        return objs;
     }
 
 }
