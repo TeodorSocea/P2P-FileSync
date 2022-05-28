@@ -88,20 +88,26 @@ public class ComparatorP2PFiles {
             List<Pair<Integer, String>> tempAdded = new ArrayList<>();
             List<Pair<Integer, String>> tempRemoved = new ArrayList<>();
             List<FileP2P> toBeSorted = new ArrayList<>();
-            for (FileP2P j : otherFiles){
-                if (j.getFileName().equals(i.getFileName())){
-                    toBeSorted.add(j);
+            Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> diferente = null;
+            if (!otherFiles.isEmpty() && otherFiles.stream().anyMatch(e -> e.getFileName()!=null && e.getFileName().equals(i.getFileName()))) {
+                for (FileP2P j : otherFiles) {
+                    if (j.getFileName().equals(i.getFileName())) {
+                        toBeSorted.add(j);
+                    }
                 }
+                toBeSorted.stream().sorted((o1, o2) -> {
+                    if (o1.getTimestamp() > o2.getTimestamp())
+                        return 1;
+                    else if (o1.getTimestamp() < o2.getTimestamp())
+                        return -1;
+                    else
+                        return 0;
+                }).collect(Collectors.toList());
+                diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size() - 1));
             }
-            toBeSorted.stream().sorted((o1, o2) -> {
-                if (o1.getTimestamp() > o2.getTimestamp())
-                    return 1;
-                else if (o1.getTimestamp() < o2.getTimestamp())
-                    return -1;
-                else
-                    return 0;
-            }).collect(Collectors.toList());
-            Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size()-1));
+            else {
+                diferente = fileDifferences(i, new FileP2P(i.getFileName(), "", System.currentTimeMillis()/1000L));
+            }
             diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
             diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
 
@@ -145,8 +151,11 @@ public class ComparatorP2PFiles {
         c.setFileName("primul");
         c.setTimestamp(1777);
 
-        aDoua.add(b);
-        aDoua.add(c);
+        FileP2P d = new FileP2P();
+
+        aDoua.add(d);
+        //aDoua.add(b);
+        //aDoua.add(c);
 
         ComparatorP2PFiles ceva = new ComparatorP2PFiles(prima, aDoua);
         System.out.println(ceva.compare().toString());
