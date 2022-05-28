@@ -4,6 +4,7 @@ import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon._UnitTests.ExceptionModule;
+import Version_Control.Version_Control_Component;
 
 public class CreateSwarm extends ExceptionModule implements Command {
 
