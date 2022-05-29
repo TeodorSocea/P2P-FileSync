@@ -45,6 +45,23 @@ public class Input {
         return longVal;
     }
 
+    public static Integer nextInteger() {
+
+        String str = Input.nextString();
+
+        Integer integerVal = Integer.parseInt(str);
+
+        return integerVal;
+    }
+
+    public static SyncRecord nextSyncRecord() {
+
+        String filePath = Input.nextString();
+        boolean isSync = Input.nextBoolean();
+        Long timestamp = Input.nextLong();
+
+        return new SyncRecord(filePath, isSync, timestamp);
+    }
 
     /**
      * This method configures the internal scanner to parse the content of a file

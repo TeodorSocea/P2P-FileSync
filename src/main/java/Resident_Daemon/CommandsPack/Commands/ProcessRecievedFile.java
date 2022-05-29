@@ -36,7 +36,7 @@ public class ProcessRecievedFile implements Command {
 
         FileData fileData = BasicFileUtils.GetFileData(dataReceived);
 
-        if(fileData.getFileRelPath().contains(Singleton.filePathMasterSyncFile)) {
+        if(fileData.getFileRelPath().contains(BasicFileUtils.filePathMasterSyncFile)) {
             userData.setReceivedMasterFile(true);
             List<SyncRecord> syncRecordList = BasicFileUtils.readMasterFile_FromString(fileData.getFileContent());
             for(SyncRecord syncRecord : syncRecordList){

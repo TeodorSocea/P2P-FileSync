@@ -47,22 +47,21 @@ public class Main {
         System.exit(0);
     }
 
-    public static void testSaveRecordToMasterFile() {
+    public static void testSaveRecordToMasterFile() throws IOException {
 
         Singleton.getSingletonObject().setFolderToSyncPath("C:\\Users\\tnae\\Desktop\\Fac");
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
 
-        List<SyncRecord> records = new LinkedList<>();
+//        List<SyncRecord> records = new LinkedList<>();
 
-//        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
-//            records.add(new SyncRecord (file.getKey().toString(), true));
-//        }
-
-        Singleton.saveRecordsToMasterFile(records);
+        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
+            var sr = new SyncRecord (file.getKey().toString(), true);
+            BasicFileUtils.writeRecordToMasterFile(sr);
+        }
 
 //        Am implementat metoda saveRecordsToMasterFile si metoda getSyncRecordWithPath ce vor fi de folos pentru sincronizarea corecta a fisierelor
 
-        var syncRecordList = Singleton.getRecordsFromMasterFile();
+        var syncRecordList = BasicFileUtils.readRecordsFromMasterFile();
         for(var c : syncRecordList){
             System.out.println("fileRelPath: " + c.getFileRelPath());
             System.out.println("timestamp: " + c.getLastModifiedTimeStamp());
@@ -74,20 +73,14 @@ public class Main {
         System.exit(0);
     }
 
-    public static void testSaveRecordToMasterFileFacutDeBalan() {
+    public static void testSaveRecordToMasterFileFacutDeBalan() throws IOException {
 
-        try {
-            Input.confScanner("abcd.txt");
-            System.out.println(Input.nextString());
-            System.out.println(Input.nextBoolean());
-            System.out.println(Input.nextLong());
+        Singleton.getSingletonObject().setFolderToSyncPath(".");
+        System.out.println(BasicFileUtils.GetMasterFilePath());
 
-            System.out.println(Input.nextString());
-            System.out.println(Input.nextBoolean());
-            System.out.println(Input.nextLong());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        var sr = new SyncRecord("b", true, 12);
+        BasicFileUtils.writeRecordToMasterFile(sr);
+//        var records = BasicFileUtils.readRecordsFromMasterFile();
 
         System.exit(1);
     }
@@ -95,7 +88,11 @@ public class Main {
     public static void main(String[] args) {
 
 //        testSerialization();
-        testSaveRecordToMasterFileFacutDeBalan();
+        try {
+            testSaveRecordToMasterFileFacutDeBalan();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
