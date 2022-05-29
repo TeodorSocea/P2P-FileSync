@@ -1,8 +1,23 @@
 package Networking.Messages;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class EncryptedMessage extends Message{
 
-    private static byte[] key = {108,109,97,111,32,103,97,121};
+    private static String password = "Password123";
+
+    private static byte[] key = { 1, 2 };
+
+//    static {
+//        try {
+//            key = MessageDigest.getInstance("SHA-256").digest(password.getBytes(StandardCharsets.UTF_8));
+//        } catch (NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
 
     public EncryptedMessage(byte[] rawMessage) {
         super(rawMessage);
@@ -32,4 +47,9 @@ public class EncryptedMessage extends Message{
 
         return new Message(msg);
     }
+
+    public byte[] toPacket(){
+        return rawMessage;
+    }
+
 }

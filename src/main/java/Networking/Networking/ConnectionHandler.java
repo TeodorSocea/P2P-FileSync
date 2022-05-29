@@ -156,6 +156,7 @@ public class ConnectionHandler implements Runnable{
                         if (!dataPipelineMap.containsKey(dataMessage.getSwarmID())) {
                             dataPipelineMap.put(dataMessage.getSwarmID(), new DataPipeline());
                         }
+                        System.out.println("Got chunk: " + dataMessage.getChunkID());
                         int latestIndex = dataPipelineMap.get(dataMessage.getSwarmID()).getLatestIndexOfPeer(dataMessage.getSenderID());
                         dataPipelineMap.get(dataMessage.getSwarmID()).addData(dataMessage.getSenderID(), dataMessage.getData(), latestIndex);
                         break;
