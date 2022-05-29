@@ -28,7 +28,7 @@ public class Rollback {
                 "    },\n" +
                 "    },\n" +
                 "}";
-        long rollbackTimestamp = 1653837570;
+        long rollbackTimestamp = 1651728809;
         Rollback rollback = new Rollback(VersionFile);
 
         rollback.rollbackTo(dataFisier,numeFisier,rollbackTimestamp);
@@ -61,8 +61,9 @@ public class Rollback {
         Iterator<?> keys = file.keys();
         while(keys.hasNext()){
             String key = (String) keys.next();
-            if(Long.parseLong(key)>=rollbackTimestamp)
+            if(Long.parseLong(key)>=rollbackTimestamp) {
                 timestamps.put(key, file.getJSONObject(key));
+            }
         }
 
         //sortam hashmap
@@ -77,9 +78,11 @@ public class Rollback {
                 String name = delItr.next();
                 toBeDeleted.put(name, deleted.getString(name));
             }
-            // stergem liniile si dupa modificam si fisierul sa fie la curent cu modificarile facute
+            // stergem liniile si dupa modificam si fisierul sa fie la curent cu modificarile facut
             myList = List.copyOf(addTo(deleted,dataFisier));
+            System.out.println("myList stergere: " + myList);
             dataFisier = String.join("\n",myList);
+            System.out.println("dataFisier: " +dataFisier);
 
 
             //iteram strict prin added content pentru a salva intr-un map linia si continutul pentru a-l pune mai usor in json mai tarziu?
@@ -91,9 +94,11 @@ public class Rollback {
             }
             // aplicam liniile modificare si dupa modificam si fisierul sa fie la curent cu adaugarile facute
             myList = List.copyOf(deleteFrom(added,dataFisier));
+            System.out.println("myList adaugare: " + myList);
             dataFisier = String.join("\n",myList);
+            System.out.println("dataFisier: " +dataFisier);
         }
-
+        System.out.println();
         nou = createNewJSONObject(toBeDeleted,toBeAdded); /// switch aici
         file.put("" + System.currentTimeMillis() / 1000L + "",nou);
         System.out.println("fisier final este:");
@@ -197,7 +202,7 @@ public class Rollback {
             String number = key.toString();
             String text = (String) added.get("" + number + "");
             int i=Integer.parseInt(number);
-            myList.add(i-1, text);
+            myList.add(i, text);
         }
         return myList;
     }
