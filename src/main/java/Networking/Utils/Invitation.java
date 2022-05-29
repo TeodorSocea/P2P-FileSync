@@ -1,6 +1,5 @@
 package Networking.Utils;
 
-import Networking.Messages.EncryptedMessage;
 import Networking.Messages.Message;
 
 import java.io.IOException;
@@ -33,10 +32,6 @@ public class Invitation {
 
     public Socket getSocket() {
         return socket;
-    }
-
-    public void sendEncryptedMessage(Message msg) throws IOException {
-        socket.getOutputStream().write(EncryptedMessage.encrypt(msg).toPacket());
     }
 
     @Override

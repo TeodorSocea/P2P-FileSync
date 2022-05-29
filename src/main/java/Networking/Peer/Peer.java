@@ -1,9 +1,4 @@
 package Networking.Peer;
-
-import Networking.Messages.EncryptedMessage;
-import Networking.Messages.Message;
-
-import java.io.IOException;
 import java.net.Socket;
 
 public class Peer {
@@ -26,10 +21,6 @@ public class Peer {
     }
 
     public int getPeerID(){return peerID;}
-
-    public void sendEncryptedMessage(Message msg) throws IOException {
-        peerSocket.getOutputStream().write(EncryptedMessage.encrypt(msg).toPacket());
-    }
 
     @Override
     public String toString() {
