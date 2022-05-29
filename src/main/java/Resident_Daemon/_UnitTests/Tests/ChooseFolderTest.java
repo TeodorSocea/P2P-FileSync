@@ -1,63 +1,25 @@
-////package Resident_Daemon.UnitTests;
-////
-////import Resident_Daemon.CommandsPack.Command;
-////import Resident_Daemon.CommandsPack.Console.ChooseFileToSync;
-////import Resident_Daemon.CommandsPack.Console.ChooseFolder;
-////import org.junit.jupiter.api.Test;
-////
-////import java.io.ByteArrayInputStream;
-////import java.nio.file.InvalidPathException;
-////import Resident_Daemon.CommandsPack.CommandExecutor;
-////
-////import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-//
-//
-//package Resident_Daemon._UnitTests.Tests;
-//
-//import Resident_Daemon.CommandsPack.CommandExecutor;
-//import Resident_Daemon.CommandsPack.Console.AuxChooseFolder;
-//import Resident_Daemon.Core.Singleton;
-//import Resident_Daemon.Core.Input;
-//import org.junit.jupiter.api.Test;
-//
-//import java.nio.file.InvalidPathException;
-//
-//import static org.junit.jupiter.api.Assertions.*;
-//
-//
-//public class ChooseFolderTest {
-//
-//    Exception runChooseFolderCommand(String folderPath) {
-//        Input.setIn(folderPath);
-//        CommandExecutor commandExecutor = new CommandExecutor();
-//        AuxChooseFolder command = new AuxChooseFolder();
-//        commandExecutor.ExecuteOperation(command);
-//
-//        return command.getException();
-//    }
-//
-//    @Test
-//    void CheckIfValidPathWasSet() {
-//
-//        String validFolderPath = "src/main/java/Resident_Daemon/UnitTests/Media";
-//
-//        Exception exception = runChooseFolderCommand(validFolderPath);
-//
-////        Check if there is no problem
-//        assertEquals(exception, null);
-//
-//        String path = Singleton.getSingletonObject().getFolderToSyncPath().toString();
-//
-//        assertEquals(path, validFolderPath);
-//    }
-//
-//    @Test
-//    void InvalidFolderRelativePath() {
-//
-////        Input invalid path "3" as wrong relative folder path
-//        Exception exception = runChooseFolderCommand("3");
-//
-//        assertInstanceOf(InvalidPathException.class, exception);
-//    }
-//
-//}
+package Resident_Daemon._UnitTests.Tests;
+
+import Resident_Daemon.CommandsPack.CommandExecutor;
+import Resident_Daemon.CommandsPack.Commands.ChooseFolder;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class ChooseFolderTest {
+    String folderPath;
+    CommandExecutor commandExecutor=new CommandExecutor();
+    @Test
+    void ChooseValidPath()
+    {
+        ChooseFolder chooseFolder=new ChooseFolder("src/main/java/Resident_Daemon/_UnitTests/Tests");
+        assertTrue(commandExecutor.ExecuteOperation(chooseFolder));
+    }
+    @Test
+    void ChooseInvalidPath()
+    {
+        ChooseFolder chooseFolder=new ChooseFolder("src/main/java/Resident_Daemon/_UnitTests/Tes");
+        assertFalse( commandExecutor.ExecuteOperation(chooseFolder));
+    }
+
+}
