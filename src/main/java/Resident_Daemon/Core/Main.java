@@ -52,9 +52,9 @@ public class Main {
 
         List<SyncRecord> records = new LinkedList<>();
 
-        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
-            records.add(new SyncRecord (file.getKey().toString(), true));
-        }
+//        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
+//            records.add(new SyncRecord (file.getKey().toString(), true));
+//        }
 
         Singleton.saveRecordsToMasterFile(records);
 
@@ -76,7 +76,7 @@ public class Main {
     public static void main(String[] args) {
 
 //        testSerialization();
-        testSaveRecordToMasterFile();
+//        testSaveRecordToMasterFile();
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;

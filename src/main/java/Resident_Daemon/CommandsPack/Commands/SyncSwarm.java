@@ -44,6 +44,7 @@ public class SyncSwarm extends ExceptionModule implements Command {
 
         var peers = networkingComponent.getSwarms().get(swarmID).getPeers();
         if(peers.isEmpty()){
+            System.out.println("No peers to sync with!");
             return false;
         }
 
@@ -74,24 +75,27 @@ public class SyncSwarm extends ExceptionModule implements Command {
                 // here we compare with Version Control
                 List<SyncRecord> syncRecordList = userData.getOtherMasterFile();
 
-                StringBuilder stringBuilder = new StringBuilder();
+                if(syncRecordList.size() > 0) {
+                    StringBuilder stringBuilder = new StringBuilder();
 
-                for(SyncRecord syncRecord : syncRecordList) {
-                    stringBuilder.append(syncRecord.getFileRelPath() + "!");
-                }
-                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-
-                networkingComponent.requestDataFromSwarm(swarmID, peerID, stringBuilder.toString());
-
-                while (!userData.isEnableToWriteAllFiles()) {
-                    try {
-                        TimeUnit.MILLISECONDS.sleep(50);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                    for(SyncRecord syncRecord : syncRecordList) {
+                        stringBuilder.append(syncRecord.getFileRelPath() + "!");
                     }
+                    stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+
+                    networkingComponent.requestDataFromSwarm(swarmID, peerID, stringBuilder.toString());
+
+                    while (!userData.isEnableToWriteAllFiles()) {
+                        try {
+                            TimeUnit.MILLISECONDS.sleep(50);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(new ReceiveFiles());
                 }
 
-                Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(new ReceiveFiles());
 
                 System.out.println("Sync done!");
 

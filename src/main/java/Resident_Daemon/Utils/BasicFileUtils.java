@@ -12,11 +12,13 @@ import java.net.URI;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Base64.getEncoder;
 
 public class BasicFileUtils {
     private static boolean isValidFile(Path path) {
@@ -159,8 +161,13 @@ public class BasicFileUtils {
 
         Path filePath = Paths.get(folderPath, fileRelPath);
 
-        if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
-        byte[] fileContent = file2bytes(filePath);
+//        if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
+        byte[] fileContent = null;
+        if(isValidFile(filePath)) {
+            fileContent = file2bytes(filePath);
+        } else {
+            throw new InvalidPathException(filePath.toString(), "Wrong path");
+        }
 
         return codeFile(fileRelPath, GetTimeStamp(filePath), fileContent);
 
@@ -170,10 +177,10 @@ public class BasicFileUtils {
         return data.substring(0, data.indexOf("!"));
     }
     private static String getTimeStamp(String data){
-        return data.substring(data.indexOf("!"), data.indexOf("!") + 1);
+        return data.substring(data.indexOf("!") + 1, data.lastIndexOf("!") - 1);
     }
     private static String getContent(String data){
-        return data.substring(data.indexOf("!") + 1);
+        return data.substring(data.lastIndexOf("!") + 1);
     }
 
     public static void WriteFileToFolder(String fileRelPath, String data) throws IOException {
@@ -234,8 +241,9 @@ public class BasicFileUtils {
 
     public static void writeListOfObjectsToFileInOverwriteMode(List<Object> objs, String filePath) throws IOException {
 
-        if (objs.size() == 0)
-            return;
+//        if (objs.size() == 0)
+//            return;
+
 
         FileOutputStream fos = new FileOutputStream(filePath);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -246,6 +254,7 @@ public class BasicFileUtils {
 
         oos.flush();
         oos.close();
+        fos.close();
     }
 
 
@@ -260,16 +269,30 @@ public class BasicFileUtils {
             objs.add(ois.readObject());
 
         ois.close();
+        fis.close();
         return objs;
     }
 
     public static List<SyncRecord> readMasterFile_FromString(String fileData) {
         try {
-            byte[] fileData_bytes = fileData.getBytes(StandardCharsets.UTF_8);
-            ByteArrayInputStream bis = new ByteArrayInputStream(fileData_bytes);
+//            byte[] fileData_bytes = fileData.getBytes(StandardCharsets.UTF_8);
+
+//            byte[] fileData_UTFDecoded = fileData.getBytes(StandardCharsets.UTF_8);
+//            String rawFileData = new String(fileData_UTFDecoded);
+            byte[] fileDecoded = Base64.getDecoder().decode(fileData);
+            String fileRelPath = "temporar.data";
+
+//            BasicFileUtils.WriteFileToFolder(fileRelPath, fileData);
+            Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+            String filePath = String.valueOf(Paths.get(String.valueOf(folderPath), fileRelPath));
+
+            BasicFileUtils.bytes2file(fileDecoded, Path.of(filePath));
+            //
+
+            FileInputStream fis = new FileInputStream(filePath);
             ObjectInputStream ois = null;
 
-            ois = new ObjectInputStream(bis);
+            ois = new ObjectInputStream(fis);
 
             List<SyncRecord> syncRecordList = new ArrayList<>();
 
@@ -277,6 +300,8 @@ public class BasicFileUtils {
 
             for (int i = 0; i < numOfRecords; i++)
                 syncRecordList.add((SyncRecord) ois.readObject());
+
+            Files.delete(Path.of(filePath));
 
             return syncRecordList;
         } catch (IOException e) {
@@ -301,6 +326,18 @@ public class BasicFileUtils {
 
         String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
         return Paths.get(absoluteFolderPath, relPath).toString();
+    }
+
+    public static void SaveRecordsToMasterFile() {
+        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+
+        List<SyncRecord> records = new LinkedList<>();
+
+        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
+            records.add(new SyncRecord (file.getKey().toString(), true));
+        }
+
+        Singleton.saveRecordsToMasterFile(records);
     }
 
 }

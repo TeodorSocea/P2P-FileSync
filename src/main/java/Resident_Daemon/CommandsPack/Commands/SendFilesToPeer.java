@@ -9,6 +9,7 @@ import Resident_Daemon.Utils.GetTextFiles;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Base64;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
@@ -54,10 +55,13 @@ public class SendFilesToPeer implements Command {
                 SendData(bytesToSend);
 
             }
-        } else if (path.equals(MASTER_FILE)) {
+        } else if (path.contains(MASTER_FILE)) {
+            BasicFileUtils.SaveRecordsToMasterFile();
             byte[] bytesToSend = BasicFileUtils.GetBytesToSend(Singleton.filePathMasterSyncFile);
 
-            SendData(bytesToSend);
+            String fileEncoded = Base64.getEncoder().encodeToString(bytesToSend);
+
+            SendData(fileEncoded.getBytes());
 
         } else {
             StringTokenizer st = new StringTokenizer(path, "!");
