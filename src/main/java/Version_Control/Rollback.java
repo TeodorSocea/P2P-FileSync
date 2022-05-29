@@ -4,60 +4,36 @@ import org.json.JSONObject;
 import java.util.*;
 
 public class Rollback {
-    // VersionFile fisier_versiuni;
-    public Rollback(){
+    String VersionFileData;
+    public Rollback(String VersionFileData){
+        this.VersionFileData = VersionFileData;
     }
 
     public static void main(String[] args) {
-        String dataFisier="1\n" +
-                "2\n" +
-                "3\n" +
-                "4\n" +
-                "5\n" +
-                "6\n" +
-                "7\n" +
-                "8\n" +
-                "9\n" +
-                "10\n" +
-                "11\n" +
-                "12\n" +
-                "13\n" +
-                "14\n" +
-                "15\n";
+        String dataFisier="ana are mere\n" +
+                "maria are mere\n" +
+                "ben are mere\n";
         String numeFisier = "nume_fisier_sincronizat";
         String VersionFile = "{\n" +
                 "  \"files\": {\n" +
                 "    \"nume_fisier_sincronizat\": {\n" +
-                "    \"1651901609\" : {\n" +
-                "      \"added_content\" : { 1:\"ana are mere\", 2:\"ana are multe mere\", 5:\"maria are mere\"},\n" +
+                "    \"1653837570\" : {\n" +
+                "      \"added_content\" : { 3:\"ben are mere\"},\n" +
                 "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
                 "    },\n" +
                 "    \"1651728809\" :  {\n" +
-                "      \"added_content\" : { 10:\"se pisa\"},\n" +
-                "      \"deleted_content\" : { 7:\"nu merge:(\"}\n" + //defapt merge dar nu ia se pisa de la added content, il refac
-                "    },\n" +
-                "    \"1652160809\" :  {\n" +
-                "      \"added_content\" : { 10:\"ben ben\"},\n" +
-                "      \"deleted_content\" : { 1:\"no\"}\n" +
-                "    },\n" +
-                "    \"1652592809\" :  {\n" +
-                "      \"added_content\" : {},\n" +
-                "      \"deleted_content\" : {}\n" +
-                "    }\n" +
-                "    },\n" +
-                "    \"alt_fisier_sincronizat\" : {\n" +
-                "    \"timestamp\" : {\n" +
-                "      \"added_content\" : { 1:\"ana are mere\", 2:\"ana are multe mere\", 5:\"maria are mere\"},\n" +
-                "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
+                "      \"added_content\" : { 2:\"maria are mere\"},\n" +
+                "      \"deleted_content\" : { 2:\"maria nu are mere\", 4:\"ana are multe mere\"}\n" +
+                "  	},\n" +
                 "    },\n" +
                 "    },\n" +
-                "  }\n" +
                 "}";
-        long rollbackTimestamp = 1652160809;
-        Rollback rollback = new Rollback();
+        long rollbackTimestamp = 1653837570;
+        Rollback rollback = new Rollback(VersionFile);
 
-        rollback.rollbackTo(dataFisier,numeFisier,VersionFile,rollbackTimestamp);
+        rollback.rollbackTo(dataFisier,numeFisier,rollbackTimestamp);
 
+        /*
         //primeste tot json-ul
         ArrayList<String> files = new ArrayList<>(rollback.getFiles(new JSONObject(VersionFile)));
 
@@ -70,10 +46,10 @@ public class Rollback {
         //primeste direct timestamp-ul, implicit si fisierul
         JSONObject keys;
         keys = json.getJSONObject("1651901609");
-        rollback.getKeysOfTimestamp(keys);
+        rollback.getKeysOfTimestamp(keys);*/
     }
-    public void rollbackTo(String dataFisier, String numeFisier, String VersionFile, long rollbackTimestamp){
-        JSONObject json = new JSONObject(VersionFile);
+    public void rollbackTo(String dataFisier, String numeFisier, long rollbackTimestamp){
+        JSONObject json = new JSONObject(this.VersionFileData);
         HashMap<String,JSONObject> timestamps = new HashMap<>();
         HashMap<String, String> toBeDeleted = new HashMap<>();
         HashMap<String, String> toBeAdded = new HashMap<>();
@@ -85,7 +61,7 @@ public class Rollback {
         Iterator<?> keys = file.keys();
         while(keys.hasNext()){
             String key = (String) keys.next();
-            if(Integer.parseInt(key)<=Integer.parseInt(String.valueOf(rollbackTimestamp)))
+            if(Long.parseLong(key)>=rollbackTimestamp)
                 timestamps.put(key, file.getJSONObject(key));
         }
 
@@ -120,6 +96,9 @@ public class Rollback {
 
         nou = createNewJSONObject(toBeDeleted,toBeAdded); /// switch aici
         file.put("" + System.currentTimeMillis() / 1000L + "",nou);
+        System.out.println("fisier final este:");
+        System.out.println(dataFisier);
+        System.out.println("fisierul de versiuni este:");
         System.out.println(file);
     }
 
