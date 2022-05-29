@@ -1,5 +1,7 @@
 package GUI;
 import GUI.GUI_Component;
+import Networking.Core.NetworkingComponent;
+import Networking.Peer.Peer;
 import Networking.Swarm.NetworkSwarm;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.ChooseFolder;
@@ -7,6 +9,7 @@ import Resident_Daemon.CommandsPack.Commands.ExitApp;
 import Resident_Daemon.CommandsPack.Commands.InviteToSwarm;
 import Resident_Daemon.CommandsPack.Commands.SyncSwarm;
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Core.UserData;
 
 import java.util.*;
 import javax.swing.*;
@@ -33,7 +36,7 @@ public class WorkScreen extends JFrame implements ActionListener{
     JButton[] filesList;
     String activeFolderPath=null;
     int currentSwarmId;
-    String selectedIP;
+    int selectedIP;
 
     CommandExecutor commandExecutor;
 
@@ -62,22 +65,22 @@ public class WorkScreen extends JFrame implements ActionListener{
             commandExecutor.ExecuteOperation(new InviteToSwarm(invited, currentSwarmId));
         }
 
-        if (ipList != null) {
+        /*if (ipList != null) {
             for (int i = 0; i < ipList.length; i++) {
                 if (e.getSource() == ipList[i]) {
-                    selectedIP = ipList[i].getText();
+                    selectedIP = Integer.parseInt(ipList[i].getText());
                     System.out.println("// SWARM IP PRESSED: " + ipList[i].getText());
-                    syncButton.setText("Sync?: " + selectedIP);
+                    syncButton.setText("Sync?: " + ipList[i].getText());
                     frame.revalidate();
                     frame.repaint();
                 }
             }
-        }
+        }*/
 
         if (filesList != null) {
             for (int i = 0; i < filesList.length; i++) {
                 if (e.getSource() == filesList[i]) {
-                    selectedIP = ipList[i].getText();
+                    // selectedIP = filesList[i].getText();
                     System.out.println("// FILE INFO BUTTON PRESSED: " + filesList[i].getText());
                     frame.revalidate();
                     frame.repaint();
@@ -86,9 +89,9 @@ public class WorkScreen extends JFrame implements ActionListener{
         }
 
         if (e.getSource() == syncButton) {
-            System.out.print(selectedIP);
+            System.out.print(syncButton.getText());
             // commandExecutor.ExecuteOperation(new SyncSwarm(currentSwarmId, selectedIP));
-            syncButton.setText("Synced. Select IP...");
+            syncButton.setText("Synced. Tap again to sync");
             frame.revalidate();
             frame.repaint();
         }
@@ -99,7 +102,7 @@ public class WorkScreen extends JFrame implements ActionListener{
             frame.remove(quitButton);
             frame.remove(inviteToSwarm);
             frame.remove(changeSyncFolderButton);
-            frame.remove(ipTab);
+            // frame.remove(ipTab);
             frame.remove(yourIp);
             frame.remove(swarmInfo);
             frame.remove(filesTab);
@@ -115,7 +118,7 @@ public class WorkScreen extends JFrame implements ActionListener{
     }
 
     // IP List function:
-    public void ipGenerator() {
+    /*public void ipGenerator() {
         ipTab = new JPanel();
         JPanel p = new JPanel(new GridBagLayout());
         ipTab.add(new JScrollPane(p, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
@@ -130,13 +133,12 @@ public class WorkScreen extends JFrame implements ActionListener{
         ipTab.setAutoscrolls(true);
         ipList = new JButton[10];
         gbc.insets = new Insets(5,5,5,180);
-        // int ji = 0;
-        for (int ji = 0; ji < 10; ji++) {
-        // for (var swarmEntry : userData.getMySwarms().entrySet()) {
-            // NetworkSwarm temp = swarmEntry.getValue();
+        int ji = 0;
+        NetworkSwarm temp = null;
+        for (Map.Entry<Integer, Peer> swarmEntry : temp.getPeers().entrySet()) {
             gbc.gridy = ji;
             gbc.gridx = 0;
-            ipList[ji] = new JButton("999.999.999.90" + ji);
+            ipList[ji] = new JButton(swarmEntry.getValue().toString() + ji);
             p.add(ipList[ji], gbc);
             ipList[ji].addActionListener(this);
             gbc.gridx = 1;
@@ -144,7 +146,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         }
         frame.add(ipTab);
     }
-
+*/
     // File list function:
     public void fileListGenerator() {
         filesTab = new JPanel();
@@ -183,7 +185,7 @@ public class WorkScreen extends JFrame implements ActionListener{
 
         // Current IP:
         yourIp = new JLabel();
-        yourIp.setText("Your Ip: 999.999.999.999");
+        yourIp.setText("Your ID: ");
         yourIp.setForeground(new Color(0xB1B6A6));
         yourIp.setFont(new Font("Radio Canada", Font.BOLD, 16));
         yourIp.setBounds(550, 200, 200, 30);
@@ -218,7 +220,7 @@ public class WorkScreen extends JFrame implements ActionListener{
 
         // Sync Button:
         syncButton = new JButton();
-        syncButton.setText("Select IP to Sync");
+        syncButton.setText("Press to Sync");
         syncButton.setBounds(530, 290, 220, 30);
         syncButton.setForeground(new Color(0x000000));
         syncButton.setBackground(new Color(0xB1B6A6));
@@ -254,7 +256,7 @@ public class WorkScreen extends JFrame implements ActionListener{
         frame.add(quitButton);
         frame.add(yourIp);
         frame.add(swarmInfo);
-        ipGenerator();
+        // ipGenerator();
         fileListGenerator();
 
         // --
