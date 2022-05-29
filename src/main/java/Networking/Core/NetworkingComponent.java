@@ -128,10 +128,10 @@ public class NetworkingComponent {
             Peer sender = new Peer(invitation.getSocket(), invitation.getSocket().getRemoteSocketAddress().toString(), invitation.getSenderID());
             networkSwarmManager.addPeerToSwarm(invitation.getSwarmID(), sender);
             InviteResponseMessage responseMessage = new InviteResponseMessage(MessageHeader.RESPONSE_INVITE_TO_SWARM, invitation.getSelfID(), invitation.getSwarmID(), true);
-            invitation.sendEncryptedMessage(responseMessage);
+            sender.getPeerSocket().getOutputStream().write(responseMessage.toPacket());
         }else{
             InviteResponseMessage responseMessage = new InviteResponseMessage(MessageHeader.RESPONSE_INVITE_TO_SWARM, invitation.getSelfID(), invitation.getSwarmID(), false);
-            invitation.sendEncryptedMessage(responseMessage);
+            invitation.getSocket().getOutputStream().write(responseMessage.toPacket());
         }
 
         networkSwarmManager.getInvitations().remove(invitation);
@@ -143,7 +143,7 @@ public class NetworkingComponent {
             byte[] dataToSend = Arrays.copyOfRange(data, i * 1024, Math.min((i+1) * 1024, data.length));
             DataMessage dataMessage = new DataMessage(MessageHeader.DATA, swarm.getSelfID(), swarmID, i, dataToSend);
             for(Map.Entry<Integer, Peer> entry : swarm.getPeers().entrySet()){
-                entry.getValue().sendEncryptedMessage(dataMessage);
+                entry.getValue().getPeerSocket().getOutputStream().write(dataMessage.toPacket());
             }
         }
     }
@@ -158,10 +158,10 @@ public class NetworkingComponent {
         for(int i = 0; i < data.length / 1024 + 1 ; i++){
             byte[] dataToSend = Arrays.copyOfRange(data, i * 1024, Math.min((i+1) * 1024, data.length));
             DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, i, dataToSend);
-            peer.sendEncryptedMessage(dataMessage);
+            peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
         }
         DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, -1, new byte[1024]);
-        peer.sendEncryptedMessage(dataMessage);
+        peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
     }
 
     public int indexOf(byte[] outerArray, byte[] smallerArray) {
@@ -211,7 +211,7 @@ public class NetworkingComponent {
 
     public void requestDataFromSwarm(int swarmID, int peerID, String path) throws IOException {
         DataRequestMessage dataRequestMessage = new DataRequestMessage(MessageHeader.DATA_REQUEST, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, path);
-        networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).sendEncryptedMessage(dataRequestMessage);
+        networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).getPeerSocket().getOutputStream().write(dataRequestMessage.toPacket());
     }
 
     public List<Pair<Integer, Integer>> getFulfilledRequests(){
