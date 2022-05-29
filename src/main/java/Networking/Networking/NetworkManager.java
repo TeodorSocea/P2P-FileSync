@@ -1,5 +1,6 @@
 package Networking.Networking;
 
+import Networking.Messages.EncryptedMessage;
 import Networking.Messages.InviteMessage;
 import Networking.Messages.MessageHeader;
 import Networking.Swarm.NetworkSwarm;
@@ -41,7 +42,8 @@ public class NetworkManager{
         commonSocketPool.add(newSocket);
 
         InviteMessage invitation = new InviteMessage(MessageHeader.INVITE_TO_SWARM, swarm.getSelfID(), swarm.generateNextID(), swarm.getSwarmID());
-        newSocket.getOutputStream().write(invitation.toPacket());
+
+        newSocket.getOutputStream().write(EncryptedMessage.encrypt(invitation).toPacket());
 
         ConnectionHandler connectionHandler = new ConnectionHandler(newSocket, networkSwarmManager, commonSocketPool, dataPipelineMap);
         connectionHandlers.put(newSocket, connectionHandler);
