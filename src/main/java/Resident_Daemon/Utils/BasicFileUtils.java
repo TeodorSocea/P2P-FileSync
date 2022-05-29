@@ -21,7 +21,12 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Base64.getEncoder;
 
 public class BasicFileUtils {
-    private static boolean isValidFile(Path path) {
+
+    public static boolean isValidFile(String path) {
+        return BasicFileUtils.isValidFile(Paths.get(path));
+    }
+
+    public static boolean isValidFile(Path path) {
         //        Check if file exists
         if (!Files.exists(path)){
             return false;
@@ -237,6 +242,22 @@ public class BasicFileUtils {
 
         return fileData;
 
+    }
+
+    /**
+     *  Function that writes the data from the record in CSV format to a file
+     */
+    public static void writeRecordToFile(SyncRecord record, String filePath) throws IOException {
+
+//        if (objs.size() == 0)
+//            return;
+
+//        FileOutputStream fos = new FileOutputStream(filePath);
+
+
+//        oos.flush();
+//        oos.close();
+//        fos.close();
     }
 
     public static void writeListOfObjectsToFileInOverwriteMode(List<Object> objs, String filePath) throws IOException {

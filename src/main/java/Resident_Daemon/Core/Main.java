@@ -2,6 +2,7 @@ package Resident_Daemon.Core;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.MenuPack.ConsoleMenu;
+import Resident_Daemon.Utils.BasicFileUtils;
 import Resident_Daemon.Utils.GetTextFiles;
 
 import java.io.FileNotFoundException;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     private Singleton mainData;
@@ -72,11 +74,28 @@ public class Main {
         System.exit(0);
     }
 
+    public static void testSaveRecordToMasterFileFacutDeBalan() {
+
+        try {
+            Input.confScanner("abcd.txt");
+            System.out.println(Input.nextString());
+            System.out.println(Input.nextBoolean());
+            System.out.println(Input.nextLong());
+
+            System.out.println(Input.nextString());
+            System.out.println(Input.nextBoolean());
+            System.out.println(Input.nextLong());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        System.exit(1);
+    }
 
     public static void main(String[] args) {
 
 //        testSerialization();
-        testSaveRecordToMasterFile();
+        testSaveRecordToMasterFileFacutDeBalan();
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
