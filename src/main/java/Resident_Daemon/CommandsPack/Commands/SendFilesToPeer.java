@@ -59,9 +59,8 @@ public class SendFilesToPeer implements Command {
             BasicFileUtils.SaveRecordsToMasterFile();
             byte[] bytesToSend = BasicFileUtils.GetBytesToSend(Singleton.filePathMasterSyncFile);
 
-            String fileEncoded = Base64.getEncoder().encodeToString(bytesToSend);
 
-            SendData(fileEncoded.getBytes());
+            SendData(bytesToSend);
 
         } else {
             StringTokenizer st = new StringTokenizer(path, "!");

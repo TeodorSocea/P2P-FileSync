@@ -76,7 +76,7 @@ public class Main {
     public static void main(String[] args) {
 
 //        testSerialization();
-//        testSaveRecordToMasterFile();
+        testSaveRecordToMasterFile();
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
