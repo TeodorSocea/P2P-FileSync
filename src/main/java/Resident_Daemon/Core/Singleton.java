@@ -5,6 +5,7 @@ import Networking.Core.NetworkingComponent;
 import Networking.Utils.Invitation;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.Utils.BasicFileUtils;
+import Version_Control.VersionFileParser;
 import Version_Control.Version_Control_Component;
 
 import java.io.*;
@@ -18,6 +19,7 @@ public class Singleton
 {
     private static final String EXPORT_IMPORT_FOLDER = "data_singleton.txt";
     public static final String VERSION_FILE_DATA_NAME = "versionfile.version";
+    private  VersionFileParser versionParser;
 
     private String currentPath;
     private String operatingSystem;
@@ -39,6 +41,7 @@ public class Singleton
         this.networkingComponent = new NetworkingComponent(30000);
 
         this.version = new Version_Control_Component();
+        this.versionParser = new VersionFileParser();
 
         this.userData = new UserData();
 
@@ -147,6 +150,10 @@ public class Singleton
 
     public Version_Control_Component getVersion() {
         return version;
+    }
+
+    public VersionFileParser getVersionParser() {
+        return versionParser;
     }
 
     //endregion

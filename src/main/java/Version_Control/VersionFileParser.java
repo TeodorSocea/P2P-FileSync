@@ -10,10 +10,15 @@ import java.util.Map;
 
 public class VersionFileParser {
     JSONObject versionFile;
-    JSONObject files;
+
+    public void setVersionFile(JSONObject versionFile) {
+        this.versionFile = versionFile;
+    }
+
     public VersionFileParser(String versionFile){
         this.versionFile = new JSONObject(versionFile);
     }
+    public VersionFileParser(){};
     public ArrayList<String> getFiles(){
         ArrayList<String> returned = new ArrayList<>();
         JSONObject files;
