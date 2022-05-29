@@ -1,0 +1,11 @@
+Citire pentru 50 fisiere = 0.0656755 secunde
+Scriere version file pentru 50 fisiere = 0.0011385 secunde
+
+Citire pentru 100 fisiere = 0.0993378 secunde
+Scriere version file pentru 100 fisiere = 0.001267 secunde
+
+Citire pentru 500 fisiere = 0.2512189 secunde
+Scriere version file pentru 500 fisiere = 0.0025455 secunde
+
+Citire pentru 1000 fisiere = 0.5967729 secunde
+Scriere version file pentru 1000 fisiere = 0.0039989 secunde
