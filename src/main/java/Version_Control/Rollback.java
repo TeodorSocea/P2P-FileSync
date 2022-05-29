@@ -5,49 +5,24 @@ import java.util.*;
 
 public class Rollback {
     String VersionFileData;
+    String rollbackedFile;
     public Rollback(String VersionFileData){
         this.VersionFileData = VersionFileData;
     }
 
-    public static void main(String[] args) {
-        String dataFisier="ana are mere\n" +
-                "maria are mere\n" +
-                "ben are mere\n";
-        String numeFisier = "nume_fisier_sincronizat";
-        String VersionFile = "{\n" +
-                "  \"files\": {\n" +
-                "    \"nume_fisier_sincronizat\": {\n" +
-                "    \"1653837570\" : {\n" +
-                "      \"added_content\" : { 3:\"ben are mere\"},\n" +
-                "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
-                "    },\n" +
-                "    \"1651728809\" :  {\n" +
-                "      \"added_content\" : { 2:\"maria are mere\"},\n" +
-                "      \"deleted_content\" : { 2:\"maria nu are mere\", 4:\"ana are multe mere\"}\n" +
-                "  	},\n" +
-                "    },\n" +
-                "    },\n" +
-                "}";
-        long rollbackTimestamp = 1651728809;
-        Rollback rollback = new Rollback(VersionFile);
-
-        rollback.rollbackTo(dataFisier,numeFisier,rollbackTimestamp);
-
-        /*
-        //primeste tot json-ul
-        ArrayList<String> files = new ArrayList<>(rollback.getFiles(new JSONObject(VersionFile)));
-
-        //primeste direct json-ul fisierului care se doreste cautat, implicit si partea cu .getJSONObject("files")
-        //le veti ordonate?
-        JSONObject json = new JSONObject(VersionFile);
-        json = json.getJSONObject("files").getJSONObject("nume_fisier_sincronizat");
-        ArrayList<String> timestamps = new ArrayList<>(rollback.getTimestampOfFile(json));
-
-        //primeste direct timestamp-ul, implicit si fisierul
-        JSONObject keys;
-        keys = json.getJSONObject("1651901609");
-        rollback.getKeysOfTimestamp(keys);*/
+    public String getVersionFileData() {
+        return VersionFileData;
     }
+
+    public void setVersionFileData(String versionFileData) {
+        VersionFileData = versionFileData;
+    }
+
+    public String getRollbackedFile() {
+        return rollbackedFile;
+    }
+
+
     public void rollbackTo(String dataFisier, String numeFisier, long rollbackTimestamp){
         JSONObject json = new JSONObject(this.VersionFileData);
         HashMap<String,JSONObject> timestamps = new HashMap<>();
@@ -80,9 +55,7 @@ public class Rollback {
             }
             // stergem liniile si dupa modificam si fisierul sa fie la curent cu modificarile facut
             myList = List.copyOf(addTo(deleted,dataFisier));
-            System.out.println("myList stergere: " + myList);
             dataFisier = String.join("\n",myList);
-            System.out.println("dataFisier: " +dataFisier);
 
 
             //iteram strict prin added content pentru a salva intr-un map linia si continutul pentru a-l pune mai usor in json mai tarziu?
@@ -94,83 +67,15 @@ public class Rollback {
             }
             // aplicam liniile modificare si dupa modificam si fisierul sa fie la curent cu adaugarile facute
             myList = List.copyOf(deleteFrom(added,dataFisier));
-            System.out.println("myList adaugare: " + myList);
             dataFisier = String.join("\n",myList);
-            System.out.println("dataFisier: " +dataFisier);
         }
-        System.out.println();
         nou = createNewJSONObject(toBeDeleted,toBeAdded); /// switch aici
+        json.getJSONObject("files").getJSONObject("" + numeFisier + "").put("" + System.currentTimeMillis() / 1000L + "",nou);
         file.put("" + System.currentTimeMillis() / 1000L + "",nou);
-        System.out.println("fisier final este:");
-        System.out.println(dataFisier);
-        System.out.println("fisierul de versiuni este:");
-        System.out.println(file);
+        this.rollbackedFile = dataFisier;
+        setVersionFileData(json.toString());
     }
 
-    public ArrayList<String> getFiles(JSONObject VersionFile){
-        ArrayList<String> returned = new ArrayList<>();
-        JSONObject files;
-        files = VersionFile.getJSONObject("files");
-        Iterator<String> keys = files.keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            returned.add(key);
-            if(files.get(key) instanceof JSONArray) {
-                JSONArray array = (JSONArray) files.get(key);
-                JSONObject object = (JSONObject) array.get(0);
-                Iterator<String> innerKeys = object.keys();
-                while(innerKeys.hasNext()) {
-                    String innerKey = innerKeys.next();
-                    returned.add(innerKey);
-                }
-            }
-        }
-        return returned;
-    }
-
-    public ArrayList<String> getTimestampOfFile(JSONObject VersionFile){
-        ArrayList<String> returned = new ArrayList<>();
-        Iterator<String> keys = VersionFile.keys();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            returned.add(key);
-            if(VersionFile.get(key) instanceof JSONArray) {
-                JSONArray array = (JSONArray) VersionFile.get(key);
-                JSONObject object = (JSONObject) array.get(0);
-                Iterator<String> innerKeys = object.keys();
-                while(innerKeys.hasNext()) {
-                    String innerKey = innerKeys.next();
-                    returned.add(innerKey);
-                }
-            }
-        }
-        return returned;
-    }
-
-    public void getKeysOfTimestamp(JSONObject VersionFile){
-        HashMap<String,Map<String,String>> returned = new HashMap<>();
-        HashMap<String,String> added = new HashMap<>(toMap(VersionFile.getJSONObject("added_content")));
-        HashMap<String,String> removed = new HashMap<>(toMap(VersionFile.getJSONObject("deleted_content")));
-
-        returned.put("added_content",added);
-        returned.put("deleted_content",removed);
-
-    }
-
-    private HashMap<String, String> toMap(JSONObject VersionFile){
-        HashMap<String,String> add = new HashMap<>();
-        Iterator x = VersionFile.keys();
-        JSONArray jsonArray = new JSONArray();
-        while (x.hasNext()){
-            String key = (String) x.next();
-            //System.out.printf(key+": ");
-            jsonArray.put(VersionFile.get(key));
-            //System.out.printf((String) VersionFile.get(key));
-            add.put(key,(String) VersionFile.get(key));
-            //System.out.println();
-        }
-        return add;
-    }
 
     private HashMap<String,JSONObject> timestamp(JSONObject file, long rollbackTimestamp){
         //obtineam json-urile in ordine diferita ochiometric, probabil nu e o problema dar o sa o las aici pentru accessibility
@@ -217,5 +122,44 @@ public class Rollback {
         array.put("deleted_content",del);
 
         return array;
+    }
+    public static void main(String[] args) {
+        String dataFisier="ana are mere\n" +
+                "maria are mere\n" +
+                "ben are mere\n";
+        String numeFisier = "nume_fisier_sincronizat";
+        String VersionFile = "{\n" +
+                "  \"files\": {\n" +
+                "    \"nume_fisier_sincronizat\": {\n" +
+                "    \"1653837570\" : {\n" +
+                "      \"added_content\" : { 3:\"ben are mere\"},\n" +
+                "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
+                "    },\n" +
+                "    \"1651728809\" :  {\n" +
+                "      \"added_content\" : { 2:\"maria are mere\"},\n" +
+                "      \"deleted_content\" : { 2:\"maria nu are mere\", 4:\"ana are multe mere\"}\n" +
+                "  	},\n" +
+                "    },\n" +
+                "    },\n" +
+                "}";
+        long rollbackTimestamp = 1651728809;
+        Rollback rollback = new Rollback(VersionFile);
+
+        rollback.rollbackTo(dataFisier,numeFisier,rollbackTimestamp);
+        System.out.println(rollback.getVersionFileData());
+        /*
+        //primeste tot json-ul
+        ArrayList<String> files = new ArrayList<>(rollback.getFiles(new JSONObject(VersionFile)));
+
+        //primeste direct json-ul fisierului care se doreste cautat, implicit si partea cu .getJSONObject("files")
+        //le veti ordonate?
+        JSONObject json = new JSONObject(VersionFile);
+        json = json.getJSONObject("files").getJSONObject("nume_fisier_sincronizat");
+        ArrayList<String> timestamps = new ArrayList<>(rollback.getTimestampOfFile(json));
+
+        //primeste direct timestamp-ul, implicit si fisierul
+        JSONObject keys;
+        keys = json.getJSONObject("1651901609");
+        rollback.getKeysOfTimestamp(keys);*/
     }
 }

@@ -17,7 +17,9 @@ public class Version_Control_Component {
     ComparatorP2PFiles comparatorul;
     ComparatorMasterFile comparatorulMasterFile;
     VersionFile fisierVersiuni;
-
+    Rollback rollback;
+    String rollbackFile;
+    String rollbackFileName;
     public Version_Control_Component(){
         initVersionFileData();
         fisierVersiuni = new VersionFile(versionFileData);
@@ -52,7 +54,12 @@ public class Version_Control_Component {
     public void setVersionFileData(String versionFileData) {
         this.versionFileData = versionFileData;
     }
-
+    public void rollbackFile(long timeStamp){
+        rollback = new Rollback(this.versionFileData);
+        rollback.rollbackTo(this.rollbackFile, this.rollbackFileName, timeStamp);
+        this.rollbackFile = rollback.getRollbackedFile();
+        setFisierVersiuni(rollback.getVersionFileData());
+    }
     public void initVersionFileData(){
         versionFileData = """
                             {
@@ -92,6 +99,22 @@ public class Version_Control_Component {
         this.otherMasterFile = otherMasterFile;
     }
 
+    public String getRollbackFile() {
+        return rollbackFile;
+    }
+
+    public void setRollbackFile(String rollbackFile) {
+        this.rollbackFile = rollbackFile;
+    }
+
+    public String getRollbackFileName() {
+        return rollbackFileName;
+    }
+
+    public void setRollbackFileName(String rollbackFileName) {
+        this.rollbackFileName = rollbackFileName;
+    }
+
     public static void main(String[] args) throws IOException {
         //Merge
         /*System.out.println(fileDifferences("Mama\nare\nmere", "Tata\nare\nmere\nsi\npere").getKey().toString());
@@ -99,7 +122,7 @@ public class Version_Control_Component {
 
       /*  Version_Control_Component version = new Version_Control_Component("""
                 {"files":{"primul":{"2022/05/15 16:01":{"added_content":{"0":"Tata","3":"si","4":"pere"},"deleted_content":{"0":"Mama"}}}}}""");*/ //constructor version file data
-        Version_Control_Component version = new Version_Control_Component();
+      /*  Version_Control_Component version = new Version_Control_Component();
 
         List<Pair<String, Long>> primaLista = new ArrayList<>();
 
@@ -124,7 +147,43 @@ public class Version_Control_Component {
         version.setOtherMasterFile(aDouaLista);
         version.compareMasterFile();
         System.out.println(version.getLocalMasterFile());
-        //scriere
+        //scriere*/
+        String dataFisier="ana are mere\n" +
+                "maria are mere\n" +
+                "ben are mere\n";
+        String numeFisier = "nume_fisier_sincronizat";
+        String VersionFile = "{\n" +
+                "  \"files\": {\n" +
+                "    \"nume_fisier_sincronizat\": {\n" +
+                "    \"1653837570\" : {\n" +
+                "      \"added_content\" : { 3:\"ben are mere\"},\n" +
+                "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
+                "    },\n" +
+                "    \"1651728809\" :  {\n" +
+                "      \"added_content\" : { 2:\"maria are mere\"},\n" +
+                "      \"deleted_content\" : { 2:\"maria nu are mere\", 4:\"ana are multe mere\"}\n" +
+                "  	},\n" +
+                "    },\n" +
+                "    \"alt_fisier_sincronizat\": {\n" +
+                "    \"1653837570\" : {\n" +
+                "      \"added_content\" : { 3:\"ben are mere\"},\n" +
+                "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
+                "    },\n" +
+                "    },\n" +
+                "    },\n" +
+                "}";
+        long rollbackTimestamp = 1651728809;
+        Version_Control_Component a = new Version_Control_Component(VersionFile);
+        a.setRollbackFile(dataFisier);
+        a.setRollbackFileName(numeFisier);
+        a.rollbackFile(rollbackTimestamp);
+        System.out.println(a.getRollbackFile());
+        System.out.println(a.getVersionFileData());
+        VersionFileParser parser = new VersionFileParser(a.getVersionFileData());
+        ArrayList<String> files = parser.getFiles();
+        ArrayList<String> timestamps = parser.getTimestampsOfFile(files.get(1));
+        System.out.println(parser.getChangesOfFile(files.get(1), timestamps.get(0)));
+        //System.out.println(parser.getFiles());
     }
 }
 
