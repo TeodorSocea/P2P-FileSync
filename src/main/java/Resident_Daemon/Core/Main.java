@@ -8,6 +8,7 @@ import Resident_Daemon.Utils.GetTextFiles;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -54,10 +55,15 @@ public class Main {
 
 //        List<SyncRecord> records = new LinkedList<>();
 
+//
+
+        List<SyncRecord> list = new LinkedList<>();
         for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
             var sr = new SyncRecord (file.getKey().toString(), true);
-            BasicFileUtils.writeRecordToMasterFile(sr);
+            list.add(sr);
         }
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
+//        writeRecordsToMasterFileOverwrite
 
 //        Am implementat metoda saveRecordsToMasterFile si metoda getSyncRecordWithPath ce vor fi de folos pentru sincronizarea corecta a fisierelor
 
@@ -79,7 +85,9 @@ public class Main {
         System.out.println(BasicFileUtils.GetMasterFilePath());
 
         var sr = new SyncRecord("b", true, 12);
-        BasicFileUtils.writeRecordToMasterFile(sr);
+        List<SyncRecord> list = new ArrayList<>();
+        list.add(sr);
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
 //        var records = BasicFileUtils.readRecordsFromMasterFile();
 
         System.exit(1);

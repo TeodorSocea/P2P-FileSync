@@ -247,8 +247,30 @@ public class BasicFileUtils {
 
     }
 
+    /*
+    *
+//        writelistofrecords
+//        stergem fisierul
+//
+//        scriem unul cate unul
+*/
+
     /** format: `${filePath} ${isSync} ${timestamp}\n`*/
-    public static void writeRecordToMasterFile(SyncRecord record) throws IOException {
+    public static void writeRecordsToMasterFileOverwrite(List<SyncRecord> records) throws IOException {
+
+        var sb = new StringBuilder();
+        sb.append(records.size() + "\n");
+        for (var el : records) {
+            sb.append(el.getFileRelPath() + " ");
+            sb.append(el.getSynced() + " ");
+            sb.append(el.getLastModifiedTimeStamp() + "\n");
+        }
+
+        Files.write(Paths.get(BasicFileUtils.GetMasterFilePath()), sb.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    /** format: `${filePath} ${isSync} ${timestamp}\n`*/
+    public static void writeRecordToMasterFileAppend(SyncRecord record) throws IOException {
 
         var list = BasicFileUtils.readRecordsFromMasterFile();
         boolean found = false;
@@ -352,10 +374,9 @@ public class BasicFileUtils {
     public static void SaveRecordsToMasterFile() throws IOException {
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
 
-
         for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
             var sr = new SyncRecord (file.getKey().toString(), true);
-            BasicFileUtils.writeRecordToMasterFile(sr);
+            BasicFileUtils.writeRecordToMasterFileAppend(sr);
         }
 
     }
