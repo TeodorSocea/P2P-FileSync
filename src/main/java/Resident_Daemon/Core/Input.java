@@ -5,6 +5,9 @@ import Resident_Daemon.Utils.BasicFileUtils;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -63,6 +66,17 @@ public class Input {
         return new SyncRecord(filePath, isSync, timestamp);
     }
 
+    public static List<SyncRecord> nextListOfRecords() {
+
+        var out = new LinkedList<SyncRecord>();
+
+        Integer numOfRecs = Input.nextInteger();
+
+        for (int i = 0; i < numOfRecs; i++)
+            out.add(Input.nextSyncRecord());
+        return out;
+    }
+
     /**
      * This method configures the internal scanner to parse the content of a file
      */
@@ -76,6 +90,12 @@ public class Input {
         File text = new File(pathToFile);
         scanner = new Scanner(text);
     }
+
+    public static void confScanner(byte[] bytes){
+
+        scanner = new Scanner(new String(bytes, StandardCharsets.UTF_8));
+    }
+
 
     /**
      * This method configures the internal scanner to parse stdin

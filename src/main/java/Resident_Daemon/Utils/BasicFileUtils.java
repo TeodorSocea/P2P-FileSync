@@ -12,10 +12,7 @@ import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -247,14 +244,6 @@ public class BasicFileUtils {
 
     }
 
-    /*
-    *
-//        writelistofrecords
-//        stergem fisierul
-//
-//        scriem unul cate unul
-*/
-
     /** format: `${filePath} ${isSync} ${timestamp}\n`*/
     public static void writeRecordsToMasterFileOverwrite(List<SyncRecord> records) throws IOException {
 
@@ -298,22 +287,26 @@ public class BasicFileUtils {
         Files.write(Paths.get(BasicFileUtils.GetMasterFilePath()), sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
+    public static List<SyncRecord> readRecordsFromBytes(byte[] bytes) {
+
+        Input.confScanner(bytes);
+        return Input.nextListOfRecords();
+    }
+
+    public static List<SyncRecord> readRecordsFromString(String str) {
+
+        return readRecordsFromBytes(str.getBytes(StandardCharsets.UTF_8));
+    }
+
     public static List<SyncRecord> readRecordsFromMasterFile() {
 
-        var readRecords = new LinkedList<SyncRecord>();
-
-//        How many records are in the master file?
-        var numOfRecs = 0;
         try {
             Input.confScanner(BasicFileUtils.GetMasterFilePath());
-            numOfRecs = Input.nextInteger();
+            return Input.nextListOfRecords();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        for (int i = 0; i < numOfRecs; i++)
-            readRecords.add(Input.nextSyncRecord());
-        return readRecords;
+        return null;
     }
 
     public static List<SyncRecord> readMasterFile_FromString(String fileData) {

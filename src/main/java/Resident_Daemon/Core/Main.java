@@ -7,6 +7,7 @@ import Resident_Daemon.Utils.GetTextFiles;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -88,6 +89,14 @@ public class Main {
         List<SyncRecord> list = new ArrayList<>();
         list.add(sr);
         BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
+
+        var listRec = BasicFileUtils.readRecordsFromString(
+                "2\n" +
+                "b true 12\n" +
+                "b true 12\n");
+
+        System.out.println(listRec);
+
 //        var records = BasicFileUtils.readRecordsFromMasterFile();
 
         System.exit(1);
