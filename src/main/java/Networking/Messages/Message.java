@@ -6,7 +6,6 @@ public class Message {
     protected byte[] rawMessage;
     protected int header;
     protected int senderID;
-    private static byte[] key = {108,109,97,111,32,103,97,121};
 
     public Message(byte[] rawMessage){
         this.rawMessage = rawMessage;
@@ -19,6 +18,7 @@ public class Message {
     }
 
     protected void parse(){
+        decrypt();
         header  = Messages.getIntFromByteArray(rawMessage,4);
         senderID  = Messages.getIntFromByteArray(rawMessage,8);
     }
@@ -48,14 +48,14 @@ public class Message {
     }
 
     public void encrypt(){
-//        for (int i = 0; i < rawMessage.length; i++) {
-//            rawMessage[i] = (byte) (rawMessage[i] ^ key[i % key.length]);
-//        }
+        for (int i = 0; i < rawMessage.length; i++) {
+            rawMessage[i] = (byte) (rawMessage[i] ^ Messages.KEY[i % Messages.KEY.length]);
+        }
     }
 
     public void decrypt(){
-//        for (int i = 0; i < rawMessage.length; i++) {
-//            rawMessage[i] = (byte) (rawMessage[i] ^ key[i % key.length]);
-//        }
+        for (int i = 0; i < rawMessage.length; i++) {
+            rawMessage[i] = (byte) (rawMessage[i] ^ Messages.KEY[i % Messages.KEY.length]);
+        }
     }
 }

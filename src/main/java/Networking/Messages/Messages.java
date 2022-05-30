@@ -16,11 +16,19 @@ public class Messages {
     public static final int MAX_SIZE = 1024;
     public static final int UNAUTHENTICATED = 0;
     public static final int NO_SWARM = 0;
+    public static final byte[] KEY = {108,109,97,111,32,103,97,121};
 
     public static byte[] toByteArray(int in){
         ByteBuffer buf = ByteBuffer.allocate(4);
         buf.putInt(4);
         return buf.array();
+    }
+    
+    public static byte[] decryptSize(byte[] size){
+        for (int i = 0; i < size.length; i++) {
+            size[i] = (byte) (size[i] ^ Messages.KEY[i % Messages.KEY.length]);
+        }
+        return size;
     }
 
     public static int getIntFromByteArray(byte[] input, int offset){

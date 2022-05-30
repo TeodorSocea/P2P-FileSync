@@ -14,6 +14,9 @@ import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -164,20 +167,6 @@ public class NetworkingComponent {
         peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
     }
 
-    public int indexOf(byte[] outerArray, byte[] smallerArray) {
-        for(int i = 0; i < outerArray.length - smallerArray.length+1; ++i) {
-            boolean found = true;
-            for(int j = 0; j < smallerArray.length; ++j) {
-                if (outerArray[i+j] != smallerArray[j]) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) return i;
-        }
-        return -1;
-    }
-
     public byte[] getDataFromDataPipeline(int swarmID, int peerID){
         List<Data> allDataFromPeer = dataPipelineMap.get(swarmID).getDataInPipeline(peerID);
         Data data = allDataFromPeer.remove(0);
@@ -185,14 +174,23 @@ public class NetworkingComponent {
         int allocationSize = Messages.getIntFromByteArray(data.getData().get(0), 0);
         ByteBuffer byteBuffer = ByteBuffer.allocate(allocationSize);
         int index = 0;
+        int mod = 1024;
+
         for(byte[] byteArray : data.getData()){
-            if(index == 0){
-                byteBuffer.put(Arrays.copyOfRange(byteArray, 0, 4));
+            if((index + 1) * 1024 > allocationSize){
+                mod = 1024 - ((index + 1) * 1024 - allocationSize);
             }
-            byteBuffer.put(index * 1024, byteArray);
+            if (index == 0){
+                byteBuffer.put(Arrays.copyOfRange(byteArray, 4, Math.min( 4 + mod, byteArray.length)));
+            }
+            else{
+                byteBuffer.put(Arrays.copyOfRange(byteArray, 0, Math.min(mod, byteArray.length)));
+            }
             index++;
         }
         networkSwarmManager.getSwarms().get(swarmID).popFulfilledRequests(peerID);
+
+
         return byteBuffer.array();
     }
 

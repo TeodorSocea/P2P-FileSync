@@ -34,7 +34,7 @@ public class ConnectionHandler implements Runnable{
         int definitiveMessageSize;
         do{
             selfSocket.getInputStream().read(messageSize);
-            definitiveMessageSize = Messages.getIntFromByteArray(messageSize, 0);
+            definitiveMessageSize = Messages.getIntFromByteArray(Messages.decryptSize(messageSize), 0);
         }while(definitiveMessageSize == 0);
         byte[] buf = new byte[definitiveMessageSize - 4];
         int readBytes = selfSocket.getInputStream().read(buf, 0, buf.length);
@@ -43,8 +43,6 @@ public class ConnectionHandler implements Runnable{
         buffer.put(buf);
         //byte[] rawMessage = ArrayUtils.addAll(messageSize, buf);
         Message incoming = new Message(buffer.array());
-        incoming.decrypt();
-
         return incoming;
     }
 
@@ -157,7 +155,6 @@ public class ConnectionHandler implements Runnable{
                         if (!dataPipelineMap.containsKey(dataMessage.getSwarmID())) {
                             dataPipelineMap.put(dataMessage.getSwarmID(), new DataPipeline());
                         }
-                        System.out.println("Got chunk: " + dataMessage.getChunkID());
                         int latestIndex = dataPipelineMap.get(dataMessage.getSwarmID()).getLatestIndexOfPeer(dataMessage.getSenderID());
                         dataPipelineMap.get(dataMessage.getSwarmID()).addData(dataMessage.getSenderID(), dataMessage.getData(), latestIndex);
                         break;
