@@ -47,6 +47,7 @@ public class DataRequestMessage extends Message{
         //path
         buff.put(16, this.path.getBytes(StandardCharsets.UTF_8));
         rawMessage = buff.array();
+        encrypt();
         return rawMessage;
     }
 }

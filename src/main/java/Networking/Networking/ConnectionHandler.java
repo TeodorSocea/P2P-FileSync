@@ -34,7 +34,7 @@ public class ConnectionHandler implements Runnable{
         int definitiveMessageSize;
         do{
             selfSocket.getInputStream().read(messageSize);
-            definitiveMessageSize = Messages.getIntFromByteArray(messageSize, 0);
+            definitiveMessageSize = Messages.getIntFromByteArray(Messages.decryptSize(messageSize), 0);
         }while(definitiveMessageSize == 0);
         byte[] buf = new byte[definitiveMessageSize - 4];
         int readBytes = selfSocket.getInputStream().read(buf, 0, buf.length);
@@ -42,8 +42,7 @@ public class ConnectionHandler implements Runnable{
         buffer.putInt(definitiveMessageSize);
         buffer.put(buf);
         //byte[] rawMessage = ArrayUtils.addAll(messageSize, buf);
-        Message incoming = EncryptedMessage.decrypt(new EncryptedMessage(buffer.array()));
-
+        Message incoming = new Message(buffer.array());
         return incoming;
     }
 
@@ -81,7 +80,7 @@ public class ConnectionHandler implements Runnable{
         NetworkSwarm swarm = networkSwarmManager.getSwarms().get(swarmID);
         for(Map.Entry<Integer, Peer> entry : swarm.getPeers().entrySet()){
             SwarmDataMessage swarmDataMessage = new SwarmDataMessage(MessageHeader.SWARM_DATA, senderID, swarmID, entry.getValue());
-            selfSocket.getOutputStream().write(EncryptedMessage.encrypt(swarmDataMessage).toPacket());
+            selfSocket.getOutputStream().write(swarmDataMessage.toPacket());
         }
     }
 
@@ -135,7 +134,7 @@ public class ConnectionHandler implements Runnable{
                             new Thread(connectionHandler).start();
                         }
                         NewPeerMessage newPeerMessage = new NewPeerMessage(MessageHeader.NEW_PEER, networkSwarmManager.getSwarms().get(swarmDataMessage.getSwarmID()).getSelfID(), swarmDataMessage.getSwarmID());
-                        newSocket.getOutputStream().write(EncryptedMessage.encrypt(newPeerMessage).toPacket());
+                        newSocket.getOutputStream().write(newPeerMessage.toPacket());
                         Peer newPeer = new Peer(newSocket, newSocket.getInetAddress().toString(), swarmDataMessage.getPeerID());
                         networkSwarmManager.addPeerToSwarm(swarmDataMessage.getSwarmID(), newPeer);
                         break;

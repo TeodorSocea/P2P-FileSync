@@ -46,6 +46,7 @@ public class InviteMessage extends Message{
         //swarmID
         buff.putInt(16, this.swarmID);
         rawMessage = buff.array();
+        encrypt();
         return rawMessage;
     }
 }

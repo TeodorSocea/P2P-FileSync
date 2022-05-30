@@ -14,6 +14,9 @@ import org.apache.commons.lang3.tuple.MutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
 
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -83,6 +86,10 @@ public class NetworkingComponent {
         return networkSwarmManager.createNewSwarm();
     }
 
+    public int createNewSwarmName(String name){
+        return networkSwarmManager.createNewSwarm(name);
+    }
+
     public void printSwarms(){
         System.out.println(networkSwarmManager.getSwarms());
     }
@@ -124,10 +131,10 @@ public class NetworkingComponent {
             Peer sender = new Peer(invitation.getSocket(), invitation.getSocket().getRemoteSocketAddress().toString(), invitation.getSenderID());
             networkSwarmManager.addPeerToSwarm(invitation.getSwarmID(), sender);
             InviteResponseMessage responseMessage = new InviteResponseMessage(MessageHeader.RESPONSE_INVITE_TO_SWARM, invitation.getSelfID(), invitation.getSwarmID(), true);
-            invitation.sendEncryptedMessage(responseMessage);
+            sender.getPeerSocket().getOutputStream().write(responseMessage.toPacket());
         }else{
             InviteResponseMessage responseMessage = new InviteResponseMessage(MessageHeader.RESPONSE_INVITE_TO_SWARM, invitation.getSelfID(), invitation.getSwarmID(), false);
-            invitation.sendEncryptedMessage(responseMessage);
+            invitation.getSocket().getOutputStream().write(responseMessage.toPacket());
         }
 
         networkSwarmManager.getInvitations().remove(invitation);
@@ -139,73 +146,52 @@ public class NetworkingComponent {
             byte[] dataToSend = Arrays.copyOfRange(data, i * 1024, Math.min((i+1) * 1024, data.length));
             DataMessage dataMessage = new DataMessage(MessageHeader.DATA, swarm.getSelfID(), swarmID, i, dataToSend);
             for(Map.Entry<Integer, Peer> entry : swarm.getPeers().entrySet()){
-                entry.getValue().sendEncryptedMessage(dataMessage);
+                entry.getValue().getPeerSocket().getOutputStream().write(dataMessage.toPacket());
             }
         }
     }
 
     public void sentDataToPeer(byte[] data, int swarmID, int peerID) throws IOException {
-        String EOF = "NET_EOF_MARKER";
-        ByteBuffer byteBuffer = ByteBuffer.allocate(data.length + EOF.length());
+        int EOF = data.length;
+        ByteBuffer byteBuffer = ByteBuffer.allocate(4 + data.length);
+        byteBuffer.putInt(EOF);
         byteBuffer.put(data);
-        byteBuffer.put(EOF.getBytes(StandardCharsets.UTF_8));
         data = byteBuffer.array();
         Peer peer = networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID);
         for(int i = 0; i < data.length / 1024 + 1 ; i++){
             byte[] dataToSend = Arrays.copyOfRange(data, i * 1024, Math.min((i+1) * 1024, data.length));
             DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, i, dataToSend);
-            peer.sendEncryptedMessage(dataMessage);
+            peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
         }
         DataMessage dataMessage = new DataMessage(MessageHeader.DATA, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, -1, new byte[1024]);
-        peer.sendEncryptedMessage(dataMessage);
-    }
-
-    public Map<Integer, byte[]> receiveData(int swarmID){
-        Map<Integer, byte[]> output = new HashMap<>();
-        Map<Integer, DataBuffer> dataBufferMap = networkSwarmManager.getIncomingData(swarmID);
-        for(Map.Entry<Integer, DataBuffer> entry : dataBufferMap.entrySet()){
-            DataBuffer dataBuffer = entry.getValue();
-            int max = Collections.max(dataBuffer.getDataMap().keySet());
-            ByteBuffer byteBuffer = ByteBuffer.allocate((max+1)*1024);
-            for(int chunkID : dataBuffer.getDataMap().keySet()){
-                byteBuffer.put(chunkID * 1024, dataBuffer.getDataMap().get(chunkID));
-            }
-            output.put(entry.getKey(), byteBuffer.array());
-        }
-        return output;
-    }
-
-    public int indexOf(byte[] outerArray, byte[] smallerArray) {
-        for(int i = 0; i < outerArray.length - smallerArray.length+1; ++i) {
-            boolean found = true;
-            for(int j = 0; j < smallerArray.length; ++j) {
-                if (outerArray[i+j] != smallerArray[j]) {
-                    found = false;
-                    break;
-                }
-            }
-            if (found) return i;
-        }
-        return -1;
+        peer.getPeerSocket().getOutputStream().write(dataMessage.toPacket());
     }
 
     public byte[] getDataFromDataPipeline(int swarmID, int peerID){
         List<Data> allDataFromPeer = dataPipelineMap.get(swarmID).getDataInPipeline(peerID);
         Data data = allDataFromPeer.remove(0);
         dataPipelineMap.get(swarmID).updateLatestIndexOfPeer(peerID, false);
-        int allocationSize = data.getData().size()*1024;
+        int allocationSize = Messages.getIntFromByteArray(data.getData().get(0), 0);
         ByteBuffer byteBuffer = ByteBuffer.allocate(allocationSize);
         int index = 0;
+        int mod = 1024;
+
         for(byte[] byteArray : data.getData()){
-            byteBuffer.put(index * 1024, byteArray);
+            if((index + 1) * 1024 > allocationSize){
+                mod = 1024 - ((index + 1) * 1024 - allocationSize);
+            }
+            if (index == 0){
+                byteBuffer.put(Arrays.copyOfRange(byteArray, 4, Math.min( 4 + mod, byteArray.length)));
+            }
+            else{
+                byteBuffer.put(Arrays.copyOfRange(byteArray, 0, Math.min(mod, byteArray.length)));
+            }
             index++;
         }
-        String EOF = "NET_EOF_MARKER";
-        int indexOfEOF = indexOf(byteBuffer.array(), EOF.getBytes(StandardCharsets.UTF_8));
         networkSwarmManager.getSwarms().get(swarmID).popFulfilledRequests(peerID);
-        ByteBuffer auxByteBuffer = ByteBuffer.allocate(indexOfEOF);
-        auxByteBuffer.put(byteBuffer.array(), 0, indexOfEOF);
-        return auxByteBuffer.array();
+
+
+        return byteBuffer.array();
     }
 
     public int getLatestIndex(int swarmID, int peerID){
@@ -223,7 +209,7 @@ public class NetworkingComponent {
 
     public void requestDataFromSwarm(int swarmID, int peerID, String path) throws IOException {
         DataRequestMessage dataRequestMessage = new DataRequestMessage(MessageHeader.DATA_REQUEST, networkSwarmManager.getSwarms().get(swarmID).getSelfID(), swarmID, path);
-        networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).sendEncryptedMessage(dataRequestMessage);
+        networkSwarmManager.getSwarms().get(swarmID).getPeers().get(peerID).getPeerSocket().getOutputStream().write(dataRequestMessage.toPacket());
     }
 
     public List<Pair<Integer, Integer>> getFulfilledRequests(){

@@ -8,7 +8,7 @@ public class Message {
     protected int senderID;
 
     public Message(byte[] rawMessage){
-        this.rawMessage = rawMessage.clone();
+        this.rawMessage = rawMessage;
         this.parse();
     }
 
@@ -18,6 +18,7 @@ public class Message {
     }
 
     protected void parse(){
+        decrypt();
         header  = Messages.getIntFromByteArray(rawMessage,4);
         senderID  = Messages.getIntFromByteArray(rawMessage,8);
     }
@@ -44,5 +45,17 @@ public class Message {
         buff.putInt(8, this.senderID);
         rawMessage = buff.array();
         return rawMessage;
+    }
+
+    public void encrypt(){
+        for (int i = 0; i < rawMessage.length; i++) {
+            rawMessage[i] = (byte) (rawMessage[i] ^ Messages.KEY[i % Messages.KEY.length]);
+        }
+    }
+
+    public void decrypt(){
+        for (int i = 0; i < rawMessage.length; i++) {
+            rawMessage[i] = (byte) (rawMessage[i] ^ Messages.KEY[i % Messages.KEY.length]);
+        }
     }
 }

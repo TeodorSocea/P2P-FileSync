@@ -1,3 +1,5 @@
-target/
-
+target
+shelf
+artifacts
 *.jar
+out
