@@ -39,7 +39,7 @@ public class SendFilesToPeer implements Command {
     }
 
     private final String ALL_FILES = ".";
-    private final String MASTER_FILE = Singleton.filePathMasterSyncFile;
+    private final String MASTER_FILE = BasicFileUtils.filePathMasterSyncFile;
 
 
     @Override
@@ -56,8 +56,12 @@ public class SendFilesToPeer implements Command {
 
             }
         } else if (path.contains(MASTER_FILE)) {
-            BasicFileUtils.SaveRecordsToMasterFile();
-            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(Singleton.filePathMasterSyncFile);
+            try {
+                BasicFileUtils.SaveRecordsToMasterFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(BasicFileUtils.filePathMasterSyncFile);
 
 
             SendData(bytesToSend);

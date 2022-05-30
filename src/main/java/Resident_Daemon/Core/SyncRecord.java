@@ -37,6 +37,12 @@ public class SyncRecord implements Serializable, Comparable<SyncRecord> {
         this.lastModifiedTimeStamp = GetFileTimestamp(fileRelPath);
     }
 
+    public SyncRecord(String fileRelPath, boolean isSynced, long lastModifiedTimeStamp) {
+        this.fileRelPath = fileRelPath;
+        this.isSynced = isSynced;
+        this.lastModifiedTimeStamp = lastModifiedTimeStamp;
+    }
+
     public void setFileRelPath(String fileRelPath) {
         this.fileRelPath = fileRelPath;
     }
@@ -83,8 +89,7 @@ public class SyncRecord implements Serializable, Comparable<SyncRecord> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SyncRecord that = (SyncRecord) o;
-//        return isSynced == that.isSynced && timestampOfLastSync == that.timestampOfLastSync && filePath.equals(that.filePath);
-        return isSynced == that.isSynced && fileRelPath.equals(that.fileRelPath);
+        return fileRelPath.equals(that.fileRelPath);
     }
 
 }

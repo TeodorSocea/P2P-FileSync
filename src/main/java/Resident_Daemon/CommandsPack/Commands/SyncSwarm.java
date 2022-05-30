@@ -58,7 +58,7 @@ public class SyncSwarm extends ExceptionModule implements Command {
             // ...
 
             try {
-                networkingComponent.requestDataFromSwarm(swarmID, peerID, Singleton.filePathMasterSyncFile);
+                networkingComponent.requestDataFromSwarm(swarmID, peerID, BasicFileUtils.filePathMasterSyncFile);
 
                 while (!userData.isReceivedMasterFile()) {
                     try {

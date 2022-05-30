@@ -2,13 +2,17 @@ package Resident_Daemon.Core;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.MenuPack.ConsoleMenu;
+import Resident_Daemon.Utils.BasicFileUtils;
 import Resident_Daemon.Utils.GetTextFiles;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     private Singleton mainData;
@@ -45,22 +49,26 @@ public class Main {
         System.exit(0);
     }
 
-    public static void testSaveRecordToMasterFile() {
+    public static void testSaveRecordToMasterFile() throws IOException {
 
         Singleton.getSingletonObject().setFolderToSyncPath("C:\\Users\\tnae\\Desktop\\Fac");
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
 
-        List<SyncRecord> records = new LinkedList<>();
+//        List<SyncRecord> records = new LinkedList<>();
 
-//        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
-//            records.add(new SyncRecord (file.getKey().toString(), true));
-//        }
+//
 
-        Singleton.saveRecordsToMasterFile(records);
+        List<SyncRecord> list = new LinkedList<>();
+        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
+            var sr = new SyncRecord (file.getKey().toString(), true);
+            list.add(sr);
+        }
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
+//        writeRecordsToMasterFileOverwrite
 
 //        Am implementat metoda saveRecordsToMasterFile si metoda getSyncRecordWithPath ce vor fi de folos pentru sincronizarea corecta a fisierelor
 
-        var syncRecordList = Singleton.getRecordsFromMasterFile();
+        var syncRecordList = BasicFileUtils.readRecordsFromMasterFile();
         for(var c : syncRecordList){
             System.out.println("fileRelPath: " + c.getFileRelPath());
             System.out.println("timestamp: " + c.getLastModifiedTimeStamp());
@@ -72,11 +80,36 @@ public class Main {
         System.exit(0);
     }
 
+    public static void testSaveRecordToMasterFileFacutDeBalan() throws IOException {
+
+        Singleton.getSingletonObject().setFolderToSyncPath(".");
+        System.out.println(BasicFileUtils.GetMasterFilePath());
+
+        var sr = new SyncRecord("b", true, 12);
+        List<SyncRecord> list = new ArrayList<>();
+        list.add(sr);
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
+
+        var listRec = BasicFileUtils.readRecordsFromString(
+                "2\n" +
+                "b true 12\n" +
+                "b true 12\n");
+
+        System.out.println(listRec);
+
+//        var records = BasicFileUtils.readRecordsFromMasterFile();
+
+        System.exit(1);
+    }
 
     public static void main(String[] args) {
 
 //        testSerialization();
-        testSaveRecordToMasterFile();
+        try {
+            testSaveRecordToMasterFileFacutDeBalan();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
