@@ -13,23 +13,38 @@ public class ModifiedFiles {
         for(FileP2P file : originalFiles){
             List<String> newModifiedFile = new ArrayList<>();
             Pair<List<Pair<Integer,String>>,List<Pair<Integer,String>>> value = modifications.get(file.getFileName());
-            List<Pair<Integer,String>> added = value.getKey();
-            List<Pair<Integer,String>> removed = value.getValue();
-            BufferedReader bf = new BufferedReader(new StringReader(file.getData()));
-            String lineFile = "";
-            int counter = 0;
-            int positionAdded = 0;
-            int positionRemoved = 0;
-            while((lineFile=bf.readLine())!=null){
-                if(positionRemoved<removed.size()){
-                    if(counter==removed.get(positionRemoved).getKey()){
-                        if(positionAdded<added.size() && counter==added.get(positionAdded).getKey()){
-                            newModifiedFile.add(added.get(positionAdded).getValue());
-                            positionAdded++;
+            if(value!=null){
+                List<Pair<Integer,String>> added = value.getKey();
+                List<Pair<Integer,String>> removed = value.getValue();
+                BufferedReader bf = new BufferedReader(new StringReader(file.getData()));
+                String lineFile = "";
+                int counter = 0;
+                int positionAdded = 0;
+                int positionRemoved = 0;
+                while((lineFile=bf.readLine())!=null){
+                    if(positionRemoved<removed.size()){
+                        if(counter==removed.get(positionRemoved).getKey()){
+                            if(positionAdded<added.size() && counter==added.get(positionAdded).getKey()){
+                                newModifiedFile.add(added.get(positionAdded).getValue());
+                                positionAdded++;
+                            }
+                            positionRemoved++;
                         }
-                        positionRemoved++;
+                        else{
+                            if(positionAdded<added.size()){
+                                if(counter==added.get(positionAdded).getKey()){
+                                    do{
+                                        newModifiedFile.add(added.get(positionAdded).getValue());
+                                        positionAdded++;
+                                        counter++;
+                                    }while(positionAdded<added.size() && added.get(positionAdded).getKey()==added.get(positionAdded-1).getKey()+1);
+                                }
+                            }
+                            newModifiedFile.add(lineFile);
+                        }
                     }
-                    else{
+                    else
+                    {
                         if(positionAdded<added.size()){
                             if(counter==added.get(positionAdded).getKey()){
                                 do{
@@ -41,32 +56,19 @@ public class ModifiedFiles {
                         }
                         newModifiedFile.add(lineFile);
                     }
+                    counter++;
                 }
-                else
-                {
-                    if(positionAdded<added.size()){
-                        if(counter==added.get(positionAdded).getKey()){
-                            do{
-                                newModifiedFile.add(added.get(positionAdded).getValue());
-                                positionAdded++;
-                                counter++;
-                            }while(positionAdded<added.size() && added.get(positionAdded).getKey()==added.get(positionAdded-1).getKey()+1);
-                        }
-                    }
-                    newModifiedFile.add(lineFile);
+                for(int i=positionAdded;i<added.size();i++){
+                    newModifiedFile.add(added.get(i).getValue());
                 }
-                counter++;
+                String modifiedFileAsString = "";
+                for (String s : newModifiedFile) {
+                    modifiedFileAsString = modifiedFileAsString.concat(s + "\n");
+                }
+                FileP2P newFile = new FileP2P(file);
+                newFile.setData(modifiedFileAsString);
+                modifiedFiles.add(newFile);
             }
-            for(int i=positionAdded;i<added.size();i++){
-                newModifiedFile.add(added.get(i).getValue());
-            }
-            String modifiedFileAsString = "";
-            for (String s : newModifiedFile) {
-                modifiedFileAsString = modifiedFileAsString.concat(s + "\n");
-            }
-            FileP2P newFile = new FileP2P(file);
-            newFile.setData(modifiedFileAsString);
-            modifiedFiles.add(newFile);
         }
         boolean ok;
         for(FileP2P file : otherFiles){
