@@ -1,16 +1,32 @@
 package Resident_Daemon.Utils;
 
+import Resident_Daemon.Core.Input;
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Core.SyncRecord;
 import javafx.util.Pair;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.io.*;
+import java.net.URI;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.*;
+import java.util.stream.IntStream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Base64.getEncoder;
 
 public class BasicFileUtils {
-    private static boolean isValidFile(Path path) {
+
+    public static String filePathMasterSyncFile = "sync_files_evidence.data";
+
+    public static boolean isValidFile(String path) {
+        return BasicFileUtils.isValidFile(Paths.get(path));
+    }
+
+    public static boolean isValidFile(Path path) {
         //        Check if file exists
         if (!Files.exists(path)){
             return false;
@@ -116,10 +132,10 @@ public class BasicFileUtils {
 
     }
 
-    private static byte[] codeFile(String fileRelPath, byte[] fileContent){
+    private static byte[] codeFile(String fileRelPath, long timestamp, byte[] fileContent){
 
         String SfileContent = new String(fileContent, StandardCharsets.UTF_8);
-        StringBuilder stringBuilder = new StringBuilder(fileRelPath + "!" + SfileContent);
+        StringBuilder stringBuilder = new StringBuilder(fileRelPath + "!" + timestamp + "!" + SfileContent);
 
         return stringBuilder.toString().getBytes(StandardCharsets.UTF_8);
     }
@@ -128,24 +144,48 @@ public class BasicFileUtils {
 
 /////////////
 
+    private static long GetTimeStamp(Path file) {
+        long timestamp;
+
+        try {
+            BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
+            timestamp = attrs.lastModifiedTime().toMillis();
+
+            //            System.out.println(attrs.lastModifiedTime().toString());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return timestamp;
+    }
+
     public static byte[] GetBytesToSend(String fileRelPath){
 
         String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
 
         Path filePath = Paths.get(folderPath, fileRelPath);
 
-        if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
-        byte[] fileContent = file2bytes(filePath);
+//        if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
+        byte[] fileContent = null;
+        if(isValidFile(filePath)) {
+            fileContent = file2bytes(filePath);
+        } else {
+            throw new InvalidPathException(filePath.toString(), "Wrong path");
+        }
 
-        return codeFile(fileRelPath, fileContent);
+        return codeFile(fileRelPath, GetTimeStamp(filePath), fileContent);
 
     }
 
     private static String getFilePath(String data){
         return data.substring(0, data.indexOf("!"));
     }
+    private static String getTimeStamp(String data){
+        return data.substring(data.indexOf("!") + 1, data.lastIndexOf("!") - 1);
+    }
     private static String getContent(String data){
-        return data.substring(data.indexOf("!") + 1);
+        return data.substring(data.lastIndexOf("!") + 1);
     }
 
     public static void WriteFileToFolder(String fileRelPath, String data) throws IOException {
@@ -191,12 +231,109 @@ public class BasicFileUtils {
 
     }
 
-    public static Pair<String, String> GetFileData(byte[] dataReceived){
+    public static FileData GetFileData(byte[] dataReceived){
         String receivedData = new String(dataReceived, StandardCharsets.UTF_8);
 
-        Pair<String, String> fileData = new Pair<>(getFilePath(receivedData), getContent(receivedData));
+        String fileRelPath = getFilePath(receivedData);
+        long timeStamp = Long.parseLong(getTimeStamp(receivedData));
+        String fileContent = getContent(receivedData);
+
+        FileData fileData = new FileData(fileRelPath, timeStamp, fileContent);
 
         return fileData;
+
+    }
+
+    /** format: `${filePath} ${isSync} ${timestamp}\n`*/
+    public static void writeRecordsToMasterFileOverwrite(List<SyncRecord> records) throws IOException {
+
+        var sb = new StringBuilder();
+        sb.append(records.size() + "\n");
+        for (var el : records) {
+            sb.append(el.getFileRelPath() + " ");
+            sb.append(el.getSynced() + " ");
+            sb.append(el.getLastModifiedTimeStamp() + "\n");
+        }
+
+        Files.write(Paths.get(BasicFileUtils.GetMasterFilePath()), sb.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    /** format: `${filePath} ${isSync} ${timestamp}\n`*/
+    public static void writeRecordToMasterFileAppend(SyncRecord record) throws IOException {
+
+        var list = BasicFileUtils.readRecordsFromMasterFile();
+        boolean found = false;
+        for(var sr : list) {
+            if (sr.equals(record)) {
+                sr.setSynced(record.getSynced());
+                sr.setLastModifiedTimeStamp(record.getLastModifiedTimeStamp());
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            list.add(record);
+        }
+
+        var sb = new StringBuilder();
+        sb.append(list.size() + "\n");
+        for (var el : list) {
+            sb.append(el.getFileRelPath() + " ");
+            sb.append(el.getSynced() + " ");
+            sb.append(el.getLastModifiedTimeStamp() + "\n");
+        }
+
+        Files.write(Paths.get(BasicFileUtils.GetMasterFilePath()), sb.toString().getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static List<SyncRecord> readRecordsFromBytes(byte[] bytes) {
+
+        Input.confScanner(bytes);
+        return Input.nextListOfRecords();
+    }
+
+    public static List<SyncRecord> readRecordsFromString(String str) {
+
+        return readRecordsFromBytes(str.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static List<SyncRecord> readRecordsFromMasterFile() {
+
+        try {
+            Input.confScanner(BasicFileUtils.GetMasterFilePath());
+            return Input.nextListOfRecords();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String GetMasterFilePath(){
+        String relMFPath = BasicFileUtils.filePathMasterSyncFile;
+        String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
+
+        String absoluteMFPath = Paths.get(absoluteFolderPath, relMFPath).toString();
+
+        return absoluteMFPath;
+    }
+
+    public static String GetAbsolutePath_FromRelative(String relPath){
+
+        String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
+        return Paths.get(absoluteFolderPath, relPath).toString();
+    }
+
+    public static void SaveRecordsToMasterFile() throws IOException {
+        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+
+        List<SyncRecord> list = new ArrayList<>();
+        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
+            SyncRecord syncRecord = new SyncRecord(file.getKey().toString(), true);
+            System.out.println(file.getKey());
+            list.add(syncRecord);
+        }
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
 
     }
 

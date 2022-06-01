@@ -1,6 +1,5 @@
 package Resident_Daemon.CommandsPack.Commands;
 
-import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.UserData;
@@ -9,7 +8,6 @@ import Resident_Daemon.Utils.GetTextFiles;
 import Version_Control.FileP2P;
 import Version_Control.Version_Control_Component;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -17,8 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import static Resident_Daemon.Utils.GetTextFiles.getTextFiles;
 
 public class ReceiveFiles implements Command {
 
@@ -35,7 +31,7 @@ public class ReceiveFiles implements Command {
         return originalFiles;
     }
 
-    private void ScriuCeVreau(String versionFileData){
+    private void writeVersionFile(String versionFileData){
 
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
 
@@ -69,7 +65,6 @@ public class ReceiveFiles implements Command {
         UserData userData = Singleton.getSingletonObject().getUserData();
         getIfExistsVersionFileData(vcc);
 
-//        vcc.setVersionFileData(vcc.getVersionFileData()); trebuie sa il scriu aici
 
         vcc.setOriginalFiles(getLocalFiles());
         vcc.setOtherFiles(userData.getOtherFiles());
@@ -78,7 +73,7 @@ public class ReceiveFiles implements Command {
 
             vcc.compare();
 
-            ScriuCeVreau(vcc.getVersionFileData());
+            writeVersionFile(vcc.getVersionFileData());
 
             List<FileP2P> fileToWrite = vcc.getOriginalFiles();
 
@@ -91,7 +86,6 @@ public class ReceiveFiles implements Command {
             e.printStackTrace();
         }
 
-        userData.setEnableToWriteAllFiles(false);
 
         return true;
     }
