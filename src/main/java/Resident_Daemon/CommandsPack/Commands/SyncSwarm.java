@@ -73,12 +73,13 @@ public class SyncSwarm extends ExceptionModule implements Command {
                 CreateLocalMasterFile();
 
                 // here we compare with Version Control
-                List<SyncRecord> syncRecordList = userData.getOtherMasterFile();
+                List<SyncRecord> localMasterFileRecords = userData.getLocalMasterFile();
+                List<SyncRecord> otherMasterFileRecords = userData.getOtherMasterFile();
 
-                if(syncRecordList.size() > 0) {
+                if(otherMasterFileRecords.size() > 0) {
                     StringBuilder stringBuilder = new StringBuilder();
 
-                    for(SyncRecord syncRecord : syncRecordList) {
+                    for(SyncRecord syncRecord : otherMasterFileRecords) {
                         stringBuilder.append(syncRecord.getFileRelPath() + "!");
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1);

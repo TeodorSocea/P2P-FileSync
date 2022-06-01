@@ -61,7 +61,7 @@ public class SendFilesToPeer implements Command {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(BasicFileUtils.filePathMasterSyncFile);
+            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(MASTER_FILE);
 
 
             SendData(bytesToSend);

@@ -82,22 +82,28 @@ public class Main {
 
     public static void testSaveRecordToMasterFileFacutDeBalan() throws IOException {
 
-        Singleton.getSingletonObject().setFolderToSyncPath(".");
+        Singleton.getSingletonObject().setFolderToSyncPath("C:\\Users\\tnae\\Desktop\\Fac");
+        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
         System.out.println(BasicFileUtils.GetMasterFilePath());
+        System.out.println(Singleton.getSingletonObject().getFolderToSyncPath());
 
-        var sr = new SyncRecord("b", true, 12);
         List<SyncRecord> list = new ArrayList<>();
-        list.add(sr);
+        for(var c : GetTextFiles.getTextFiles(folderPath).entrySet()){
+            SyncRecord syncRecord = new SyncRecord(c.getKey().toString(), true);
+            System.out.println(c.getKey());
+            list.add(syncRecord);
+        }
         BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
 
         var listRec = BasicFileUtils.readRecordsFromString(
                 "2\n" +
-                "b true 12\n" +
-                "b true 12\n");
+                "b - copy!true!12\n" +
+                "b !true!12\n");
 
         System.out.println(listRec);
 
-//        var records = BasicFileUtils.readRecordsFromMasterFile();
+        var records = BasicFileUtils.readRecordsFromMasterFile();
+        System.out.println(records);
 
         System.exit(1);
     }
@@ -105,11 +111,11 @@ public class Main {
     public static void main(String[] args) {
 
 //        testSerialization();
-        try {
-            testSaveRecordToMasterFileFacutDeBalan();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            testSaveRecordToMasterFileFacutDeBalan();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;

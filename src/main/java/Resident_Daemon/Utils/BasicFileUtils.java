@@ -309,46 +309,6 @@ public class BasicFileUtils {
         return null;
     }
 
-    public static List<SyncRecord> readMasterFile_FromString(String fileData) {
-        try {
-//            byte[] fileData_bytes = fileData.getBytes(StandardCharsets.UTF_8);
-
-//            byte[] fileData_UTFDecoded = fileData.getBytes(StandardCharsets.UTF_8);
-//            String rawFileData = new String(fileData_UTFDecoded);
-            byte[] fileDecoded = Base64.getDecoder().decode(fileData);
-            String fileRelPath = "temporar.data";
-
-//            BasicFileUtils.WriteFileToFolder(fileRelPath, fileData);
-            Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-            String filePath = String.valueOf(Paths.get(String.valueOf(folderPath), fileRelPath));
-
-            BasicFileUtils.bytes2file(fileDecoded, Path.of(filePath));
-            //
-
-            FileInputStream fis = new FileInputStream(filePath);
-            ObjectInputStream ois = null;
-
-            ois = new ObjectInputStream(fis);
-
-            List<SyncRecord> syncRecordList = new ArrayList<>();
-
-            int numOfRecords = ois.readInt();
-
-            for (int i = 0; i < numOfRecords; i++)
-                syncRecordList.add((SyncRecord) ois.readObject());
-
-            Files.delete(Path.of(filePath));
-
-            return syncRecordList;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-
-    }
-
     public static String GetMasterFilePath(){
         String relMFPath = BasicFileUtils.filePathMasterSyncFile;
         String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
@@ -367,10 +327,13 @@ public class BasicFileUtils {
     public static void SaveRecordsToMasterFile() throws IOException {
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
 
+        List<SyncRecord> list = new ArrayList<>();
         for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
-            var sr = new SyncRecord (file.getKey().toString(), true);
-            BasicFileUtils.writeRecordToMasterFileAppend(sr);
+            SyncRecord syncRecord = new SyncRecord(file.getKey().toString(), true);
+            System.out.println(file.getKey());
+            list.add(syncRecord);
         }
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
 
     }
 

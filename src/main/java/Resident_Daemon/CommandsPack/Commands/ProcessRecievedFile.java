@@ -37,11 +37,12 @@ public class ProcessRecievedFile implements Command {
         FileData fileData = BasicFileUtils.GetFileData(dataReceived);
 
         if(fileData.getFileRelPath().contains(BasicFileUtils.filePathMasterSyncFile)) {
-            userData.setReceivedMasterFile(true);
-            List<SyncRecord> syncRecordList = BasicFileUtils.readMasterFile_FromString(fileData.getFileContent());
+            List<SyncRecord> syncRecordList = BasicFileUtils.readRecordsFromString(fileData.getFileContent());
             for(SyncRecord syncRecord : syncRecordList){
                 userData.getOtherMasterFile().add(syncRecord);
             }
+
+            userData.setReceivedMasterFile(true);
         } else {
 
             FileP2P fileP2P = new FileP2P(fileData.getFileRelPath(), fileData.getFileContent(), fileData.getTimeStamp());

@@ -65,7 +65,6 @@ public class ReceiveFiles implements Command {
         UserData userData = Singleton.getSingletonObject().getUserData();
         getIfExistsVersionFileData(vcc);
 
-//        vcc.setVersionFileData(vcc.getVersionFileData()); trebuie sa il scriu aici
 
         vcc.setOriginalFiles(getLocalFiles());
         vcc.setOtherFiles(userData.getOtherFiles());
