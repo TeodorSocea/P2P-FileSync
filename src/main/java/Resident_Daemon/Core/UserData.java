@@ -7,6 +7,7 @@ import Version_Control.FileP2P;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,6 +28,9 @@ public class UserData {
 
     private boolean isReceivedMasterFile;
 
+    private ArrayList<String> versionFileFiles;
+    private ArrayList<String> timestampVersionFileFiles;
+    private HashMap<String, Map<String,String>> changesFileVersionFile;
     //region Getters & Setters
 
     public List<Invitation> getUserInvitations() {
@@ -116,5 +120,28 @@ public class UserData {
         return otherMasterFile;
     }
 
+    public ArrayList<String> getVersionFileFiles() {
+        return versionFileFiles;
+    }
+
+    public void setVersionFileFiles(ArrayList<String> versionFileFiles) {
+        this.versionFileFiles = versionFileFiles;
+    }
+
+    public ArrayList<String> getTimestampVersionFileFiles() {
+        return timestampVersionFileFiles;
+    }
+
+    public void setTimestampVersionFileFiles(ArrayList<String> timestampVersionFileFiles) {
+        this.timestampVersionFileFiles = timestampVersionFileFiles;
+    }
+
+    public HashMap<String, Map<String, String>> getChangesFileVersionFile() {
+        return changesFileVersionFile;
+    }
+
+    public void setChangesFileVersionFile(HashMap<String, Map<String, String>> changesFileVersionFile) {
+        this.changesFileVersionFile = changesFileVersionFile;
+    }
     //endregion
 }
