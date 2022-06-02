@@ -41,7 +41,9 @@ public class ReceiveFiles implements Command {
         Version_Control_Component vcc = Singleton.getSingletonObject().getVersion_control_component();
         UserData userData = Singleton.getSingletonObject().getUserData();
         String versionFileData = BasicFileUtils.GetIfExistsVersionFileData(swarmID);
-        vcc.setFisierVersiuni(versionFileData);
+        if(versionFileData != null) {
+            vcc.setFisierVersiuni(versionFileData);
+        }
 
 
         vcc.setOriginalFiles(getLocalFiles());
