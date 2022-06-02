@@ -139,7 +139,7 @@ public class ComparatorP2PFiles {
         FileP2P a = new FileP2P();
         a.setData("Mama\nare\nmere");
         a.setFileName("primul");
-        a.setTimestamp(1955);
+        a.setTimestamp(1155);
         prima.add(a);
 
         FileP2P a1 = new FileP2P();
@@ -155,7 +155,7 @@ public class ComparatorP2PFiles {
 
         FileP2P c = new FileP2P();
         c.setData("Tata\nare\nmere\nsi\npere");
-        c.setFileName("primul");
+        c.setFileName("primul2");
         c.setTimestamp(1777);
 
         FileP2P d = new FileP2P();

@@ -209,7 +209,7 @@ public class BasicFileUtils {
         return data.substring(0, data.indexOf("!"));
     }
     private static String getTimeStamp(String data){
-        return data.substring(data.indexOf("!") + 1, findNthOccur(data, '!', 2) - 1);
+        return data.substring(data.indexOf("!") + 1, findNthOccur(data, '!', 2));
     }
     private static String getContent(String data){
         return data.substring(findNthOccur(data, '!', 2) + 1);
