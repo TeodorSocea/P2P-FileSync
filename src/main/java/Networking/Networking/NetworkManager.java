@@ -40,7 +40,7 @@ public class NetworkManager{
         Socket newSocket = new Socket(ip, port);
         commonSocketPool.add(newSocket);
 
-        InviteMessage invitation = new InviteMessage(MessageHeader.INVITE_TO_SWARM, swarm.getSelfID(), swarm.generateNextID(), swarm.getSwarmID());
+        InviteMessage invitation = new InviteMessage(MessageHeader.INVITE_TO_SWARM, swarm.getSelfID(), swarm.generateNextID(), swarm.getSwarmID(), swarm.getSwarmName());
         newSocket.getOutputStream().write(invitation.toPacket());
 
         ConnectionHandler connectionHandler = new ConnectionHandler(newSocket, networkSwarmManager, commonSocketPool, dataPipelineMap);

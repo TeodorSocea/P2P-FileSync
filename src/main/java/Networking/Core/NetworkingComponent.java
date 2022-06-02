@@ -127,7 +127,7 @@ public class NetworkingComponent {
         Invitation invitation = networkSwarmManager.getInvitations().get(index);
 
         if(response == true) {
-            networkSwarmManager.joinNewSwarm(invitation.getSwarmID(), invitation.getSelfID());
+            networkSwarmManager.joinNewSwarm(invitation.getSwarmID(), invitation.getSelfID(), invitation.getSwarmName());
             Peer sender = new Peer(invitation.getSocket(), invitation.getSocket().getRemoteSocketAddress().toString(), invitation.getSenderID());
             networkSwarmManager.addPeerToSwarm(invitation.getSwarmID(), sender);
             InviteResponseMessage responseMessage = new InviteResponseMessage(MessageHeader.RESPONSE_INVITE_TO_SWARM, invitation.getSelfID(), invitation.getSwarmID(), true);

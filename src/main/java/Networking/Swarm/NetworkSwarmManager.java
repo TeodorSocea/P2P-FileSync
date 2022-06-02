@@ -43,8 +43,8 @@ public class NetworkSwarmManager {
         return nextID;
     }
 
-    public void joinNewSwarm(int swarmID, int selfID){
-        swarms.put(swarmID, new NetworkSwarm(swarmID, selfID));
+    public void joinNewSwarm(int swarmID, int selfID, String swarmName){
+        swarms.put(swarmID, new NetworkSwarm(swarmID, selfID, swarmName));
     }
 
     public void addPeerToSwarm(int swarmID, Peer peer){

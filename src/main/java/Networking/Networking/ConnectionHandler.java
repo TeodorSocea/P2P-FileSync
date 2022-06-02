@@ -106,7 +106,7 @@ public class ConnectionHandler implements Runnable{
                 switch (incoming.getHeader()) {
                     case MessageHeader.INVITE_TO_SWARM -> {
                         InviteMessage invitationMessage = new InviteMessage(incoming.getRawMessage());
-                        Invitation invitation = new Invitation(invitationMessage.getSenderID(), invitationMessage.getSwarmID(), invitationMessage.getInviteeID(), selfSocket);
+                        Invitation invitation = new Invitation(invitationMessage.getSenderID(), invitationMessage.getSwarmID(), invitationMessage.getSwarmName(), invitationMessage.getInviteeID(), selfSocket);
                         networkSwarmManager.addInvitation(invitation);
                         break;
                     }
