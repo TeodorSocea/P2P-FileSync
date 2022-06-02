@@ -38,7 +38,7 @@ public class NetworkSwarmManager {
             nextID = rand.nextInt(MAX);
         }while(swarms.containsKey(nextID));
         int selfID = rand.nextInt(MAX);
-        swarms.put(nextID, new NetworkSwarm(nextID,selfID));
+        swarms.put(nextID, new NetworkSwarm(nextID,selfID, name));
         System.out.println("Created swarm " + nextID);
         return nextID;
     }
