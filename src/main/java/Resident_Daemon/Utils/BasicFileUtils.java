@@ -351,10 +351,10 @@ public class BasicFileUtils {
     }
 
     public static void SaveRecordsToMasterFile(int swarmID) throws IOException {
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        Path swarmFolderPath = GetSwarmFolderPath(swarmID);
 
         List<SyncRecord> list = new ArrayList<>();
-        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
+        for(var file : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
             SyncRecord syncRecord = new SyncRecord(file.getKey().toString(), true);
             list.add(syncRecord);
         }
