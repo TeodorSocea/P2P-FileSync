@@ -103,24 +103,26 @@ public class ComparatorP2PFiles {
                     else
                         return 0;
                 }).collect(Collectors.toList());
-                diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size() - 1));
-                diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
-                diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
+                if (toBeSorted.get(toBeSorted.size() - 1).getTimestamp() >= i.getTimestamp()) {
+                    diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size() - 1));
+                    diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
+                    diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
 
-                tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
-                    @Override
-                    public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
-                        return o1.getKey().compareTo(o2.getKey());
-                    }
-                });
-                tempRemoved.sort(new java.util.Comparator<Pair<Integer, String>>() {
-                    @Override
-                    public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
-                        return o1.getKey().compareTo(o2.getKey());
-                    }
-                });
-                temp = new Pair<>(tempAdded, tempRemoved);
-                mapNumeAddedRemoved.put(i.getFileName(), temp);
+                    tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
+                        @Override
+                        public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
+                            return o1.getKey().compareTo(o2.getKey());
+                        }
+                    });
+                    tempRemoved.sort(new java.util.Comparator<Pair<Integer, String>>() {
+                        @Override
+                        public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
+                            return o1.getKey().compareTo(o2.getKey());
+                        }
+                    });
+                    temp = new Pair<>(tempAdded, tempRemoved);
+                    mapNumeAddedRemoved.put(i.getFileName(), temp);
+                }
             } else {
                 //diferente = fileDifferences(i, new FileP2P(i.getFileName(), "", System.currentTimeMillis() / 1000L));
             }
@@ -137,7 +139,7 @@ public class ComparatorP2PFiles {
         FileP2P a = new FileP2P();
         a.setData("Mama\nare\nmere");
         a.setFileName("primul");
-        a.setTimestamp(1555);
+        a.setTimestamp(1955);
         prima.add(a);
 
         FileP2P a1 = new FileP2P();
