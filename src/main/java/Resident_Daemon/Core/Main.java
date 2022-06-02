@@ -152,7 +152,7 @@ public class Main {
 //        testScanner();
 
 //        testSerialization();
-        testSaveRecordToMasterV2();
+//        testSaveRecordToMasterV2();
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
