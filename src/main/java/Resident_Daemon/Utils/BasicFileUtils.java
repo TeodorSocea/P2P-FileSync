@@ -21,6 +21,7 @@ import static java.util.Base64.getEncoder;
 public class BasicFileUtils {
 
     public static String filePathMasterSyncFile = "sync_files_evidence.data";
+    public static final String MASTER_FILE_DELIM = "!";
 
     public static boolean isValidFile(String path) {
         return BasicFileUtils.isValidFile(Paths.get(path));
@@ -266,12 +267,14 @@ public class BasicFileUtils {
     /** format: `${filePath} ${isSync} ${timestamp}\n`*/
     public static void writeRecordsToMasterFileOverwrite(List<SyncRecord> records) throws IOException {
 
+        String d = BasicFileUtils.MASTER_FILE_DELIM;
+
         var sb = new StringBuilder();
-        sb.append(records.size() + "\n");
+        sb.append(records.size() + d);
         for (var el : records) {
-            sb.append(el.getFileRelPath() + " ");
-            sb.append(el.getSynced() + " ");
-            sb.append(el.getLastModifiedTimeStamp() + "\n");
+            sb.append(el.getFileRelPath() + d);
+            sb.append(el.getSynced() + d);
+            sb.append(el.getLastModifiedTimeStamp() + d);
         }
 
         Files.write(Paths.get(BasicFileUtils.GetMasterFilePath()), sb.toString().getBytes(StandardCharsets.UTF_8));

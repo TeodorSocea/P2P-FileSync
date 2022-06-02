@@ -69,6 +69,9 @@ public class Input {
     public static List<SyncRecord> nextListOfRecords() {
 
         var out = new LinkedList<SyncRecord>();
+//        -------------------------------------
+        Input.setDelimiters("!");
+//        -------------------------------------
 
         Integer numOfRecs = Input.nextInteger();
 
@@ -89,6 +92,10 @@ public class Input {
 //        configure the scanner
         File text = new File(pathToFile);
         scanner = new Scanner(text);
+    }
+
+    public static void setDelimiters(String delims){
+        scanner.useDelimiter(delims);
     }
 
     public static void confScanner(byte[] bytes){
