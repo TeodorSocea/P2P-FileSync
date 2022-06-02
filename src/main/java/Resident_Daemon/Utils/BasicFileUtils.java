@@ -23,6 +23,7 @@ import static java.util.Base64.getEncoder;
 public class BasicFileUtils {
 
     public static String filePathMasterSyncFile = "sync_files_evidence.data";
+    public static final String VERSION_FILE_DATA_NAME = "versionfile.version";
     public static final String MASTER_FILE_DELIM = "!";
 
     public static boolean isValidFile(String path) {
@@ -163,11 +164,11 @@ public class BasicFileUtils {
         return timestamp;
     }
 
-    public static byte[] GetBytesToSend(String fileRelPath){
+    public static byte[] GetBytesToSend(String fileRelPath, int swarmID){
 
-        String folderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
+        String swarmFolderPath = String.valueOf(GetSwarmFolderPath(swarmID));
 
-        Path filePath = Paths.get(folderPath, fileRelPath);
+        Path filePath = Paths.get(swarmFolderPath, fileRelPath);
 
 //        if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
         byte[] fileContent = null;
@@ -267,7 +268,7 @@ public class BasicFileUtils {
     }
 
     /** format: `${filePath} ${isSync} ${timestamp}\n`*/
-    public static void writeRecordsToMasterFileOverwrite(List<SyncRecord> records) throws IOException {
+    public static void writeRecordsToMasterFileOverwrite(List<SyncRecord> records, Path masterFilePath) throws IOException {
 
         String d = BasicFileUtils.MASTER_FILE_DELIM;
 
@@ -279,13 +280,13 @@ public class BasicFileUtils {
             sb.append(el.getLastModifiedTimeStamp() + d);
         }
 
-        Files.write(Paths.get(BasicFileUtils.GetMasterFilePath()), sb.toString().getBytes(StandardCharsets.UTF_8));
+        Files.write(masterFilePath, sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     /** format: `${filePath} ${isSync} ${timestamp}\n`*/
-    public static void writeRecordToMasterFileAppend(SyncRecord record) throws IOException {
+    public static void writeRecordToMasterFileAppend(SyncRecord record, int swarmID) throws IOException {
 
-        var list = BasicFileUtils.readRecordsFromMasterFile();
+        var list = BasicFileUtils.readRecordsFromMasterFile(swarmID);
         boolean found = false;
         for(var sr : list) {
             if (sr.equals(record)) {
@@ -308,7 +309,7 @@ public class BasicFileUtils {
             sb.append(el.getLastModifiedTimeStamp() + "\n");
         }
 
-        Files.write(Paths.get(BasicFileUtils.GetMasterFilePath()), sb.toString().getBytes(StandardCharsets.UTF_8));
+        Files.write(Paths.get(BasicFileUtils.GetMasterFilePath(swarmID)), sb.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     public static List<SyncRecord> readRecordsFromBytes(byte[] bytes) {
@@ -322,10 +323,10 @@ public class BasicFileUtils {
         return readRecordsFromBytes(str.getBytes(StandardCharsets.UTF_8));
     }
 
-    public static List<SyncRecord> readRecordsFromMasterFile() {
+    public static List<SyncRecord> readRecordsFromMasterFile(int swarmID) {
 
         try {
-            Input.confScanner(BasicFileUtils.GetMasterFilePath());
+            Input.confScanner(BasicFileUtils.GetMasterFilePath(swarmID));
             return Input.nextListOfRecords();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -333,11 +334,12 @@ public class BasicFileUtils {
         return null;
     }
 
-    public static String GetMasterFilePath(){
-        String relMFPath = BasicFileUtils.filePathMasterSyncFile;
-        String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
+    public static String GetMasterFilePath(int swarmID){
+        String MFName = BasicFileUtils.filePathMasterSyncFile;
 
-        String absoluteMFPath = Paths.get(absoluteFolderPath, relMFPath).toString();
+        Path swarmFolderPath = GetSwarmFolderPath(swarmID);
+
+        String absoluteMFPath = Paths.get(String.valueOf(swarmFolderPath), MFName).toString();
 
         return absoluteMFPath;
     }
@@ -348,7 +350,7 @@ public class BasicFileUtils {
         return Paths.get(absoluteFolderPath, relPath).toString();
     }
 
-    public static void SaveRecordsToMasterFile() throws IOException {
+    public static void SaveRecordsToMasterFile(int swarmID) throws IOException {
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
 
         List<SyncRecord> list = new ArrayList<>();
@@ -356,13 +358,14 @@ public class BasicFileUtils {
             SyncRecord syncRecord = new SyncRecord(file.getKey().toString(), true);
             list.add(syncRecord);
         }
-        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
+
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list, Paths.get(BasicFileUtils.GetMasterFilePath(swarmID)));
 
     }
 
-    public static void DeleteMaterFile() {
+    public static void DeleteMaterFile(int swarmID) {
         try {
-            Files.deleteIfExists(Path.of(BasicFileUtils.GetMasterFilePath()));
+            Files.deleteIfExists(Path.of(BasicFileUtils.GetMasterFilePath(swarmID)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -405,6 +408,38 @@ public class BasicFileUtils {
 
         for(var file : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
             userData.getLocalMasterFile().add(new SyncRecord (file.getKey().toString(), true));
+        }
+    }
+
+    public static Path GetVersionFilePath(int swarmID) {
+        Path swarmFolderPath = GetSwarmFolderPath(swarmID);
+        Path versionFilePath = Paths.get(String.valueOf(swarmFolderPath), VERSION_FILE_DATA_NAME);
+
+        return versionFilePath;
+    }
+
+    public static String GetIfExistsVersionFileData(int swarmID){
+
+        Path versionFile = GetVersionFilePath(swarmID);
+
+        byte[] versionFileBytes = BasicFileUtils.file2bytes(versionFile);
+
+        if(versionFileBytes != null){
+            String versionFileData = new String(versionFileBytes, StandardCharsets.UTF_8);
+            return versionFileData;
+        }
+
+        return null;
+    }
+
+    public static void WriteVersionFile(int swarmID, String versionFileData){
+
+        Path versionFilePath = GetVersionFilePath(swarmID);
+
+        try {
+            Files.writeString(versionFilePath, versionFileData);
+        } catch (IOException e) {
+            System.out.println("Error at writing Version File!");
         }
     }
 

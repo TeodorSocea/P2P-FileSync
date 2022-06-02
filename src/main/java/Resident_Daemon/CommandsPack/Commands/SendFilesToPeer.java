@@ -51,20 +51,20 @@ public class SendFilesToPeer implements Command {
         if(path.equals(ALL_FILES)){
 
             for(var entry : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
-                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()));
+                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()), swarmID);
 
                 SendData(bytesToSend);
 
             }
         } else if (path.contains(MASTER_FILE)) {
             try {
-                BasicFileUtils.SaveRecordsToMasterFile();
+                BasicFileUtils.SaveRecordsToMasterFile(swarmID);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(MASTER_FILE);
+            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(MASTER_FILE, swarmID);
 
-            BasicFileUtils.DeleteMaterFile();
+            BasicFileUtils.DeleteMaterFile(swarmID);
 
             SendData(bytesToSend);
 
@@ -74,7 +74,7 @@ public class SendFilesToPeer implements Command {
             for (Iterator<Object> it = st.asIterator(); it.hasNext(); ) {
                 String fileRelPath = (String) it.next();
 
-                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(fileRelPath);
+                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(fileRelPath, swarmID);
 
                 SendData(bytesToSend);
             }

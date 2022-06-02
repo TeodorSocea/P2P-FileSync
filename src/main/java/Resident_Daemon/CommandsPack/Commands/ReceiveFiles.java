@@ -10,9 +10,7 @@ import Version_Control.Version_Control_Component;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,8 +24,8 @@ public class ReceiveFiles implements Command {
 
     private List<FileP2P> getLocalFiles(){
         List<FileP2P> originalFiles = new ArrayList<>();
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-        for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
+        Path swarmFolderPath = BasicFileUtils.GetVersionFilePath(swarmID);
+        for(var entry : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
             String fileName = entry.getKey().toString();
             String fileData = new String(entry.getValue(), StandardCharsets.UTF_8);
             FileP2P fileP2P = new FileP2P(fileName, fileData, 1);
@@ -37,39 +35,13 @@ public class ReceiveFiles implements Command {
         return originalFiles;
     }
 
-    private void writeVersionFile(String versionFileData){
-
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-
-        Path filePath = Paths.get(String.valueOf(folderPath), Singleton.getSingletonObject().VERSION_FILE_DATA_NAME);
-
-        try {
-            Files.writeString(filePath, versionFileData);
-        } catch (IOException e) {
-            System.out.println("Error at writing Version File!");
-        }
-    }
-
-    private void getIfExistsVersionFileData(Version_Control_Component vcc){
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-        Path filePath = Paths.get(String.valueOf(folderPath), Singleton.getSingletonObject().VERSION_FILE_DATA_NAME);
-
-        Path versionFile = filePath;
-
-        byte[] versionFileBytes = BasicFileUtils.file2bytes(versionFile);
-
-        if(versionFileBytes != null){
-            String versionFileData = new String(versionFileBytes, StandardCharsets.UTF_8);
-            vcc.setFisierVersiuni(versionFileData);
-        }
-
-    }
 
     @Override
     public boolean execute() {
-        Version_Control_Component vcc = Singleton.getSingletonObject().getVersion();
+        Version_Control_Component vcc = Singleton.getSingletonObject().getVersion_control_component();
         UserData userData = Singleton.getSingletonObject().getUserData();
-        getIfExistsVersionFileData(vcc);
+        String versionFileData = BasicFileUtils.GetIfExistsVersionFileData(swarmID);
+        vcc.setFisierVersiuni(versionFileData);
 
 
         vcc.setOriginalFiles(getLocalFiles());
@@ -79,7 +51,7 @@ public class ReceiveFiles implements Command {
 
             vcc.compare();
 
-            writeVersionFile(vcc.getVersionFileData());
+            BasicFileUtils.WriteVersionFile(swarmID, vcc.getVersionFileData());
 
             List<FileP2P> fileToWrite = vcc.getOriginalFiles();
 
