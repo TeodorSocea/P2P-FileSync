@@ -14,6 +14,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Resident_Daemon.Utils.BasicFileUtils.GetFileTimestamp;
+
 public class ReceiveFiles implements Command {
 
     private int swarmID;
@@ -27,8 +29,10 @@ public class ReceiveFiles implements Command {
         Path swarmFolderPath = BasicFileUtils.GetSwarmFolderPath(swarmID);
         for(var entry : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
             String fileName = entry.getKey().toString();
+
+            long lastModifiedTimeStamp = GetFileTimestamp(swarmID, String.valueOf(entry.getKey()));
             String fileData = new String(entry.getValue(), StandardCharsets.UTF_8);
-            FileP2P fileP2P = new FileP2P(fileName, fileData, 1);
+            FileP2P fileP2P = new FileP2P(fileName, fileData, lastModifiedTimeStamp);
             originalFiles.add(fileP2P);
         }
 
