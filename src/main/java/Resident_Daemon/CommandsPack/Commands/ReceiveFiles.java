@@ -24,7 +24,7 @@ public class ReceiveFiles implements Command {
 
     private List<FileP2P> getLocalFiles(){
         List<FileP2P> originalFiles = new ArrayList<>();
-        Path swarmFolderPath = BasicFileUtils.GetVersionFilePath(swarmID);
+        Path swarmFolderPath = BasicFileUtils.GetSwarmFolderPath(swarmID);
         for(var entry : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
             String fileName = entry.getKey().toString();
             String fileData = new String(entry.getValue(), StandardCharsets.UTF_8);

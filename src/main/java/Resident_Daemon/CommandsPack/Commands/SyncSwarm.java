@@ -72,16 +72,19 @@ public class SyncSwarm extends ExceptionModule implements Command {
                 List<Pair<String,Long>> localRecords = GetMasterPairList(localMasterFileRecords);
                 List<Pair<String,Long>> otherRecords = GetMasterPairList(otherMasterFileRecords);
 
-                vc.setLocalMasterFile(localRecords);
-                vc.setOtherMasterFile(otherRecords);
+//                vc.setLocalMasterFile(localRecords);
+//                vc.setOtherMasterFile(otherRecords);
+//                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
+//
+//                vc.compareMasterFile();
+//
+//                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
 
-                vc.compareMasterFile();
-
-                if(localRecords.size() > 0) {
+                if(otherMasterFileRecords.size() > 0) {
                     StringBuilder stringBuilder = new StringBuilder();
 
-                    for(Pair pair : localRecords) {
-                        stringBuilder.append(pair.getKey() + "!");
+                    for(var pair : otherMasterFileRecords) {
+                        stringBuilder.append(pair.getFileRelPath() + "!");
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
