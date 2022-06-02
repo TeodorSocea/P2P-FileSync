@@ -44,12 +44,13 @@ public class SendFilesToPeer implements Command {
 
     @Override
     public boolean execute() {
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
+
+        Path swarmFolderPath = BasicFileUtils.GetSwarmFolderPath(swarmID);
 
 
         if(path.equals(ALL_FILES)){
 
-            for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
+            for(var entry : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
                 byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()));
 
                 SendData(bytesToSend);

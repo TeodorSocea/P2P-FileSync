@@ -28,15 +28,6 @@ public class SyncSwarm extends ExceptionModule implements Command {
         this.swarmID = swarmID;
     }
 
-    private void CreateLocalMasterFile() {
-        UserData userData = Singleton.getSingletonObject().getUserData();
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-
-        for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
-            userData.getLocalMasterFile().add(new SyncRecord (file.getKey().toString(), true));
-        }
-    }
-
     @Override
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
@@ -53,10 +44,6 @@ public class SyncSwarm extends ExceptionModule implements Command {
             userData.resetFileLists();
             userData.setEnableToWriteAllFiles(false);
 
-            // do localMF
-            // TODO
-            // ...
-
             try {
                 networkingComponent.requestDataFromSwarm(swarmID, peerID, BasicFileUtils.filePathMasterSyncFile);
 
@@ -71,7 +58,7 @@ public class SyncSwarm extends ExceptionModule implements Command {
                 userData.setReceivedMasterFile(false);
                 userData.setEnableToWriteAllFiles(false);
 
-                CreateLocalMasterFile();
+                BasicFileUtils.CreateLocalMasterFile(swarmID);
 
                 // here we compare with Version Control
                 List<SyncRecord> localMasterFileRecords = userData.getLocalMasterFile();
@@ -95,7 +82,7 @@ public class SyncSwarm extends ExceptionModule implements Command {
                         }
                     }
 
-                    Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(new ReceiveFiles());
+                    Singleton.getSingletonObject().getCommandExecutor().ExecuteOperation(new ReceiveFiles(swarmID));
                 }
 
 

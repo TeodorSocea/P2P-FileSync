@@ -18,6 +18,12 @@ import java.util.List;
 
 public class ReceiveFiles implements Command {
 
+    private int swarmID;
+
+    public ReceiveFiles(int swarmID) {
+        this.swarmID = swarmID;
+    }
+
     private List<FileP2P> getLocalFiles(){
         List<FileP2P> originalFiles = new ArrayList<>();
         Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
@@ -78,7 +84,7 @@ public class ReceiveFiles implements Command {
             List<FileP2P> fileToWrite = vcc.getOriginalFiles();
 
             for(var fileData : fileToWrite){
-                BasicFileUtils.WriteFileToFolder(fileData.getFileName(), fileData.getData());
+                BasicFileUtils.WriteFileToFolder(swarmID, fileData.getFileName(), fileData.getData());
             }
 
         } catch (IOException e) {

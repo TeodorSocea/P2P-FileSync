@@ -1,8 +1,10 @@
 package Resident_Daemon.Utils;
 
+import Networking.Core.NetworkingComponent;
 import Resident_Daemon.Core.Input;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.SyncRecord;
+import Resident_Daemon.Core.UserData;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -208,11 +210,11 @@ public class BasicFileUtils {
         return data.substring(findNthOccur(data, '!', 2) + 1);
     }
 
-    public static void WriteFileToFolder(String fileRelPath, String data) throws IOException {
+    public static void WriteFileToFolder(int swarmID, String fileRelPath, String data) throws IOException {
 
-        String folderPath = String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath());
+        String swarmFolderPath = String.valueOf(GetSwarmFolderPath(swarmID));
 
-        Path filePath = Paths.get(folderPath, fileRelPath);
+        Path filePath = Paths.get(swarmFolderPath, fileRelPath);
 
         if(filePath.toString().contains("\\")){
             filePath.getParent().toFile().mkdirs();
@@ -226,30 +228,30 @@ public class BasicFileUtils {
 
     }
 
-    public static void WriteFileToFolder(byte[] dataReceived) throws IOException {
-
-        String folderPath = String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath());
-
-        String receivedData = new String(dataReceived);
-
-        String receivedPath = getFilePath(receivedData);
-        System.out.println("Fisier: " + receivedPath);
-
-        Path filePath = Paths.get(folderPath, receivedPath);
-
-        if(filePath.toString().contains("\\")){
-            filePath.getParent().toFile().mkdirs();
-        }
-
-        String whatToWrite = getContent(receivedData);
-
-        try {
-            Files.writeString(filePath, whatToWrite);
-        } catch (IOException e) {
-            throw e;
-        }
-
-    }
+//    public static void WriteFileToFolder(byte[] dataReceived) throws IOException {
+//
+//        String folderPath = String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath());
+//
+//        String receivedData = new String(dataReceived);
+//
+//        String receivedPath = getFilePath(receivedData);
+//        System.out.println("Fisier: " + receivedPath);
+//
+//        Path filePath = Paths.get(folderPath, receivedPath);
+//
+//        if(filePath.toString().contains("\\")){
+//            filePath.getParent().toFile().mkdirs();
+//        }
+//
+//        String whatToWrite = getContent(receivedData);
+//
+//        try {
+//            Files.writeString(filePath, whatToWrite);
+//        } catch (IOException e) {
+//            throw e;
+//        }
+//
+//    }
 
     public static FileData GetFileData(byte[] dataReceived){
         String receivedData = new String(dataReceived, StandardCharsets.UTF_8);
@@ -363,6 +365,46 @@ public class BasicFileUtils {
             Files.deleteIfExists(Path.of(BasicFileUtils.GetMasterFilePath()));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static Path GetSwarmFolderPath(String swarmName) {
+        Path swarmFolderPath = Paths.get(String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath()), swarmName);
+
+        return swarmFolderPath;
+    }
+
+    public static Path GetSwarmFolderPath(int swarmID) {
+        String swarmName = GetSwarmName(swarmID);
+        Path swarmFolderPath = Paths.get(String.valueOf(Singleton.getSingletonObject().getFolderToSyncPath()), swarmName);
+
+        return swarmFolderPath;
+    }
+
+    public static void CreateSwarmFolder(String swarmName) {
+        Path swarmFolderPath = GetSwarmFolderPath(swarmName);
+        new File(String.valueOf(swarmFolderPath)).mkdirs();
+
+    }
+
+    public static String GetSwarmName(int swarmID) {
+        NetworkingComponent nc = Singleton.getSingletonObject().getNetworkingComponent();
+        for(var entry : nc.getSwarms().entrySet()) {
+            if(entry.getKey().equals(swarmID)){
+                return entry.getValue().getSwarmName();
+            }
+        }
+
+        return null;
+    }
+
+    public static void CreateLocalMasterFile(int swarmID) {
+
+        UserData userData = Singleton.getSingletonObject().getUserData();
+        Path swarmFolderPath = GetSwarmFolderPath(swarmID);
+
+        for(var file : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
+            userData.getLocalMasterFile().add(new SyncRecord (file.getKey().toString(), true));
         }
     }
 
