@@ -63,6 +63,7 @@ public class SendFilesToPeer implements Command {
             }
             byte[] bytesToSend = BasicFileUtils.GetBytesToSend(MASTER_FILE);
 
+            BasicFileUtils.DeleteMaterFile();
 
             SendData(bytesToSend);
 
