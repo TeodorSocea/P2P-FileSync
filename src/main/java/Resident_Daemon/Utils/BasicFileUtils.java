@@ -349,11 +349,18 @@ public class BasicFileUtils {
         List<SyncRecord> list = new ArrayList<>();
         for(var file : GetTextFiles.getTextFiles(folderPath).entrySet()){
             SyncRecord syncRecord = new SyncRecord(file.getKey().toString(), true);
-            System.out.println(file.getKey());
             list.add(syncRecord);
         }
         BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
 
+    }
+
+    public static void DeleteMaterFile() {
+        try {
+            Files.deleteIfExists(Path.of(BasicFileUtils.GetMasterFilePath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

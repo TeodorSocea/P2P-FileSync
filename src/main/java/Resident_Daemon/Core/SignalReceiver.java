@@ -23,7 +23,6 @@ public class SignalReceiver implements Runnable {
                 NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
                 // Daca are request sa trimita
                 for(var triple : networkingComponent.getRequests()){
-                    System.out.println("Am request de facut!");
                     int swarmID = triple.getLeft();
                     int peerID = triple.getMiddle();
                     String path = triple.getRight();
