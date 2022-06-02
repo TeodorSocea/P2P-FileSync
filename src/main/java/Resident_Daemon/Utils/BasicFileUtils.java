@@ -148,14 +148,15 @@ public class BasicFileUtils {
 
 /////////////
 
-    private static long GetTimeStamp(Path file) {
+    public static long GetFileTimestamp(int swarmID, String fileRelPath) {
+        Path file = Paths.get(BasicFileUtils.GetAbsolutePath_FromRelative(swarmID, fileRelPath));
         long timestamp;
 
         try {
             BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
             timestamp = attrs.lastModifiedTime().toMillis();
 
-            //            System.out.println(attrs.lastModifiedTime().toString());
+//            System.out.println(attrs.lastModifiedTime().toString());
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -164,11 +165,14 @@ public class BasicFileUtils {
         return timestamp;
     }
 
+
     public static byte[] GetBytesToSend(String fileRelPath, int swarmID){
 
         String swarmFolderPath = String.valueOf(GetSwarmFolderPath(swarmID));
 
         Path filePath = Paths.get(swarmFolderPath, fileRelPath);
+
+        long lastModifiedTimeStamp = GetFileTimestamp(swarmID, fileRelPath);
 
 //        if(!isValidFile(filePath)) throw new InvalidPathException(filePath.toString(), "Wrong path");
         byte[] fileContent = null;
@@ -178,7 +182,7 @@ public class BasicFileUtils {
             throw new InvalidPathException(filePath.toString(), "Wrong path");
         }
 
-        return codeFile(fileRelPath, GetTimeStamp(filePath), fileContent);
+        return codeFile(fileRelPath, lastModifiedTimeStamp, fileContent);
 
     }
 
@@ -344,10 +348,10 @@ public class BasicFileUtils {
         return absoluteMFPath;
     }
 
-    public static String GetAbsolutePath_FromRelative(String relPath){
+    public static String GetAbsolutePath_FromRelative(int swarmID, String relPath){
+        String swarmFolderPath = GetSwarmFolderPath(swarmID).toString();
 
-        String absoluteFolderPath = Singleton.getSingletonObject().getFolderToSyncPath().toString();
-        return Paths.get(absoluteFolderPath, relPath).toString();
+        return Paths.get(swarmFolderPath, relPath).toString();
     }
 
     public static void SaveRecordsToMasterFile(int swarmID) throws IOException {
@@ -355,7 +359,8 @@ public class BasicFileUtils {
 
         List<SyncRecord> list = new ArrayList<>();
         for(var file : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
-            SyncRecord syncRecord = new SyncRecord(file.getKey().toString(), true);
+            long lastModifiedTimeStamp = GetFileTimestamp(swarmID, String.valueOf(file.getKey()));
+            SyncRecord syncRecord = new SyncRecord(file.getKey().toString(), true, lastModifiedTimeStamp);
             list.add(syncRecord);
         }
 
@@ -407,7 +412,8 @@ public class BasicFileUtils {
         Path swarmFolderPath = GetSwarmFolderPath(swarmID);
 
         for(var file : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
-            userData.getLocalMasterFile().add(new SyncRecord (file.getKey().toString(), true));
+            long lastModifiedTimeStamp = GetFileTimestamp(swarmID, String.valueOf(file.getKey()));
+            userData.getLocalMasterFile().add(new SyncRecord (file.getKey().toString(), true, lastModifiedTimeStamp));
         }
     }
 
@@ -442,5 +448,7 @@ public class BasicFileUtils {
             System.out.println("Error at writing Version File!");
         }
     }
+
+
 
 }

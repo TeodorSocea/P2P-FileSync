@@ -14,29 +14,6 @@ public class SyncRecord implements Serializable, Comparable<SyncRecord> {
     private boolean isSynced;
     private long lastModifiedTimeStamp;
 
-    private long GetFileTimestamp(String fileRelPath) {
-        Path file = Paths.get(BasicFileUtils.GetAbsolutePath_FromRelative(fileRelPath));
-        long timestamp;
-
-        try {
-            BasicFileAttributes attrs = Files.readAttributes(file, BasicFileAttributes.class);
-            timestamp = attrs.lastModifiedTime().toMillis();
-
-//            System.out.println(attrs.lastModifiedTime().toString());
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        return timestamp;
-    }
-
-    public SyncRecord(String fileRelPath, boolean isSynced) {
-        this.fileRelPath = fileRelPath;
-        this.isSynced = isSynced;
-        this.lastModifiedTimeStamp = GetFileTimestamp(fileRelPath);
-    }
-
     public SyncRecord(String fileRelPath, boolean isSynced, long lastModifiedTimeStamp) {
         this.fileRelPath = fileRelPath;
         this.isSynced = isSynced;
