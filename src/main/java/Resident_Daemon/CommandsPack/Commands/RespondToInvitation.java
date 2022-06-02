@@ -30,9 +30,9 @@ public class RespondToInvitation extends ExceptionModule implements Command {
 
         try {
 
+            String swarmName = networkingComponent.getInvitations().get(invitationIndex).getSwarmName();
             networkingComponent.respondToInvitationToSwarm(invitationIndex, invitationResponse);
 
-            String swarmName = networkingComponent.getInvitations().get(invitationIndex).getSwarmName();
             BasicFileUtils.CreateSwarmFolder(swarmName);
             if(invitationResponse == true){
                 Singleton.getSingletonObject().getUserData().setConnected(true, networkingComponent.getSwarms());
