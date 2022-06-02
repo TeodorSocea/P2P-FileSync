@@ -4,6 +4,7 @@ import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Input;
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Utils.BasicFileUtils;
 import Resident_Daemon._UnitTests.ExceptionModule;
 
 import java.io.IOException;
@@ -29,7 +30,10 @@ public class RespondToInvitation extends ExceptionModule implements Command {
 
         try {
 
+            String swarmName = networkingComponent.getInvitations().get(invitationIndex).getSwarmName();
             networkingComponent.respondToInvitationToSwarm(invitationIndex, invitationResponse);
+
+            BasicFileUtils.CreateSwarmFolder(swarmName);
             if(invitationResponse == true){
                 Singleton.getSingletonObject().getUserData().setConnected(true, networkingComponent.getSwarms());
             }

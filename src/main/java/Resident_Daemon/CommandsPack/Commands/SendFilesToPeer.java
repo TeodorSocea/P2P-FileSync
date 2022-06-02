@@ -9,6 +9,9 @@ import Resident_Daemon.Utils.GetTextFiles;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Base64;
+import java.util.Iterator;
+import java.util.StringTokenizer;
 
 public class SendFilesToPeer implements Command {
 
@@ -22,22 +25,58 @@ public class SendFilesToPeer implements Command {
         this.path = path;
     }
 
+    private void SendData(byte[] bytesToSend){
+
+        NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
+        try {
+
+            networkingComponent.sentDataToPeer(bytesToSend, swarmID, peerID);
+
+        } catch (IOException e) {
+            System.out.println("Eroare la trimitere fisier");
+            e.printStackTrace();
+        }
+    }
+
+    private final String ALL_FILES = ".";
+    private final String MASTER_FILE = BasicFileUtils.filePathMasterSyncFile;
+
+
     @Override
     public boolean execute() {
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-        NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
-            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()));
+        Path swarmFolderPath = BasicFileUtils.GetSwarmFolderPath(swarmID);
 
+
+        if(path.equals(ALL_FILES)){
+
+            for(var entry : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
+                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(String.valueOf(entry.getKey()), swarmID);
+
+                SendData(bytesToSend);
+
+            }
+        } else if (path.contains(MASTER_FILE)) {
             try {
-
-                networkingComponent.sentDataToPeer(bytesToSend, swarmID, peerID);
-
+                BasicFileUtils.SaveRecordsToMasterFile(swarmID);
             } catch (IOException e) {
-                System.out.println("Eroare la trimitere fisier");
                 e.printStackTrace();
-                return false;
+            }
+            byte[] bytesToSend = BasicFileUtils.GetBytesToSend(MASTER_FILE, swarmID);
+
+            BasicFileUtils.DeleteMaterFile(swarmID);
+
+            SendData(bytesToSend);
+
+        } else {
+            StringTokenizer st = new StringTokenizer(path, "!");
+
+            for (Iterator<Object> it = st.asIterator(); it.hasNext(); ) {
+                String fileRelPath = (String) it.next();
+
+                byte[] bytesToSend = BasicFileUtils.GetBytesToSend(fileRelPath, swarmID);
+
+                SendData(bytesToSend);
             }
         }
 

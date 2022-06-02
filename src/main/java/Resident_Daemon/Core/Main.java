@@ -2,7 +2,17 @@ package Resident_Daemon.Core;
 
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.MenuPack.ConsoleMenu;
+import Resident_Daemon.Utils.BasicFileUtils;
+import Resident_Daemon.Utils.GetTextFiles;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     private Singleton mainData;
@@ -39,16 +49,12 @@ public class Main {
         System.exit(0);
     }
 
-    public static void main(String[] args) {
-
-//        testSerialization();
+    public static void main(String[] args) throws IOException {
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
 
-        System.out.println("App started! System detected: " + main.mainData.getOperatingSystem());
         String name = System.getProperty("user.name");
-        System.out.println("System name: " + name);
 
 
         SignalReceiver signalReceiver = new SignalReceiver();
@@ -56,8 +62,6 @@ public class Main {
         new Thread(signalReceiver).start();
 
         ConsoleMenu.startToInteractWithTheUser();
-
-
 
     }
 }
