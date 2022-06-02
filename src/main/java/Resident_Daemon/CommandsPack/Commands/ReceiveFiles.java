@@ -53,13 +53,14 @@ public class ReceiveFiles implements Command {
 
             vcc.compare();
 
-            BasicFileUtils.WriteVersionFile(swarmID, vcc.getVersionFileData());
 
             List<FileP2P> fileToWrite = vcc.getOriginalFiles();
 
             for(var fileData : fileToWrite){
                 BasicFileUtils.WriteFileToFolder(swarmID, fileData.getFileName(), fileData.getData());
             }
+
+            BasicFileUtils.WriteVersionFile(swarmID, vcc.getVersionFileData());
 
         } catch (IOException e) {
             System.out.println("Eroare la scriere fisier");
