@@ -70,7 +70,7 @@ public class SyncSwarm extends ExceptionModule implements Command {
                 List<SyncRecord> otherMasterFileRecords = userData.getOtherMasterFile();
 
                 List<Pair<String,Long>> localRecords = GetMasterPairList(localMasterFileRecords);
-                List<Pair<String,Long>> otherRecords = GetMasterPairList(localMasterFileRecords);
+                List<Pair<String,Long>> otherRecords = GetMasterPairList(otherMasterFileRecords);
 
                 vc.setLocalMasterFile(localRecords);
                 vc.setOtherMasterFile(otherRecords);
