@@ -5,18 +5,13 @@ import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.SyncRecord;
 import Resident_Daemon.Core.UserData;
-import Resident_Daemon.Exceptions.NoFolderIsSelected;
 import Resident_Daemon.Utils.BasicFileUtils;
-import Resident_Daemon.Utils.GetTextFiles;
 import Resident_Daemon._UnitTests.ExceptionModule;
+import Version_Control.Version_Control_Component;
+import javafx.util.Pair;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -26,6 +21,15 @@ public class SyncSwarm extends ExceptionModule implements Command {
 
     public SyncSwarm(Integer swarmID) {
         this.swarmID = swarmID;
+    }
+
+    private List<Pair<String,Long>> GetMasterPairList(List<SyncRecord> syncRecordList) {
+        List<Pair<String,Long>> localRecords = new ArrayList<>();
+        for(SyncRecord syncRecord : syncRecordList){
+            Pair<String, Long> pair = new Pair<>(syncRecord.getFileRelPath(), syncRecord.getLastModifiedTimeStamp());
+            localRecords.add(pair);
+        }
+        return localRecords;
     }
 
     @Override
@@ -60,15 +64,24 @@ public class SyncSwarm extends ExceptionModule implements Command {
 
                 BasicFileUtils.CreateLocalMasterFile(swarmID);
 
+                Version_Control_Component vc = Singleton.getSingletonObject().getVersion_control_component();
                 // here we compare with Version Control
                 List<SyncRecord> localMasterFileRecords = userData.getLocalMasterFile();
                 List<SyncRecord> otherMasterFileRecords = userData.getOtherMasterFile();
 
-                if(otherMasterFileRecords.size() > 0) {
+                List<Pair<String,Long>> localRecords = GetMasterPairList(localMasterFileRecords);
+                List<Pair<String,Long>> otherRecords = GetMasterPairList(localMasterFileRecords);
+
+                vc.setLocalMasterFile(localRecords);
+                vc.setOtherMasterFile(otherRecords);
+
+                vc.compareMasterFile();
+
+                if(localRecords.size() > 0) {
                     StringBuilder stringBuilder = new StringBuilder();
 
-                    for(SyncRecord syncRecord : otherMasterFileRecords) {
-                        stringBuilder.append(syncRecord.getFileRelPath() + "!");
+                    for(Pair pair : localRecords) {
+                        stringBuilder.append(pair.getKey() + "!");
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1);
 
