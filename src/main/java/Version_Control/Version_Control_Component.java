@@ -35,6 +35,11 @@ public class Version_Control_Component {
     public void setOtherFiles(List<FileP2P> otherFiles) {
         this.otherFiles = otherFiles;
     }
+
+    public List<FileP2P> getOtherFiles() {
+        return otherFiles;
+    }
+
     public void compare() throws IOException {
         comparatorul = new ComparatorP2PFiles(originalFiles, otherFiles);
        // System.out.println(comparatorul.compare().getKey());

@@ -120,9 +120,7 @@ public class Main {
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
 
-        System.out.println("App started! System detected: " + main.mainData.getOperatingSystem());
         String name = System.getProperty("user.name");
-        System.out.println("System name: " + name);
 
 
         SignalReceiver signalReceiver = new SignalReceiver();

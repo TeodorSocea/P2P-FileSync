@@ -104,6 +104,8 @@ public class Input {
         scanner = new Scanner(System.in);
     }
     public static String nextLine() {
-        return scanner.nextLine();
+        String toReturn = scanner.nextLine();
+
+        return toReturn;
     }
 }

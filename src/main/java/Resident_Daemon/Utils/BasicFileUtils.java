@@ -178,14 +178,33 @@ public class BasicFileUtils {
 
     }
 
+    private static int findNthOccur(String str,
+                     char ch, int N)
+    {
+        int occur = 0;
+
+        // Loop to find the Nth
+        // occurrence of the character
+        for (int i = 0; i < str.length(); i++)
+        {
+            if (str.charAt(i) == ch)
+            {
+                occur += 1;
+            }
+            if (occur == N)
+                return i;
+        }
+        return -1;
+    }
+
     private static String getFilePath(String data){
         return data.substring(0, data.indexOf("!"));
     }
     private static String getTimeStamp(String data){
-        return data.substring(data.indexOf("!") + 1, data.lastIndexOf("!") - 1);
+        return data.substring(data.indexOf("!") + 1, findNthOccur(data, '!', 2) - 1);
     }
     private static String getContent(String data){
-        return data.substring(data.lastIndexOf("!") + 1);
+        return data.substring(findNthOccur(data, '!', 2) + 1);
     }
 
     public static void WriteFileToFolder(String fileRelPath, String data) throws IOException {

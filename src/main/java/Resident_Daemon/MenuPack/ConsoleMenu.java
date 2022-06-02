@@ -2,6 +2,7 @@ package Resident_Daemon.MenuPack;
 
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.CommandsPack.Console.*;
+import Resident_Daemon.Core.Input;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Utils.BasicFileUtils;
 import Version_Control.Version_Control_Component;
@@ -83,8 +84,10 @@ public class ConsoleMenu {
         while (true) {
 
             display();
-            String consoleInput = getInput();
+            Input.confScanner();
+            String consoleInput = Input.nextLine();
             List<String> args = splitInputIntoStrings(consoleInput);
+
 
             if (isAValidCmdIdx(args.get(0))) {
                 Integer cmdIxd;
@@ -124,12 +127,6 @@ public class ConsoleMenu {
         }
 
         return true;
-    }
-
-    private static String getInput() {
-
-        Scanner input = new Scanner(System.in);
-        return input.nextLine();
     }
 
     private static void generateOptions() {

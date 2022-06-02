@@ -69,6 +69,7 @@ public class SyncSwarm extends ExceptionModule implements Command {
                 }
 
                 userData.setReceivedMasterFile(false);
+                userData.setEnableToWriteAllFiles(false);
 
                 CreateLocalMasterFile();
 

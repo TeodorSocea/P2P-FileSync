@@ -2,7 +2,6 @@ package Resident_Daemon.Core;
 
 import Networking.Swarm.NetworkSwarm;
 import Networking.Utils.Invitation;
-import Resident_Daemon.CommandsPack.Commands.SyncSwarm;
 import Version_Control.FileP2P;
 
 import java.io.File;
