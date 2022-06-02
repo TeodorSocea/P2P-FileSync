@@ -108,14 +108,51 @@ public class Main {
         System.exit(1);
     }
 
-    public static void main(String[] args) {
+    public static void testSaveRecordToMasterV2Read() {
+        String d = BasicFileUtils.MASTER_FILE_DELIM;
+        var listRec = BasicFileUtils.readRecordsFromString(
+                "3" + d +
+                "b - copy" + d + "true" + d + "12" + d +
+                "12b " + d + "true" + d + "12" + d +
+                "b - \ncopy" + d + "true" + d + "12");
+
+        System.out.println(listRec);
+    }
+    public static void testSaveRecordToMasterV2Write() throws IOException {
+
+//        System.out.println("here");
+
+//        b true 12
+
+        var list = new LinkedList<SyncRecord>();
+        var sr = new SyncRecord("b", true, 12);
+        list.add(sr);
+        list.add(sr);
+
+        Singleton.getSingletonObject().setFolderToSyncPath(".");
+        BasicFileUtils.writeRecordsToMasterFileOverwrite(list);
+
+        var listRead = BasicFileUtils.readRecordsFromMasterFile();
+        System.out.println(list.equals(listRead));
+    }
+
+        public static void testSaveRecordToMasterV2() throws IOException {
+//        Scanner scanner = new Scanner(System.in);
+//        scanner.useDelimiter(";\n");
+//        scanner.useDelimiter(",|\\n");
+
+//            testSaveRecordToMasterV2Read();
+            testSaveRecordToMasterV2Write();
+
+            System.exit(1);
+    }
+
+    public static void main(String[] args) throws IOException {
+
+//        testScanner();
 
 //        testSerialization();
-//        try {
-//            testSaveRecordToMasterFileFacutDeBalan();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        testSaveRecordToMasterV2();
 
         Main main = new Main();
         CommandExecutor commandExecutor = main.commandExecutor;
