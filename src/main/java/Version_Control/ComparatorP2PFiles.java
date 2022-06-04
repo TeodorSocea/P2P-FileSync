@@ -88,37 +88,44 @@ public class ComparatorP2PFiles {
             List<Pair<Integer, String>> tempAdded = new ArrayList<>();
             List<Pair<Integer, String>> tempRemoved = new ArrayList<>();
             List<FileP2P> toBeSorted = new ArrayList<>();
-            for (FileP2P j : otherFiles){
-                if (j.getFileName().equals(i.getFileName())){
-                    toBeSorted.add(j);
+            Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> diferente = null;
+            if (!otherFiles.isEmpty() && otherFiles.stream().anyMatch(e -> e.getFileName() != null && e.getFileName().equals(i.getFileName()))) {
+                for (FileP2P j : otherFiles) {
+                    if (j.getFileName().equals(i.getFileName())) {
+                        toBeSorted.add(j);
+                    }
                 }
-            }
-            toBeSorted.stream().sorted((o1, o2) -> {
-                if (o1.getTimestamp() > o2.getTimestamp())
-                    return 1;
-                else if (o1.getTimestamp() < o2.getTimestamp())
-                    return -1;
-                else
-                    return 0;
-            }).collect(Collectors.toList());
-            Pair<List<Pair<Integer, String>>, List<Pair<Integer, String>>> diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size()-1));
-            diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
-            diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
+                toBeSorted.stream().sorted((o1, o2) -> {
+                    if (o1.getTimestamp() > o2.getTimestamp())
+                        return 1;
+                    else if (o1.getTimestamp() < o2.getTimestamp())
+                        return -1;
+                    else
+                        return 0;
+                }).collect(Collectors.toList());
+                if (toBeSorted.get(toBeSorted.size() - 1).getTimestamp() >= i.getTimestamp()) {
+                    diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size() - 1));
+                    diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
+                    diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
 
-            tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
-                @Override
-                public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
-                    return o1.getKey().compareTo(o2.getKey());
+                    tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
+                        @Override
+                        public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
+                            return o1.getKey().compareTo(o2.getKey());
+                        }
+                    });
+                    tempRemoved.sort(new java.util.Comparator<Pair<Integer, String>>() {
+                        @Override
+                        public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
+                            return o1.getKey().compareTo(o2.getKey());
+                        }
+                    });
+                    temp = new Pair<>(tempAdded, tempRemoved);
+                    mapNumeAddedRemoved.put(i.getFileName(), temp);
                 }
-            });
-            tempRemoved.sort(new java.util.Comparator<Pair<Integer, String>>() {
-                @Override
-                public int compare(Pair<Integer, String> o1, Pair<Integer, String> o2) {
-                    return o1.getKey().compareTo(o2.getKey());
-                }
-            });
-            temp = new Pair<>(tempAdded, tempRemoved);
-            mapNumeAddedRemoved.put(i.getFileName(), temp);
+            } else {
+                //diferente = fileDifferences(i, new FileP2P(i.getFileName(), "", System.currentTimeMillis() / 1000L));
+            }
         }
         return mapNumeAddedRemoved;
     }
@@ -132,8 +139,14 @@ public class ComparatorP2PFiles {
         FileP2P a = new FileP2P();
         a.setData("Mama\nare\nmere");
         a.setFileName("primul");
-        a.setTimestamp(1555);
+        a.setTimestamp(1155);
         prima.add(a);
+
+        FileP2P a1 = new FileP2P();
+        //a1.setData("Mama\nare\nmere");
+        //a1.setFileName("primul");
+        //a1.setTimestamp(1555);
+        prima.add(a1);
 
         FileP2P b = new FileP2P();
         b.setData("Mama\nare\nmere\nsi\npere");
@@ -142,9 +155,12 @@ public class ComparatorP2PFiles {
 
         FileP2P c = new FileP2P();
         c.setData("Tata\nare\nmere\nsi\npere");
-        c.setFileName("primul");
+        c.setFileName("primul2");
         c.setTimestamp(1777);
 
+        FileP2P d = new FileP2P();
+
+        //aDoua.add(d);
         aDoua.add(b);
         aDoua.add(c);
 

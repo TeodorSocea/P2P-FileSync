@@ -1,5 +1,4 @@
 package Networking.Peer;
-
 import java.net.Socket;
 
 public class Peer {

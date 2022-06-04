@@ -15,8 +15,9 @@ public class SwarmDataMessage extends Message{
         parse();
     }
 
-    public SwarmDataMessage(int header, int senderID, Peer peer) {
+    public SwarmDataMessage(int header, int senderID, int swarmID, Peer peer) {
         super(header, senderID);
+        this.swarmID = swarmID;
         peerID = peer.getPeerID();
         peerIP = peer.getPeerSocket().getInetAddress().getAddress();
     }
@@ -63,6 +64,7 @@ public class SwarmDataMessage extends Message{
         buff.put(22, peerIP[2]);
         buff.put(23, peerIP[3]);
         rawMessage = buff.array();
+        encrypt();
         return rawMessage;
     }
 }

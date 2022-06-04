@@ -29,6 +29,16 @@ public class NetworkSwarm {
         this.fulfilledRequests = new ArrayList<>();
     }
 
+    public NetworkSwarm(int swarmID, int selfID, String swarmName){
+        this.swarmID = swarmID;
+        this.selfID = selfID;
+        this.peers = new HashMap<>();
+        this.dataBufferMap = new HashMap<>();
+        this.requests = new ArrayList<>();
+        this.fulfilledRequests = new ArrayList<>();
+        this.swarmName = swarmName;
+    }
+
     public List<Pair<Integer, String>> getRequests() {
         return requests;
     }
@@ -54,6 +64,10 @@ public class NetworkSwarm {
         return swarmID;
     }
 
+    public String getSwarmName() {
+        return swarmName;
+    }
+
     public int getSelfID() {
         return selfID;
     }
@@ -77,13 +91,6 @@ public class NetworkSwarm {
 
     public void addNewPeer(Peer peer){
         peers.put(peer.getPeerID(), peer);
-    }
-
-    public void addData(int senderID, int chunkID, byte[] data){
-        if(!dataBufferMap.containsKey(senderID)) {
-            dataBufferMap.put(senderID, new DataBuffer());
-        }
-        dataBufferMap.get(senderID).addToData(chunkID, data);
     }
 
     @Override

@@ -12,8 +12,9 @@ import java.util.Map;
 
 public class GetTextFiles
 {//Basic Files Utils file2bytes
-    public static Map<Path, byte[]> getTextFiles(Path src)
-    {
+    private static Path initialPath;
+
+    private static Map<Path, byte[]> RecursiveCall(Path src) {
         Map<Path, byte[]> mapData = new HashMap<>();
 
 
@@ -38,7 +39,7 @@ public class GetTextFiles
                 {
                     if(textFileFilter.accept(dir, file.getName()))
                     {
-                        Path base = Singleton.getSingletonObject().getFolderToSyncPath();
+                        Path base = initialPath;
                         Path fileFullPath = Path.of(file.getAbsolutePath());
 
                         var fileRelPath = base.relativize(fileFullPath);
@@ -48,6 +49,14 @@ public class GetTextFiles
                 }
             }
         }
+        return mapData;
+    }
+
+    public static Map<Path, byte[]> getTextFiles(Path path)
+    {
+        initialPath = path;
+
+        Map<Path, byte[]> mapData = RecursiveCall(path);
         return mapData;
     }
 
@@ -64,24 +73,4 @@ public class GetTextFiles
             }
         }
     };
-
-    public static void main(String[] args)
-    {
-        Input.confScanner();
-        // Reading data using readLine
-        try {
-            Singleton.loadSingletonData();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Path p = Singleton.getSingletonObject().getFolderToSyncPath();
-        var g = getTextFiles(p);
-
-        for(var entry : g.entrySet()){
-            System.out.println(entry.getKey() + " data:");
-
-            String fileContent = new String(entry.getValue(), StandardCharsets.UTF_8);
-            System.out.println(fileContent);
-        }
-    }
 }

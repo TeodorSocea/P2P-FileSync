@@ -1,0 +1,5 @@
+target
+shelf
+artifacts
+*.jar
+out

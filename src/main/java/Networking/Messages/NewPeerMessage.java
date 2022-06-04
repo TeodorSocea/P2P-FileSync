@@ -36,6 +36,7 @@ public class NewPeerMessage extends Message{
         //swarmID
         buff.putInt(12, this.swarmID);
         rawMessage = buff.array();
+        encrypt();
         return rawMessage;
     }
 }

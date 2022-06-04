@@ -1,22 +1,20 @@
 package Resident_Daemon.Core;
 
-
 import Networking.Core.NetworkingComponent;
-import Networking.Utils.Invitation;
 import Resident_Daemon.CommandsPack.CommandExecutor;
-import Resident_Daemon.Utils.BasicFileUtils;
+import Version_Control.VersionFileParser;
 import Version_Control.Version_Control_Component;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Singleton
 {
+    //region Fields
     private static final String EXPORT_IMPORT_FOLDER = "data_singleton.txt";
+    private  VersionFileParser versionParser;
 
     private String currentPath;
     private String operatingSystem;
@@ -26,8 +24,9 @@ public class Singleton
     private UserData userData;
 
     private NetworkingComponent networkingComponent;
-    private Version_Control_Component version;
+    private Version_Control_Component version_control_component;
     CommandExecutor commandExecutor;
+    //endregion
 
     private Singleton()
     {
@@ -36,7 +35,9 @@ public class Singleton
         commandExecutor = new CommandExecutor();
 
         this.networkingComponent = new NetworkingComponent(30000);
-        this.version = new Version_Control_Component();
+
+        this.version_control_component = new Version_Control_Component();
+        this.versionParser = new VersionFileParser();
 
         this.userData = new UserData();
 
@@ -143,8 +144,12 @@ public class Singleton
         return userData;
     }
 
-    public Version_Control_Component getVersion() {
-        return version;
+    public Version_Control_Component getVersion_control_component() {
+        return version_control_component;
+    }
+
+    public VersionFileParser getVersionParser() {
+        return versionParser;
     }
 
     //endregion

@@ -11,11 +11,9 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class ConnectionHandler implements Runnable{
 
@@ -36,7 +34,7 @@ public class ConnectionHandler implements Runnable{
         int definitiveMessageSize;
         do{
             selfSocket.getInputStream().read(messageSize);
-            definitiveMessageSize = Messages.getIntFromByteArray(messageSize, 0);
+            definitiveMessageSize = Messages.getIntFromByteArray(Messages.decryptSize(messageSize), 0);
         }while(definitiveMessageSize == 0);
         byte[] buf = new byte[definitiveMessageSize - 4];
         int readBytes = selfSocket.getInputStream().read(buf, 0, buf.length);
@@ -45,7 +43,6 @@ public class ConnectionHandler implements Runnable{
         buffer.put(buf);
         //byte[] rawMessage = ArrayUtils.addAll(messageSize, buf);
         Message incoming = new Message(buffer.array());
-
         return incoming;
     }
 
@@ -82,7 +79,7 @@ public class ConnectionHandler implements Runnable{
     private void sendSwarmData(int swarmID, int senderID) throws IOException {
         NetworkSwarm swarm = networkSwarmManager.getSwarms().get(swarmID);
         for(Map.Entry<Integer, Peer> entry : swarm.getPeers().entrySet()){
-            SwarmDataMessage swarmDataMessage = new SwarmDataMessage(MessageHeader.SWARM_DATA, senderID, entry.getValue());
+            SwarmDataMessage swarmDataMessage = new SwarmDataMessage(MessageHeader.SWARM_DATA, senderID, swarmID, entry.getValue());
             selfSocket.getOutputStream().write(swarmDataMessage.toPacket());
         }
     }
@@ -91,11 +88,25 @@ public class ConnectionHandler implements Runnable{
     public void run() {
         try {
             while(true) {
-                Message incoming = readIncomingMessage();
+                Message incoming = null;
+                try{
+                    incoming = readIncomingMessage();
+                }catch(SocketException e){
+                    for(Map.Entry<Integer, NetworkSwarm> entrySwarm : networkSwarmManager.getSwarms().entrySet()){
+                        Iterator<Map.Entry<Integer, Peer>> iter = entrySwarm.getValue().getPeers().entrySet().iterator();
+                        while(iter.hasNext()){
+                            Map.Entry<Integer, Peer> item = iter.next();
+                            if(item.getValue().getPeerSocket() == selfSocket){
+                                iter.remove();
+                            }
+                        }
+                    }
+                    break;
+                }
                 switch (incoming.getHeader()) {
                     case MessageHeader.INVITE_TO_SWARM -> {
                         InviteMessage invitationMessage = new InviteMessage(incoming.getRawMessage());
-                        Invitation invitation = new Invitation(invitationMessage.getSenderID(), invitationMessage.getSwarmID(), invitationMessage.getInviteeID(), selfSocket);
+                        Invitation invitation = new Invitation(invitationMessage.getSenderID(), invitationMessage.getSwarmID(), invitationMessage.getSwarmName(), invitationMessage.getInviteeID(), selfSocket);
                         networkSwarmManager.addInvitation(invitation);
                         break;
                     }
@@ -114,7 +125,7 @@ public class ConnectionHandler implements Runnable{
                         Socket newSocket = isInCommonSocketPool(ip);
 
                         if (newSocket == null) {
-                            newSocket = new Socket(ip, selfSocket.getPort());
+                            newSocket = new Socket(ip, 30000);
 
                             commonSocketPool.add(newSocket);
 

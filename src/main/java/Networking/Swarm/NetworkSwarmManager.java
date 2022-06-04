@@ -31,8 +31,20 @@ public class NetworkSwarmManager {
         return nextID;
     }
 
-    public void joinNewSwarm(int swarmID, int selfID){
-        swarms.put(swarmID, new NetworkSwarm(swarmID, selfID));
+    public int createNewSwarm(String name){
+        Random rand = new Random();
+        int nextID;
+        do{
+            nextID = rand.nextInt(MAX);
+        }while(swarms.containsKey(nextID));
+        int selfID = rand.nextInt(MAX);
+        swarms.put(nextID, new NetworkSwarm(nextID,selfID, name));
+        System.out.println("Created swarm " + nextID);
+        return nextID;
+    }
+
+    public void joinNewSwarm(int swarmID, int selfID, String swarmName){
+        swarms.put(swarmID, new NetworkSwarm(swarmID, selfID, swarmName));
     }
 
     public void addPeerToSwarm(int swarmID, Peer peer){

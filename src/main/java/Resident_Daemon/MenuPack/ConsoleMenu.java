@@ -2,9 +2,14 @@ package Resident_Daemon.MenuPack;
 
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.CommandsPack.Console.*;
+import Resident_Daemon.Core.Input;
 import Resident_Daemon.Core.Singleton;
+import Resident_Daemon.Utils.BasicFileUtils;
+import Version_Control.Version_Control_Component;
 
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -79,8 +84,10 @@ public class ConsoleMenu {
         while (true) {
 
             display();
-            String consoleInput = getInput();
+            Input.confScanner();
+            String consoleInput = Input.nextLine();
             List<String> args = splitInputIntoStrings(consoleInput);
+
 
             if (isAValidCmdIdx(args.get(0))) {
                 Integer cmdIxd;
@@ -122,12 +129,6 @@ public class ConsoleMenu {
         return true;
     }
 
-    private static String getInput() {
-
-        Scanner input = new Scanner(System.in);
-        return input.nextLine();
-    }
-
     private static void generateOptions() {
         List<Option> page;
 
@@ -157,6 +158,15 @@ public class ConsoleMenu {
 
         page.add(new Option("Print my IP", new AuxPrintSelfIP()));
 
+        page.add(new Option("Get Files from Version File", new AuxGetFilesFromVersionFile()));
+
+        page.add(new Option("Get File Timestamps from Version File", new AuxGetTimestampsFromFileVersionFile()));
+
+        page.add(new Option("Get File Changes from Version File", new AuxGetChangesFromTimestampVersionFile()));
+
+
+
+
 //        page.add(new Option("Disconnect", () -> {
 //            ConsoleMenu.pageNumber = (ConsoleMenu.pageNumber - 1) % 2;
 //            return null;
@@ -166,7 +176,6 @@ public class ConsoleMenu {
     }
 
     private static void display() {
-
         List<Option> page = userOptions.get(pageNumber);
         for (int indOpt = 0; indOpt < page.size(); indOpt++) {
             System.out.println("[" + indOpt + "] " + page.get(indOpt).getWhatToDisplay());

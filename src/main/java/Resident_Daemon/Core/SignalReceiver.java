@@ -15,8 +15,8 @@ public class SignalReceiver implements Runnable {
 
     @Override
     public void run() {
-        //seconds
-        long notificationTime = 1;
+        //milliseconds
+        long notificationTime = 50;
 
         while(true){
             if(userData.isConnected()){
@@ -29,11 +29,8 @@ public class SignalReceiver implements Runnable {
 
                     commandExecutor.ExecuteOperation(new SendFilesToPeer(swarmID, peerID, path));
                 }
-                // Daca a primit
+                // Daca s a facut fulfill la request
                 for(var pair : networkingComponent.getFulfilledRequests()){
-                    if(!userData.isEnableToWriteAllFiles()){
-                        userData.resetFileLists();
-                    }
                     int swarmID = pair.getKey();
                     int peerID = pair.getValue();
 
@@ -41,12 +38,9 @@ public class SignalReceiver implements Runnable {
                     userData.setEnableToWriteAllFiles(true);
                 }
 
-                if(userData.isEnableToWriteAllFiles()){
-                    commandExecutor.ExecuteOperation(new ReceiveFiles());
-                }
             }
             try {
-                TimeUnit.SECONDS.sleep(notificationTime);
+                TimeUnit.MILLISECONDS.sleep(notificationTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -1,6 +1,5 @@
 package Resident_Daemon.CommandsPack.Commands;
 
-import Networking.Core.NetworkingComponent;
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.UserData;
@@ -15,29 +14,41 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static Resident_Daemon.Utils.GetTextFiles.getTextFiles;
+import static Resident_Daemon.Utils.BasicFileUtils.GetFileTimestamp;
 
 public class ReceiveFiles implements Command {
 
+    private int swarmID;
+
+    public ReceiveFiles(int swarmID) {
+        this.swarmID = swarmID;
+    }
+
     private List<FileP2P> getLocalFiles(){
         List<FileP2P> originalFiles = new ArrayList<>();
-        Path folderPath = Singleton.getSingletonObject().getFolderToSyncPath();
-        for(var entry : GetTextFiles.getTextFiles(folderPath).entrySet()){
+        Path swarmFolderPath = BasicFileUtils.GetSwarmFolderPath(swarmID);
+        for(var entry : GetTextFiles.getTextFiles(swarmFolderPath).entrySet()){
             String fileName = entry.getKey().toString();
+
+            long lastModifiedTimeStamp = GetFileTimestamp(swarmID, String.valueOf(entry.getKey()));
             String fileData = new String(entry.getValue(), StandardCharsets.UTF_8);
-            FileP2P fileP2P = new FileP2P(fileName, fileData, 1);
+            FileP2P fileP2P = new FileP2P(fileName, fileData, lastModifiedTimeStamp);
             originalFiles.add(fileP2P);
         }
 
         return originalFiles;
     }
 
+
     @Override
     public boolean execute() {
-        Version_Control_Component vcc = Singleton.getSingletonObject().getVersion();
+        Version_Control_Component vcc = Singleton.getSingletonObject().getVersion_control_component();
         UserData userData = Singleton.getSingletonObject().getUserData();
+        String versionFileData = BasicFileUtils.GetIfExistsVersionFileData(swarmID);
+        if(versionFileData != null) {
+            vcc.setFisierVersiuni(versionFileData);
+        }
 
-//        vcc.setVersionFileData(vcc.getVersionFileData()); trebuie sa il scriu aici
 
         vcc.setOriginalFiles(getLocalFiles());
         vcc.setOtherFiles(userData.getOtherFiles());
@@ -45,19 +56,21 @@ public class ReceiveFiles implements Command {
         try {
 
             vcc.compare();
-            System.out.println(vcc.getVersionFileData());
+
+
             List<FileP2P> fileToWrite = vcc.getOriginalFiles();
 
             for(var fileData : fileToWrite){
-                BasicFileUtils.WriteFileToFolder(fileData.getFileName(), fileData.getData());
+                BasicFileUtils.WriteFileToFolder(swarmID, fileData.getFileName(), fileData.getData());
             }
+
+            BasicFileUtils.WriteVersionFile(swarmID, vcc.getVersionFileData());
 
         } catch (IOException e) {
             System.out.println("Eroare la scriere fisier");
             e.printStackTrace();
         }
 
-        userData.setEnableToWriteAllFiles(false);
 
         return true;
     }
