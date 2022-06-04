@@ -111,7 +111,7 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 commandExecutor.ExecuteOperation(new PrintSwarms());
-                if (userData.getMySwarms() == null) {
+                if (userData.getMySwarms().size() == 0) {
                     System.out.println("GUI: No swarms found.");
                     JOptionPane.showMessageDialog(frame,
                             "You have no swarms.",
