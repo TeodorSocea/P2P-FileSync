@@ -3,6 +3,7 @@ import GUI.GUI_Component;
 import Networking.Core.NetworkingComponent;
 import Networking.Peer.Peer;
 import Networking.Swarm.NetworkSwarm;
+import Networking.Swarm.NetworkSwarmManager;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.ChooseFolder;
 import Resident_Daemon.CommandsPack.Commands.ExitApp;
@@ -35,9 +36,11 @@ public class WorkScreen extends JFrame {
     JButton[] ipList;
     JPanel filesTab;
     JButton[] filesList;
+    JButton filesRefreshButton;
+    JButton ipsRefreshButton;
     String activeFolderPath=null;
-    int currentSwarmId;
     String selectedIP;
+    NetworkSwarm networkSwarm;
 
     CommandExecutor commandExecutor;
 
@@ -53,16 +56,16 @@ public class WorkScreen extends JFrame {
                 }
             }
         }*/
-        /*if (filesList != null) {
-            for (int i = 0; i < filesList.length; i++) {
-                if (e.getSource() == filesList[i]) {
-                    // selectedIP = filesList[i].getText();
-                    System.out.println("// FILE INFO BUTTON PRESSED: " + filesList[i].getText());
-                    frame.revalidate();
-                    frame.repaint();
-                }
+    /*if (filesList != null) {
+        for (int i = 0; i < filesList.length; i++) {
+            if (e.getSource() == filesList[i]) {
+                // selectedIP = filesList[i].getText();
+                System.out.println("// FILE INFO BUTTON PRESSED: " + filesList[i].getText());
+                frame.revalidate();
+                frame.repaint();
             }
-        }*/
+        }
+    }*/
     // IP List function:
     // Afisam IP-urile din zona, apasam pe un IP si dam send invitation.
     //
@@ -96,14 +99,13 @@ public class WorkScreen extends JFrame {
     }
 */
 
-    public WorkScreen(GUI_Component frame, int readSwarmId){
+    public WorkScreen(GUI_Component frame, NetworkSwarm currentSwarm){
         this.frame = frame;
-        currentSwarmId = readSwarmId;
         commandExecutor = Singleton.getSingletonObject().getCommandExecutor();
 
-        fileListTab();
+        networkSwarm = currentSwarm;
 
-        changeSyncFolderTab();
+        fileListTab();
 
         inviteToSwarmTab();
 
@@ -114,6 +116,7 @@ public class WorkScreen extends JFrame {
         frame.revalidate();
         frame.repaint();
     }
+
 
     // fileListTab:
     private void fileListTab() {
@@ -157,6 +160,28 @@ public class WorkScreen extends JFrame {
 
     }
 
+    private void filesRefreshButton() {
+        filesRefreshButton = new JButton("Refresh");
+        filesRefreshButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+
+        filesRefreshButton.setBounds(350,543,160,30);
+        filesRefreshButton.setFocusable(false);
+
+        filesRefreshButton.setForeground(new Color(0x000000));
+        filesRefreshButton.setBackground(new Color(0xB1B6A6));
+
+        filesRefreshButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                fileListTab();
+                frame.revalidate();
+                frame.repaint();
+            }
+        });
+
+        frame.add(filesRefreshButton);
+    }
+
 
     // changeSyncFolderTab:
     private void changeSyncFolderTab() {
@@ -197,25 +222,6 @@ public class WorkScreen extends JFrame {
 
     // inviteToSwarmTab:
     private void inviteToSwarmTab() {
-        inviteToSwarm = new JButton("Select IP to invite");
-        inviteToSwarm.setFont(new Font("Radio Canada", Font.BOLD, 15));
-
-        inviteToSwarm.setBounds(530,370,220,30);
-        inviteToSwarm.setFocusable(false);
-
-        inviteToSwarm.setForeground(new Color(0x000000));
-        inviteToSwarm.setBackground(new Color(0xB1B6A6));
-
-        inviteToSwarm.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // commandExecutor.ExecuteOperation(InviteToSwarm(selectedIP, currentSwarmId));
-                inviteToSwarm.setText("Invited.");
-            }
-        });
-
-        inviteToSwarm.setAlignmentX(-1);
-
         ipTab = new JPanel();
         JPanel p = new JPanel(new GridBagLayout());
 
@@ -237,14 +243,14 @@ public class WorkScreen extends JFrame {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5,5,5,180);
 
-        // int ji = 0;
+        int ji = 0;
         NetworkSwarm temp = null;
-        for (int ji = 0; ji < 10; ji++) {
-        // for (Map.Entry<Integer, Peer> swarmEntry : temp.getPeers().entrySet()) {
+        // for (int ji = 0; ji < 10; ji++) {
+        for (Map.Entry<Integer, Peer> swarmEntry : temp.getPeers().entrySet()) {
             gbc.gridy = ji;
             gbc.gridx = 0;
-            // ipList[ji] = new JButton(swarmEntry.getValue().toString() + ji);
-            ipList[ji] = new JButton("999.999.999.90" + ji);
+            ipList[ji] = new JButton(swarmEntry.getValue().toString() + ji);
+            ipList[ji] = new JButton("" + ji);
             p.add(ipList[ji], gbc);
             int i = ji;
             ipList[ji].addActionListener(new ActionListener() {
@@ -258,12 +264,55 @@ public class WorkScreen extends JFrame {
                 }
             });
             gbc.gridx = 1;
-            // ji++;
+            ji++;
         }
+
+
+        inviteToSwarm = new JButton("Select IP to invite");
+        inviteToSwarm.setFont(new Font("Radio Canada", Font.BOLD, 15));
+
+        inviteToSwarm.setBounds(770,543,160,30);
+        inviteToSwarm.setFocusable(false);
+
+        inviteToSwarm.setForeground(new Color(0x000000));
+        inviteToSwarm.setBackground(new Color(0xB1B6A6));
+
+        inviteToSwarm.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int id = networkSwarm.getSwarmID();
+                commandExecutor.ExecuteOperation(new InviteToSwarm(selectedIP, id));
+                inviteToSwarm.setText("Invited. Select another...");
+            }
+        });
+
+        inviteToSwarm.setAlignmentX(-1);
 
         frame.add(inviteToSwarm);
         frame.add(ipTab);
 
+    }
+
+    private void ipsRefreshButton() {
+        ipsRefreshButton = new JButton("Refresh");
+        ipsRefreshButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+
+        ipsRefreshButton.setBounds(530,370,220,30);
+        ipsRefreshButton.setFocusable(false);
+
+        ipsRefreshButton.setForeground(new Color(0x000000));
+        ipsRefreshButton.setBackground(new Color(0xB1B6A6));
+
+        ipsRefreshButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                inviteToSwarmTab();
+                frame.revalidate();
+                frame.repaint();
+            }
+        });
+
+        frame.add(ipsRefreshButton);
     }
 
 
@@ -284,7 +333,7 @@ public class WorkScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.print("GUI: Synced.");
-                // commandExecutor.ExecuteOperation(new SyncSwarm(currentSwarmId)); // fara selected;
+                commandExecutor.ExecuteOperation(new SyncSwarm(networkSwarm.getSwarmID()));
                 syncButton.setText("Synced. Tap again to sync");
                 frame.revalidate();
                 frame.repaint();
@@ -310,7 +359,7 @@ public class WorkScreen extends JFrame {
         swarmInfo = new JLabel();
 
         // swarmInfo settings:
-        swarmInfo.setText("Swarm ID: " + currentSwarmId);
+        swarmInfo.setText("Swarm ID: " + networkSwarm.getSwarmID());
         swarmInfo.setFont(new Font("Radio Canada", Font.BOLD, 16));
 
         swarmInfo.setForeground(new Color(0xB1B6A6));
@@ -337,6 +386,7 @@ public class WorkScreen extends JFrame {
                 frame.remove(disconnectButton);
                 frame.remove(quitButton);
                 frame.remove(inviteToSwarm);
+                frame.remove(ipsRefreshButton);
                 frame.remove(changeSyncFolderButton);
                 frame.remove(ipTab);
                 frame.remove(yourIp);

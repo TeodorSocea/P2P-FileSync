@@ -1,6 +1,7 @@
 package GUI;
 import Networking.Networking.NetworkManager;
 import Networking.Swarm.NetworkSwarm;
+import Networking.Swarm.NetworkSwarmManager;
 import Networking.Utils.Invitation;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.CreateSwarm;
@@ -82,16 +83,7 @@ public class ConnectScreen extends JFrame {
 
         Main.ResidentDaemonINIT();
 
-        ///
-        try {
-            Path folderToSyncPath = Singleton.getSingletonObject().getFolderToSyncPath();
-        } catch (NullPointerException e) {
-            // aici faci cand trebuie sa selecteze
-        }
-
-        // aici faci ce vrei pt ca e folderul selectat
-
-        ///
+        selectFolder();
 
         menuElements();
     }
@@ -106,6 +98,30 @@ public class ConnectScreen extends JFrame {
 
         frame.revalidate();
         frame.repaint();
+    }
+
+    private void selectFolder() {
+        try {
+            Path folderToSyncPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        } catch (NullPointerException e) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setCurrentDirectory(new java.io.File("."));
+            chooser.setDialogTitle("Choose Swarms Folder");
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setAcceptAllFileFilterUsed(false);
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                String activeFolderPath = chooser.getSelectedFile().getAbsolutePath();
+                commandExecutor.ExecuteOperation(new ChooseFolder(activeFolderPath));
+            }
+            else{
+                System.out.println("GUI: No folder path selected!");
+                JOptionPane.showMessageDialog(frame,
+                        "You have to choose a folder path in order to use this app.",
+                        "Error",
+                        JOptionPane.PLAIN_MESSAGE);
+                selectFolder();
+            }
+        }
     }
 
 
@@ -163,51 +179,48 @@ public class ConnectScreen extends JFrame {
 
                     int ij = 0;
                     for (var swarmEntry : userData.getMySwarms().entrySet()) {
-                        int temp = swarmEntry.getValue().getSwarmID();
+                        String temp = swarmEntry.getValue().getSwarmName();
 
                         gbcSwarm.gridy = ij;
                         gbcSwarm.gridx = 0;
 
-                        swarmIPS[ij] = new JButton("Swarm " + temp);
+                        swarmIPS[ij] = new JButton(temp);
                         pSwm.add(swarmIPS[ij], gbcSwarm);
+
+                        int i = ij;
 
                         swarmIPS[ij].addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                if (swarmIPS != null) {
-                                    for (int i = 0; i < swarmIPS.length; i++) {
-                                        if (e.getSource() == swarmIPS[i]) {
-                                            joinSwarmSend = swarmIPS[i].getText();
-                                            System.out.println("GUI: Swarm selected: " + swarmIPS[i].getText());
+                                joinSwarmSend = swarmIPS[i].getText();
+                                System.out.println("GUI: Swarm selected: " + swarmIPS[i].getText());
 
-                                            frame.remove(joinButton);
+                                if (joinButton != null)
+                                    frame.remove(joinButton);
 
-                                            joinButton = new JButton();
-                                            joinButton.setText("Join");
-                                            joinButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+                                joinButton = new JButton();
+                                joinButton.setText("Join");
+                                joinButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-                                            joinButton.setForeground(new Color(0x000000));
-                                            joinButton.setBackground(new Color(0xB1B6A6));
+                                joinButton.setForeground(new Color(0x000000));
+                                joinButton.setBackground(new Color(0xB1B6A6));
 
-                                            joinButton.setBounds(590, 585, 85, 30);;
-                                            joinButton.setFocusable(false);
+                                joinButton.setBounds(590, 585, 85, 30);;
+                                joinButton.setFocusable(false);
 
-                                            joinButton.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent e) {
-                                                    System.out.print("GUI: Joining Swarm: " + joinSwarmSend);
+                                joinButton.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        System.out.print("GUI: Joining Swarm: " + joinSwarmSend);
 
-                                                    int swarm = Integer.parseInt(joinSwarmSend.replaceAll("[^0-9]", ""));
+                                        frame.removeAll();
+                                        frame.repaint();
+                                        workScreen = new WorkScreen(frame, joinSwarmSend);
 
-                                                    workScreen = new WorkScreen(frame, swarm);
-                                                    frame.removeAll();
-                                                    frame.repaint();
-                                                }
-                                            });
-
-                                        }
                                     }
-                                }
+                                });
+
+                                frame.add(joinButton);
                             }
                         });
 
@@ -319,65 +332,61 @@ public class ConnectScreen extends JFrame {
                         inviteIPS[ii] = new JButton("Button " + invitation.getSenderID());
                         pInv.add(inviteIPS[ii], gbcInvite);
 
+                        int i = ii;
+
                         inviteIPS[ii].addActionListener(new ActionListener() {
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                if (inviteIPS != null) {
-                                    for (int j = 0; j < inviteIPS.length; j++) {
-                                        if (e.getSource() == inviteIPS[j]) {
-                                            acceptIpSend = inviteIPS[j].getText();
+                                acceptIpSend = inviteIPS[i].getText();
 
-                                            frame.remove(acceptButton);
-                                            frame.remove(declineButton);
+                                frame.remove(acceptButton);
+                                frame.remove(declineButton);
 
-                                            acceptButton = new JButton();
+                                acceptButton = new JButton();
 
-                                            acceptButton.setText("Accept");
-                                            acceptButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+                                acceptButton.setText("Accept");
+                                acceptButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-                                            acceptButton.setForeground(new Color(0x000000));
-                                            acceptButton.setBackground(new Color(0xB1B6A6));
+                                acceptButton.setForeground(new Color(0x000000));
+                                acceptButton.setBackground(new Color(0xB1B6A6));
 
-                                            acceptButton.setBounds(540, 585, 85, 30);
-                                            acceptButton.setFocusable(false);
+                                acceptButton.setBounds(540, 585, 85, 30);
+                                acceptButton.setFocusable(false);
 
-                                            acceptButton.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent e) {
-                                                    System.out.print("GUI: Accepting invitation from: " + acceptIpSend);
-                                                    // commandExecutor.ExecuteOperation(RespondToInvitation(int index(a cata invitatie e), bool response));
-                                                }
-                                            });
-
-
-                                            declineButton = new JButton();
-
-                                            declineButton.setText("Decline");
-                                            declineButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
-
-                                            declineButton.setForeground(new Color(0x000000));
-                                            declineButton.setBackground(new Color(0xB1B6A6));
-
-                                            declineButton.setBounds(655, 585, 85, 30);
-                                            declineButton.setFocusable(false);
-
-                                            declineButton.addActionListener(new ActionListener() {
-                                                @Override
-                                                public void actionPerformed(ActionEvent e) {
-                                                    System.out.print("GUI: Declining invitation from: " + acceptIpSend);
-                                                    // commandExecutor.ExecuteOperation(RespondToInvitation(int index(a cata invitatie e), bool response));
-                                                }
-                                            });
-
-
-                                            frame.add(acceptButton);
-                                            frame.add(declineButton);
-
-                                            frame.revalidate();
-                                            frame.repaint();
-                                        }
+                                acceptButton.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        System.out.print("GUI: Accepting invitation from: " + acceptIpSend);
+                                        commandExecutor.ExecuteOperation(new RespondToInvitation(i, true));
                                     }
-                                }
+                                });
+
+
+                                declineButton = new JButton();
+
+                                declineButton.setText("Decline");
+                                declineButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+
+                                declineButton.setForeground(new Color(0x000000));
+                                declineButton.setBackground(new Color(0xB1B6A6));
+
+                                declineButton.setBounds(655, 585, 85, 30);
+                                declineButton.setFocusable(false);
+
+                                declineButton.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        System.out.print("GUI: Declining invitation from: " + acceptIpSend);
+                                        commandExecutor.ExecuteOperation(new RespondToInvitation(i, false));
+                                    }
+                                });
+
+
+                                frame.add(acceptButton);
+                                frame.add(declineButton);
+
+                                frame.revalidate();
+                                frame.repaint();
                             }
                         });
 
@@ -448,11 +457,12 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: Creating new swarm. ");
-                String chosenID = null;
-                chosenID = JOptionPane.showInputDialog("Swarm ID:");
-                System.out.println("GUI: Swarm created with ID " + chosenID);
-                // commandExecutor.ExecuteOperation(new CreateSwarm(string invited));
-                int swarm = userData.getLastCreatedSwarm();
+                String chosenName = null;
+                chosenName = JOptionPane.showInputDialog("Swarm ID:");
+                System.out.println("GUI: Swarm created with name: " + chosenName);
+                CreateSwarm createdSwarm = new CreateSwarm(chosenName);
+
+                new NetworkSwarm().getSelfID();
 
                 frame.remove(newSwarmButton);
                 frame.remove(viewInvitesButton);
@@ -465,7 +475,7 @@ public class ConnectScreen extends JFrame {
                 frame.revalidate();
                 frame.repaint();
 
-                workScreen = new WorkScreen(frame, swarm);
+                workScreen = new WorkScreen(frame, createdSwarm);
             }
         });
 
