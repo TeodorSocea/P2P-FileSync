@@ -30,6 +30,29 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        SignalReceiver signalReceiver = new SignalReceiver();
+
+        new Thread(signalReceiver).start();
+    }
+
+    public static void ResidentDaemonINIT() {
+        Singleton mainData;
+
+        Input.confScanner();
+
+        mainData = Singleton.getSingletonObject();
+        mainData.setOperatingSystem(System.getProperty("os.name"));
+
+        try {
+            Singleton.loadSingletonData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SignalReceiver signalReceiver = new SignalReceiver();
+
+        new Thread(signalReceiver).start();
     }
 
     public static void testSerialization() {
@@ -57,9 +80,7 @@ public class Main {
         String name = System.getProperty("user.name");
 
 
-        SignalReceiver signalReceiver = new SignalReceiver();
 
-        new Thread(signalReceiver).start();
 
         ConsoleMenu.startToInteractWithTheUser();
 

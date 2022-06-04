@@ -4,11 +4,13 @@ import Networking.Swarm.NetworkSwarm;
 import Networking.Utils.Invitation;
 import Resident_Daemon.CommandsPack.CommandExecutor;
 import Resident_Daemon.CommandsPack.Commands.CreateSwarm;
+import Resident_Daemon.Core.Main;
 import Resident_Daemon.Core.Singleton;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -77,6 +79,19 @@ public class ConnectScreen extends JFrame {
         title.setBounds(330, -100, 884, 500);
 
         frame.add(title);
+
+        Main.ResidentDaemonINIT();
+
+        ///
+        try {
+            Path folderToSyncPath = Singleton.getSingletonObject().getFolderToSyncPath();
+        } catch (NullPointerException e) {
+            // aici faci cand trebuie sa selecteze
+        }
+
+        // aici faci ce vrei pt ca e folderul selectat
+
+        ///
 
         menuElements();
     }

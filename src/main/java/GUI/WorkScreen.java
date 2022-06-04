@@ -8,6 +8,7 @@ import Resident_Daemon.CommandsPack.Commands.ChooseFolder;
 import Resident_Daemon.CommandsPack.Commands.ExitApp;
 import Resident_Daemon.CommandsPack.Commands.InviteToSwarm;
 import Resident_Daemon.CommandsPack.Commands.SyncSwarm;
+import Resident_Daemon.Core.Main;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.UserData;
 
