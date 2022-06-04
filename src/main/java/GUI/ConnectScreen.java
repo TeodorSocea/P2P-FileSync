@@ -215,7 +215,7 @@ public class ConnectScreen extends JFrame {
 
                                         frame.removeAll();
                                         frame.repaint();
-                                        workScreen = new WorkScreen(frame, joinSwarmSend);
+//                                        workScreen = new WorkScreen(frame, joinSwarmSend);
 
                                     }
                                 });
@@ -460,9 +460,12 @@ public class ConnectScreen extends JFrame {
                 String chosenName = null;
                 chosenName = JOptionPane.showInputDialog("Swarm ID:");
                 System.out.println("GUI: Swarm created with name: " + chosenName);
-                CreateSwarm createdSwarm = new CreateSwarm(chosenName);
 
-                new NetworkSwarm().getSelfID();
+                CreateSwarm createdSwarm = new CreateSwarm(chosenName);
+                commandExecutor.ExecuteOperation(createdSwarm);
+                NetworkSwarm latestSwarmCreated = userData.getLastCreatedSwarm();
+
+//                new NetworkSwarm().getSelfID();
 
                 frame.remove(newSwarmButton);
                 frame.remove(viewInvitesButton);
@@ -475,7 +478,7 @@ public class ConnectScreen extends JFrame {
                 frame.revalidate();
                 frame.repaint();
 
-                workScreen = new WorkScreen(frame, createdSwarm);
+//                workScreen = new WorkScreen(frame, createdSwarm);
             }
         });
 

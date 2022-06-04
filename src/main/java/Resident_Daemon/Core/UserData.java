@@ -1,5 +1,6 @@
 package Resident_Daemon.Core;
 
+import Networking.Core.NetworkingComponent;
 import Networking.Swarm.NetworkSwarm;
 import Networking.Utils.Invitation;
 import Version_Control.FileP2P;
@@ -20,7 +21,7 @@ public class UserData {
     private List<FileP2P> otherFiles;
 
     private boolean isEnableToWriteAllFiles;
-    private int lastCreatedSwarm;
+    private NetworkSwarm lastCreatedSwarm;
 
     private List<SyncRecord> localMasterFile;
 
@@ -99,14 +100,15 @@ public class UserData {
         isEnableToWriteAllFiles = enableToWriteAllFiles;
     }
 
-    public int getLastCreatedSwarm() {
+    public NetworkSwarm getLastCreatedSwarm() {
         return lastCreatedSwarm;
     }
 
-    public void setLastCreatedSwarm(int lastCreatedSwarm) {
+    public void setLastCreatedSwarm(NetworkSwarm lastCreatedSwarm) {
         this.lastCreatedSwarm = lastCreatedSwarm;
     }
-//endregion
+
+    //endregion
     public void resetMasterFiles(){
         localMasterFile = new ArrayList<>();
         otherMasterFile = new ArrayList<>();

@@ -1,6 +1,7 @@
 package Resident_Daemon.CommandsPack.Commands;
 
 import Networking.Core.NetworkingComponent;
+import Networking.Swarm.NetworkSwarm;
 import Resident_Daemon.CommandsPack.Command;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Utils.BasicFileUtils;
@@ -18,10 +19,19 @@ public class CreateSwarm extends ExceptionModule implements Command {
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
 
-        networkingComponent.createNewSwarmName(swarmName);
+        int swarmID = networkingComponent.createNewSwarmName(swarmName);
+        NetworkSwarm latestSwarmCreated = null;
+
+        for(var entry : networkingComponent.getSwarms().entrySet()) {
+            if(entry.getKey().equals(swarmID)){
+                latestSwarmCreated = entry.getValue();
+            }
+        }
         BasicFileUtils.CreateSwarmFolder(swarmName);
 
         Singleton.getSingletonObject().getUserData().setConnected(true, networkingComponent.getSwarms());
+        Singleton.getSingletonObject().getUserData().setLastCreatedSwarm(latestSwarmCreated);
+
 
         return true;
     }
