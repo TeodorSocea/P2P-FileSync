@@ -11,7 +11,7 @@ public class GUI_Component extends JFrame{
         this.setVisible(true);
         this.setSize(1280, 720);
         this.setTitle("P2P File Sync");
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
         ImageIcon image = new ImageIcon("src/main/java/GUI/sync_logo.jpg");
         this.setIconImage(image.getImage());

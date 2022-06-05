@@ -579,12 +579,15 @@ public class ConnectScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: Displaying help.");
                 JOptionPane.showMessageDialog(frame,
-                        "Move the chess pieces on the board by clicking\n"
-                                + "and dragging. The game will watch out for illegal\n"
-                                + "moves. You can win either by your opponent running\n"
-                                + "out of time or by checkmating your opponent.\n"
-                                + "\nGood luck, hope you enjoy the game!",
-                        "How to play",
+                        "Accept an invite, join or create an existing swarm\n"
+                                + "in order to access the features of the app.\n"
+                                + "Once in a swarm, you can invite users either manually by\n"
+                                + "inserting their IP, or refreshing the nearby IPs.\n"
+                                + "\nBy clicking a file you can see its timestamps, and\n"
+                                + "clicking one will show you the changes.\n"
+                                + "You can either or rollback changes\n"
+                                + "based on pressed timestamp.",
+                        "Help",
                         JOptionPane.PLAIN_MESSAGE);
             }
         });
@@ -607,7 +610,7 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: Exiting.");
-                // commandExecutor.ExecuteOperation(new ExitApp());
+                commandExecutor.ExecuteOperation(new ExitApp());
                 exit(1);
             }
         });
