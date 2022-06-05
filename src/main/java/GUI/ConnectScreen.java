@@ -302,6 +302,7 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: View invitations.");
+                commandExecutor.ExecuteOperation(new PrintInvitations());
 
                 if (userData.getUserInvitations() == null) {
                     System.out.println("GUI: No invites found.");

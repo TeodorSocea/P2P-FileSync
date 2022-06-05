@@ -9,6 +9,7 @@ import Resident_Daemon.CommandsPack.Commands.*;
 import Resident_Daemon.Core.Main;
 import Resident_Daemon.Core.Singleton;
 import Resident_Daemon.Core.UserData;
+import org.w3c.dom.ls.LSOutput;
 
 import java.sql.SQLOutput;
 import java.util.*;
@@ -318,6 +319,7 @@ public class WorkScreen extends JFrame {
             gbc.gridy = ji;
             gbc.gridx = 0;
             ipList[ji] = new JButton("" + list);
+            System.out.println(ipList[ji].getText());
             ipList[ji].setBackground(new Color(0x727482));
             ipList[ji].setForeground(new Color(0xFBFCF5));
             p.add(ipList[ji], gbc);
