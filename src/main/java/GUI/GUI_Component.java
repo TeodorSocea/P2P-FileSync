@@ -13,9 +13,10 @@ public class GUI_Component extends JFrame{
         this.setTitle("P2P File Sync");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         this.setResizable(false);
-        ImageIcon image = new ImageIcon("src/main/java/GUI/sync_logo.jpg");
+
+        this.getContentPane().setBackground(new Color(0x131c30));
+        /*ImageIcon image = new ImageIcon("src/main/java/GUI/sync_logo.jpg");
         this.setIconImage(image.getImage());
-        // this.getContentPane().setBackground(new Color(0x363946));
         Image img = Toolkit.getDefaultToolkit().getImage(("src/main/java/GUI/backgroundImg.png"));
         this.setContentPane(new JPanel() {
             @Override
@@ -23,7 +24,7 @@ public class GUI_Component extends JFrame{
                 super.paintComponent(g);
                 g.drawImage(img, 0, 0, null);
             }
-        });
+        });*/
         this.setLayout(null);
         connectScreen = new ConnectScreen(this);
     }
