@@ -115,7 +115,27 @@ public class Rollback {
         //sparg fisierul in lista pentru a-l parsa mai usor si a da remove direct liniei din cheie
         int removed = 0;
         List<String> myList = new ArrayList<String>(Arrays.asList(dataFisier.split("\n")));
-        for (Object key: deleted.keySet()){
+
+        var stringObjMap = deleted.toMap();
+
+        Comparator<String> sorted = new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                Integer number1 = Integer.parseInt(o1);
+                Integer number2 = Integer.parseInt(o2);
+                return number1 > number2 ? 1 : number1 < number2 ? -1 : 0;
+            }
+        };
+
+        TreeSet<String> tsc = new TreeSet<>(sorted);
+
+        for(String string : stringObjMap.keySet()) {
+            tsc.add(string);
+        }
+
+        JSONObject sortedDeleted = new JSONObject(tsc);
+
+        for (String key: tsc){
             String number = key.toString();
             int i=Integer.parseInt(number);
             myList.remove(i-removed);
