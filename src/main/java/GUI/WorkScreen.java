@@ -31,7 +31,8 @@ public class WorkScreen extends JFrame {
     JPanel timeStampsTab;
     JButton[] timeStampsList;
     JButton versionsRefreshButton;
-
+    String savedFile;
+    String savedTimeStamp;
 
     JPanel ipTab;
     JButton[] ipList;
@@ -61,60 +62,6 @@ public class WorkScreen extends JFrame {
     CommandExecutor commandExecutor;
     NetworkSwarm networkSwarm;
 
-    /* Button functions:
-        /*if (ipList != null) {
-            for (int i = 0; i < ipList.length; i++) {
-                if (e.getSource() == ipList[i]) {
-                    selectedIP = Integer.parseInt(ipList[i].getText());
-                    System.out.println("// SWARM IP PRESSED: " + ipList[i].getText());
-                    syncButton.setText("Sync?: " + ipList[i].getText());
-                    frame.revalidate();
-                    frame.repaint();
-                }
-            }
-        }*/
-    /*if (filesList != null) {
-        for (int i = 0; i < filesList.length; i++) {
-            if (e.getSource() == filesList[i]) {
-                // selectedIP = filesList[i].getText();
-                System.out.println("// FILE INFO BUTTON PRESSED: " + filesList[i].getText());
-                frame.revalidate();
-                frame.repaint();
-            }
-        }
-    }*/
-    // IP List function:
-    // Afisam IP-urile din zona, apasam pe un IP si dam send invitation.
-    //
-    /*public void ipGenerator() {
-        ipTab = new JPanel();
-        JPanel p = new JPanel(new GridBagLayout());
-        ipTab.add(new JScrollPane(p, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER));
-        GridBagConstraints gbc = new GridBagConstraints();
-        ipTab.setLayout(new BoxLayout(ipTab, BoxLayout.PAGE_AXIS));
-        ipTab.setBounds(770,118,160,425);
-        ipTab.setMaximumSize(new Dimension(100, 200));
-        p.setFont(new Font("Radio Canada", Font.ITALIC, 25));
-        p.setForeground(new Color(0xFBFCF5));
-        p.setBackground(new Color(0x3F3D4B));
-        ipTab.setBorder(BorderFactory.createMatteBorder(2, 2, 2, 2, Color.black));
-        ipTab.setAutoscrolls(true);
-        ipList = new JButton[10];
-        gbc.insets = new Insets(5,5,5,180);
-        int ji = 0;
-        NetworkSwarm temp = null;
-        for (Map.Entry<Integer, Peer> swarmEntry : temp.getPeers().entrySet()) {
-            gbc.gridy = ji;
-            gbc.gridx = 0;
-            ipList[ji] = new JButton(swarmEntry.getValue().toString() + ji);
-            p.add(ipList[ji], gbc);
-            ipList[ji].addActionListener(this);
-            gbc.gridx = 1;
-            ji++;
-        }
-        frame.add(ipTab);
-    }
-*/
 
     public WorkScreen(GUI_Component frame, NetworkSwarm currentSwarm){
         this.frame = frame;
@@ -182,6 +129,8 @@ public class WorkScreen extends JFrame {
                     public void actionPerformed(ActionEvent e) {
                         System.out.println("GUI: File pressed: " + filesList[i].getText());
 
+                        savedFile = filesList[i].getText();
+
                         if (timeStampsTab != null){
                             frame.remove(timeStampsTab);
                             frame.revalidate();
@@ -241,6 +190,8 @@ public class WorkScreen extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     System.out.println("GUI: Time Stamp pressed: " + timeStampsList[i].getText());
 
+                    savedTimeStamp = timeStampsList[i].getText();
+
                     commandExecutor.ExecuteOperation(new GetChangesFromTimestampVersionFile(fileName, timeStampsList[i].getText()));
                     JOptionPane.showMessageDialog(frame,
                             Singleton.getSingletonObject().getUserData().getChangesFileVersionFile(),
@@ -284,7 +235,6 @@ public class WorkScreen extends JFrame {
         });
 
         frame.add(versionsRefreshButton);
-
 
     }
 
@@ -471,7 +421,7 @@ public class WorkScreen extends JFrame {
         rollBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("GUI: Rolling back.");
+                System.out.println("GUI: Rolling back. Timestamp: " + savedTimeStamp  + ". File: " + savedFile);
             }
         });
 
