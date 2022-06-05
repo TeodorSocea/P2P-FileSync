@@ -32,6 +32,11 @@ public class SyncSwarm extends ExceptionModule implements Command {
         return localRecords;
     }
 
+    private void SetReceived_RequiredFilesParam(Integer receivedFiles, Integer requiredFiles) {
+        Singleton.getSingletonObject().getUserData().setReceivedFiles(receivedFiles);
+        Singleton.getSingletonObject().getUserData().setRequiredFiles(requiredFiles);
+    }
+
     @Override
     public boolean execute() {
         NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
@@ -47,6 +52,9 @@ public class SyncSwarm extends ExceptionModule implements Command {
             userData.resetMasterFiles();
             userData.resetFileLists();
             userData.setEnableToWriteAllFiles(false);
+            userData.setCompareDone(false);
+
+            SetReceived_RequiredFilesParam(0, 1);
 
             try {
                 networkingComponent.requestDataFromSwarm(swarmID, peerID, BasicFileUtils.filePathMasterSyncFile);
@@ -74,11 +82,14 @@ public class SyncSwarm extends ExceptionModule implements Command {
 
                 vc.setLocalMasterFile(localRecords);
                 vc.setOtherMasterFile(otherRecords);
-                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
+//                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
 
                 vc.compareMasterFile();
 
-                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
+
+                userData.setCompareDone(true);
+
+//                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
 
                 if(vc.getLocalMasterFile().size() > 0) {
                     StringBuilder stringBuilder = new StringBuilder();
@@ -87,6 +98,9 @@ public class SyncSwarm extends ExceptionModule implements Command {
                         stringBuilder.append(pair.getKey() + "!");
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+
+
+                    SetReceived_RequiredFilesParam(0, vc.getLocalMasterFile().size());
 
                     networkingComponent.requestDataFromSwarm(swarmID, peerID, stringBuilder.toString());
 

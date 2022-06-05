@@ -18,6 +18,7 @@ public class SignalReceiver implements Runnable {
         //milliseconds
         long notificationTime = 50;
 
+
         while(true){
             if(userData.isConnected()){
                 NetworkingComponent networkingComponent = Singleton.getSingletonObject().getNetworkingComponent();
@@ -35,8 +36,16 @@ public class SignalReceiver implements Runnable {
                     int peerID = pair.getValue();
 
                     commandExecutor.ExecuteOperation(new ProcessRecievedFile(swarmID, peerID));
-                    userData.setEnableToWriteAllFiles(true);
+
+                    userData.setReceivedFiles(userData.getReceivedFiles() + 1);
                 }
+
+                if(userData.getReceivedFiles() >= userData.getRequiredFiles()) {
+                    userData.setEnableToWriteAllFiles(true);
+                    userData.setReceivedFiles(0);
+                    userData.setReceivedFiles(1);
+                }
+
 
             }
             try {
