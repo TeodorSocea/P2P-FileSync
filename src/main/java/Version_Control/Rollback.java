@@ -1,6 +1,8 @@
 package Version_Control;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.util.*;
 
 public class Rollback {
@@ -40,23 +42,14 @@ public class Rollback {
                 timestamps.put(key, file.getJSONObject(key));
             }
         }
-
         //sortam hashmap
-        SortedSet<String> ts = new TreeSet<>(timestamps.keySet());
+        //crescator
+        TreeSet<String> tsc = new TreeSet<>(timestamps.keySet());
+        //descrescator
+        TreeSet<String> ts = (TreeSet<String>)tsc.descendingSet();
+
         for (String key : ts) {///swap la toata zona de deleted_content si added_content + swap la myList = List.copyOf(addTo/deleteFrom)
             String value = String.valueOf(timestamps.get(key));
-
-            //iteram strict prin deleted content pentru a salva intr-un map linia si continutul pentru a-l pune mai usor in json mai tarziu?
-            JSONObject deleted = new JSONObject(value).getJSONObject("deleted_content");
-            Iterator<String> delItr = deleted.keys();
-            while(delItr.hasNext()) {
-                String name = delItr.next();
-                toBeDeleted.put(name, deleted.getString(name));
-            }
-            // stergem liniile si dupa modificam si fisierul sa fie la curent cu modificarile facut
-            myList = List.copyOf(addTo(deleted,dataFisier));
-            dataFisier = String.join("\n",myList);
-
 
             //iteram strict prin added content pentru a salva intr-un map linia si continutul pentru a-l pune mai usor in json mai tarziu?
             JSONObject added = new JSONObject(value).getJSONObject("added_content");
@@ -68,6 +61,25 @@ public class Rollback {
             // aplicam liniile modificare si dupa modificam si fisierul sa fie la curent cu adaugarile facute
             myList = List.copyOf(deleteFrom(added,dataFisier));
             dataFisier = String.join("\n",myList);
+
+
+
+
+            //iteram strict prin deleted content pentru a salva intr-un map linia si continutul pentru a-l pune mai usor in json mai tarziu?
+            JSONObject deleted = new JSONObject(value).getJSONObject("deleted_content");
+            Iterator<String> delItr = deleted.keys();
+            while(delItr.hasNext()) {
+                String name = delItr.next();
+                toBeDeleted.put(name, deleted.getString(name));
+            }
+
+            // stergem liniile si dupa modificam si fisierul sa fie la curent cu modificarile facut
+            myList = List.copyOf(addTo(deleted,dataFisier));
+            dataFisier = String.join("\n",myList);
+
+
+
+
         }
         nou = createNewJSONObject(toBeDeleted,toBeAdded); /// switch aici
         json.getJSONObject("files").getJSONObject("" + numeFisier + "").put("" + System.currentTimeMillis() / 1000L + "",nou);
@@ -91,23 +103,30 @@ public class Rollback {
 
     private List<String> deleteFrom(JSONObject deleted, String dataFisier){
         //sparg fisierul in lista pentru a-l parsa mai usor si a da remove direct liniei din cheie
+        int removed = 0;
         List<String> myList = new ArrayList<String>(Arrays.asList(dataFisier.split("\n")));
         for (Object key: deleted.keySet()){
             String number = key.toString();
             int i=Integer.parseInt(number);
-            myList.remove(i);
+            myList.remove(i-removed);
+            removed++;
         }
         return myList;
     }
 
     private List<String> addTo(JSONObject added, String dataFisier){
         //sparg fisierul in lista pentru a-l parsa mai usor si a pune continutul direct pe linia cheii
-        List<String> myList = new ArrayList<String>(Arrays.asList(dataFisier.split("\n")));
+        ArrayList<String> myList = new ArrayList<String>(Arrays.asList(dataFisier.split("\n")));
         for (Object key: added.keySet()){
             String number = key.toString();
             String text = (String) added.get("" + number + "");
             int i=Integer.parseInt(number);
-            myList.add(i, text);
+            if(i>myList.size()){
+            do{
+                myList.add("");
+            }while(i>myList.size());}
+            if(i <= myList.size()){
+            myList.add(i, text);}
         }
         return myList;
     }
@@ -133,7 +152,7 @@ public class Rollback {
                 "    \"nume_fisier_sincronizat\": {\n" +
                 "    \"1653837570\" : {\n" +
                 "      \"added_content\" : { 3:\"ben are mere\"},\n" +
-                "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
+                "      \"deleted_content\" : { 3:\"ana NU MAI are mere\"}\n" +
                 "    },\n" +
                 "    \"1651728809\" :  {\n" +
                 "      \"added_content\" : { 2:\"maria are mere\"},\n" +
@@ -146,7 +165,6 @@ public class Rollback {
         Rollback rollback = new Rollback(VersionFile);
 
         rollback.rollbackTo(dataFisier,numeFisier,rollbackTimestamp);
-        System.out.println(rollback.getVersionFileData());
         /*
         //primeste tot json-ul
         ArrayList<String> files = new ArrayList<>(rollback.getFiles(new JSONObject(VersionFile)));
