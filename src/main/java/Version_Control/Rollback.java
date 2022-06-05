@@ -95,7 +95,7 @@ public class Rollback {
         for (Object key: deleted.keySet()){
             String number = key.toString();
             int i=Integer.parseInt(number);
-            myList.remove(i-1);
+            myList.remove(i);
         }
         return myList;
     }

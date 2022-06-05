@@ -164,6 +164,8 @@ public class ConsoleMenu {
 
         page.add(new Option("Get File Changes from Version File", new AuxGetChangesFromTimestampVersionFile()));
 
+        page.add(new Option("RollBack", new AuxRollback()));
+
 
 
 

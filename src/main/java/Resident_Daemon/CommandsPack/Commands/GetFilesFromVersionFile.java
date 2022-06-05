@@ -29,6 +29,8 @@ public class GetFilesFromVersionFile extends ExceptionModule implements Command 
         versionFileParser.setVersionFile(new JSONObject(vcc.getVersionFileData()));
         Singleton.getSingletonObject().getUserData().setVersionFileFiles(versionFileParser.getFiles());
 
+        System.out.println(Singleton.getSingletonObject().getUserData().getVersionFileFiles());
+
         return true;
     }
 }
