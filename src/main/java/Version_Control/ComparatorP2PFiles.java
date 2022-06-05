@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
 public class ComparatorP2PFiles {
@@ -31,8 +32,8 @@ public class ComparatorP2PFiles {
         List<Pair<Integer, String>> addedLines = new ArrayList<>();
         List<Pair<Integer, String>> removedLines = new ArrayList<>();
 
-        Map<String, Integer> liniiFisier1 = new ConcurrentHashMap<>();
-        Map<String, Integer> liniiFisier2 = new ConcurrentHashMap<>();
+        List<Pair<String, Integer>> liniiFisier1 = new CopyOnWriteArrayList<>();
+        List<Pair<String, Integer>> liniiFisier2 = new CopyOnWriteArrayList<>();
 
         BufferedReader fd1 = new BufferedReader(new StringReader(a.getData()));
         BufferedReader fd2 = new BufferedReader(new StringReader(b.getData()));
@@ -40,23 +41,23 @@ public class ComparatorP2PFiles {
         String lineFile1 = "", lineFile2 = "";
         int contor = 0;
         while ((lineFile1 = fd1.readLine()) != null){
-            liniiFisier1.put(lineFile1, contor);
+            liniiFisier1.add(new Pair<>(lineFile1, contor));
             contor++;
         }
         contor = 0;
         while ((lineFile2 = fd2.readLine()) != null){
-            liniiFisier2.put(lineFile2, contor);
+            liniiFisier2.add(new Pair<>(lineFile2, contor));
             contor++;
         }
 
-        for (String temp : liniiFisier1.keySet()){
-            if (liniiFisier2.containsKey(temp)){
+        for (Pair<String, Integer> temp : liniiFisier1){
+            if (liniiFisier2.contains(temp)){
                 liniiFisier1.remove(temp);
                 liniiFisier2.remove(temp);
             }
         }
 
-        for (Map.Entry<String, Integer> i : liniiFisier1.entrySet()){
+        for (Pair<String, Integer> i : liniiFisier1){
             removedLines.add(new Pair<>(i.getValue(), i.getKey()));
         }
         removedLines.sort(new java.util.Comparator<Pair<Integer, String>>() {
@@ -65,7 +66,7 @@ public class ComparatorP2PFiles {
                 return o1.getKey().compareTo(o2.getKey());
             }
         });
-        for (Map.Entry<String, Integer> i : liniiFisier2.entrySet()){
+        for (Pair<String, Integer> i : liniiFisier2){
             addedLines.add(new Pair<>(i.getValue(), i.getKey()));
         }
         addedLines.sort(new java.util.Comparator<Pair<Integer, String>>() {
@@ -137,7 +138,7 @@ public class ComparatorP2PFiles {
         List<FileP2P> prima = new ArrayList<>();
         List<FileP2P> aDoua = new ArrayList<>();
         FileP2P a = new FileP2P();
-        a.setData("Mama\nare\nmere");
+        a.setData("Mama\nare\nmere\nmere");
         a.setFileName("primul");
         a.setTimestamp(1155);
         prima.add(a);
@@ -155,7 +156,7 @@ public class ComparatorP2PFiles {
 
         FileP2P c = new FileP2P();
         c.setData("Tata\nare\nmere\nsi\npere");
-        c.setFileName("primul2");
+        c.setFileName("primul");
         c.setTimestamp(1777);
 
         FileP2P d = new FileP2P();
