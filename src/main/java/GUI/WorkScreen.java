@@ -449,11 +449,11 @@ public class WorkScreen extends JFrame {
         swarmInfo = new JLabel();
 
         // swarmInfo settings:
-        swarmInfo.setText("" + networkSwarm.getSwarmName());
+        swarmInfo.setText("Your ID: " + networkSwarm.getSwarmID() + "    Name: "  + networkSwarm.getSwarmName());
         swarmInfo.setFont(new Font("Radio Canada", Font.BOLD, 16));
 
         swarmInfo.setForeground(new Color(0xFBFCF5));
-        swarmInfo.setBounds(735, 10, 270, 30);
+        swarmInfo.setBounds(735, 10, 500, 30);
 
 
         disconnectButton = new JButton();
