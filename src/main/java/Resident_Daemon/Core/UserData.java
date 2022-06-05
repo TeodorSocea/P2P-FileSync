@@ -20,8 +20,6 @@ public class UserData {
     private List<FileP2P> localFiles;
     private List<FileP2P> otherFiles;
 
-    private boolean isCompareDone = false;
-
     private boolean isEnableToWriteAllFiles;
     private NetworkSwarm lastCreatedSwarm;
 
@@ -36,7 +34,7 @@ public class UserData {
     private HashMap<String, Map<String,String>> changesFileVersionFile;
 
     private Integer receivedFiles = 0;
-    private Integer requiredFiles = 0;
+    private Integer requiredFiles = 1;
 
 
     //region Getters & Setters
@@ -158,14 +156,6 @@ public class UserData {
 
     public void setChangesFileVersionFile(HashMap<String, Map<String, String>> changesFileVersionFile) {
         this.changesFileVersionFile = changesFileVersionFile;
-    }
-
-    public boolean isCompareDone() {
-        return isCompareDone;
-    }
-
-    public void setCompareDone(boolean compareDone) {
-        isCompareDone = compareDone;
     }
 
     public Integer getReceivedFiles() {

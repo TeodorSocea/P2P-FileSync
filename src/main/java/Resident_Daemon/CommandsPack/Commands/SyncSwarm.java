@@ -52,7 +52,6 @@ public class SyncSwarm extends ExceptionModule implements Command {
             userData.resetMasterFiles();
             userData.resetFileLists();
             userData.setEnableToWriteAllFiles(false);
-            userData.setCompareDone(false);
 
             SetReceived_RequiredFilesParam(0, 1);
 
@@ -87,7 +86,6 @@ public class SyncSwarm extends ExceptionModule implements Command {
                 vc.compareMasterFile();
 
 
-                userData.setCompareDone(true);
 
 //                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
 
