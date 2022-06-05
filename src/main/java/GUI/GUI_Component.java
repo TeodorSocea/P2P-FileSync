@@ -15,8 +15,8 @@ public class GUI_Component extends JFrame{
         this.setResizable(false);
 
         this.getContentPane().setBackground(new Color(0x131c30));
-        /*ImageIcon image = new ImageIcon("src/main/java/GUI/sync_logo.jpg");
-        this.setIconImage(image.getImage());
+        ImageIcon image = new ImageIcon("src/main/java/GUI/sync_logo.jpg");
+        /*this.setIconImage(image.getImage());
         Image img = Toolkit.getDefaultToolkit().getImage(("src/main/java/GUI/backgroundImg.png"));
         this.setContentPane(new JPanel() {
             @Override
