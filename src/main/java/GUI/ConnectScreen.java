@@ -147,7 +147,7 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 commandExecutor.ExecuteOperation(new PrintSwarms());
-                if (userData.getMySwarms().size() == 0) {
+                if (userData.getMySwarms().isEmpty()) {
                     System.out.println("GUI: No swarms found.");
                     JOptionPane.showMessageDialog(frame,
                             "You have no swarms.",
@@ -302,9 +302,10 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: View invitations.");
+
                 commandExecutor.ExecuteOperation(new PrintInvitations());
 
-                if (userData.getUserInvitations() == null) {
+                if (userData.getUserInvitations().isEmpty()) {
                     System.out.println("GUI: No invites found.");
                     JOptionPane.showMessageDialog(frame,
                             "You have no invitations.",
@@ -338,6 +339,8 @@ public class ConnectScreen extends JFrame {
                     gbcInvite.insets = new Insets(5, 5, 5, 180);
 
                     inviteIPS = new JButton[10];
+
+
 
                     int ii = 0;
                     for (Invitation invitation : userData.getUserInvitations()) {
@@ -446,6 +449,7 @@ public class ConnectScreen extends JFrame {
                             if (acceptButton != null) {
                                 frame.remove(acceptButton);
                                 frame.remove(declineButton);
+                                frame.remove(backInvitesButton);
                             }
 
                             menuElements();
