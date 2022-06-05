@@ -1,6 +1,7 @@
 package Version_Control;
 
 import javafx.util.Pair;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -153,18 +154,60 @@ public class Version_Control_Component {
         version.compareMasterFile();
         System.out.println(version.getLocalMasterFile());
         //scriere*/
-        String dataFisier="ana are mere\n" +
+        /*
+        String dataFisier1="ana are mere\n" +
                 "maria are mere\n" +
                 "ben are mere\n";
-        String numeFisier = "nume_fisier_sincronizat";
+
+        String dataFisierOriginal="ana are mere\n" +
+                "maria are mere\n" +
+                "ben are mere\n" +
+                "CIPRIAN are mere\n" +
+                "MARIAN are mere\n" +
+                "PIKACHU are mere\n";*/
+    /*  String dataFisierversionOriginal="ana are mere\n" +
+                "maria nu are mere\n" +
+                "CIPRIAN are mere\n" +
+                "ana are multe mere\n" +
+                "PIKACHU are mere\n";
+
+
+     */
+
+        //String dataFisierversionOther="ana are mere\n";
+        String numeFisier = "prim.txt";
+        String dataFisierversionOtherOther="ben are mere\n" +
+                "ana are mere \n" +
+                "pika are mere";
+       /* String VersionFile = "{\"files\":{\"prim.txt\":{\"2\":{\"added_content\":{},\"deleted_content\":{\"1\":\"maria nu are mere\",\"2\":\"CIPRIAN are mere\",\"3\":\"ana are multe mere\",\"4\":\"PIKACHU are mere\"}}}}}";
+        Version_Control_Component version = new Version_Control_Component(VersionFile);
+        FileP2P dinOriginal = new FileP2P();
+        dinOriginal.setData(dataFisierversionOther);
+        dinOriginal.setFileName("prim.txt");
+        dinOriginal.setTimestamp(1);
+        ArrayList<FileP2P> originalFiles = new ArrayList<FileP2P>();
+        originalFiles.add(dinOriginal);
+        FileP2P dinFinisierVersionOther = new FileP2P();
+        dinFinisierVersionOther.setFileName("prim.txt");
+        dinFinisierVersionOther.setData(dataFisierversionOtherOther);
+        dinFinisierVersionOther.setTimestamp(2);
+        ArrayList<FileP2P> otherFiles = new ArrayList<FileP2P>();
+        otherFiles.add(dinFinisierVersionOther);
+        version.setOriginalFiles(originalFiles);
+        version.setOtherFiles(otherFiles);
+        version.compare();
+        System.out.println(version.getOriginalFiles());
+        System.out.println(version.getVersionFileData());*/
+        String VersionFile = "{\"files\":{\"prim.txt\":{\"2\":{\"added_content\":{},\"deleted_content\":{\"1\":\"maria nu are mere\",\"2\":\"CIPRIAN are mere\",\"3\":\"ana are multe mere\",\"4\":\"PIKACHU are mere\"}},\"3\":{\"added_content\":{\"0\":\"ben are mere\",\"1\":\"ana are mere \",\"2\":\"pika are mere\"},\"deleted_content\":{\"0\":\"ana are mere\"}}}}}\n";
+        /*
         String VersionFile = "{\n" +
                 "  \"files\": {\n" +
                 "    \"nume_fisier_sincronizat\": {\n" +
-                "    \"1653837570\" : {\n" +
+                "    \"1\" : {\n" +
                 "      \"added_content\" : { 3:\"ben are mere\"},\n" +
-                "      \"deleted_content\" : { 3:\"ana nu are mere\"}\n" +
+                "      \"deleted_content\" : { 3:\"ana NU MAI are mere\"}\n" +
                 "    },\n" +
-                "    \"1651728809\" :  {\n" +
+                "    \"2\" :  {\n" +
                 "      \"added_content\" : { 2:\"maria are mere\"},\n" +
                 "      \"deleted_content\" : { 2:\"maria nu are mere\", 4:\"ana are multe mere\"}\n" +
                 "  	},\n" +
@@ -176,19 +219,23 @@ public class Version_Control_Component {
                 "    },\n" +
                 "    },\n" +
                 "    },\n" +
-                "}";
-        long rollbackTimestamp = 1651728809;
+                "}";*/
+
+        long rollbackTimestamp = 2;
         Version_Control_Component a = new Version_Control_Component(VersionFile);
-        a.setRollbackFile(dataFisier);
+        a.setRollbackFile(dataFisierversionOtherOther);
         a.setRollbackFileName(numeFisier);
         a.rollbackFile(rollbackTimestamp);
         System.out.println(a.getRollbackFile());
         System.out.println(a.getVersionFileData());
-        VersionFileParser parser = new VersionFileParser(a.getVersionFileData());
+
+
+     /*   VersionFileParser parser = new VersionFileParser(a.getVersionFileData());
         ArrayList<String> files = parser.getFiles();
         ArrayList<String> timestamps = parser.getTimestampsOfFile(files.get(1));
-        System.out.println(parser.getChangesOfFile(files.get(1), timestamps.get(0)));
+        System.out.println(parser.getChangesOfFile(files.get(1), timestamps.get(0)));*/
         //System.out.println(parser.getFiles());
+
     }
 }
 
