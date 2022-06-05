@@ -344,7 +344,7 @@ public class ConnectScreen extends JFrame {
                         gbcInvite.gridy = ii;
                         gbcInvite.gridx = 0;
 
-                        inviteIPS[ii] = new JButton("Button " + invitation.getSenderID());
+                        inviteIPS[ii] = new JButton("From: " + invitation.getSenderID());
                         pInv.add(inviteIPS[ii], gbcInvite);
 
                         int i = ii;
@@ -354,8 +354,10 @@ public class ConnectScreen extends JFrame {
                             public void actionPerformed(ActionEvent e) {
                                 acceptIpSend = inviteIPS[i].getText();
 
-                                frame.remove(acceptButton);
-                                frame.remove(declineButton);
+                                if (acceptButton != null) {
+                                    frame.remove(acceptButton);
+                                    frame.remove(declineButton);
+                                }
 
                                 acceptButton = new JButton();
 
