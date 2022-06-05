@@ -241,6 +241,9 @@ public class WorkScreen extends JFrame {
 
     // inviteToSwarmTab:
     private void inviteToSwarmTab() {
+        if(ipTab != null){
+            frame.remove(ipTab);
+        }
         ipTab = new JPanel();
         JPanel p = new JPanel(new GridBagLayout());
 
@@ -289,6 +292,8 @@ public class WorkScreen extends JFrame {
         }
 
         frame.add(ipTab);
+        frame.revalidate();
+        frame.repaint();
 
     }
 

@@ -46,6 +46,7 @@ public class BroadcastSender{
         public void run() {
             try {
                 DatagramSocket socket = new DatagramSocket();
+                socket.setReuseAddress(true);
                 socket.setBroadcast(true);
                 byte[] buffer = broadcastMsg.getBytes();
 
