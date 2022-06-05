@@ -48,15 +48,26 @@ public class Rollback {
         //descrescator
         TreeSet<String> ts = (TreeSet<String>)tsc.descendingSet();
 
+        int iteratieContor = 0;
+
+
+        HashMap<String, String> toBeDeletedFirst = new HashMap<>();
+
         for (String key : ts) {///swap la toata zona de deleted_content si added_content + swap la myList = List.copyOf(addTo/deleteFrom)
             String value = String.valueOf(timestamps.get(key));
 
             //iteram strict prin added content pentru a salva intr-un map linia si continutul pentru a-l pune mai usor in json mai tarziu?
+
             JSONObject added = new JSONObject(value).getJSONObject("added_content");
+
+
             Iterator<String> addItr = added.keys();
             while(addItr.hasNext()) {
                 String name = addItr.next();
                 toBeAdded.put(name, added.getString(name));
+                if(iteratieContor == 0) {
+                    toBeDeletedFirst.put(name, added.getString(name));
+                }
             }
             // aplicam liniile modificare si dupa modificam si fisierul sa fie la curent cu adaugarile facute
             myList = List.copyOf(deleteFrom(added,dataFisier));
@@ -72,16 +83,15 @@ public class Rollback {
                 String name = delItr.next();
                 toBeDeleted.put(name, deleted.getString(name));
             }
-
             // stergem liniile si dupa modificam si fisierul sa fie la curent cu modificarile facut
             myList = List.copyOf(addTo(deleted,dataFisier));
             dataFisier = String.join("\n",myList);
 
 
-
+            iteratieContor++;
 
         }
-        nou = createNewJSONObject(toBeDeleted,toBeAdded); /// switch aici
+        nou = createNewJSONObject(toBeDeleted,toBeDeletedFirst); /// switch aici
         json.getJSONObject("files").getJSONObject("" + numeFisier + "").put("" + System.currentTimeMillis() / 1000L + "",nou);
         file.put("" + System.currentTimeMillis() / 1000L + "",nou);
         this.rollbackedFile = dataFisier;

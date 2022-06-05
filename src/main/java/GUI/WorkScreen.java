@@ -426,7 +426,9 @@ public class WorkScreen extends JFrame {
         rollBackButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                commandExecutor.ExecuteOperation(new Rollback(savedFile, Long.parseLong(savedTimeStamp), networkSwarm.getSwarmID()));
                 System.out.println("GUI: Rolling back. Timestamp: " + savedTimeStamp  + ". File: " + savedFile);
+
             }
         });
 
