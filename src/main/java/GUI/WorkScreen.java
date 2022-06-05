@@ -449,7 +449,7 @@ public class WorkScreen extends JFrame {
         swarmInfo = new JLabel();
 
         // swarmInfo settings:
-        swarmInfo.setText("Your ID: " + networkSwarm.getSwarmID() + "    Name: "  + networkSwarm.getSwarmName());
+        swarmInfo.setText("Current SwarmID: " + networkSwarm.getSwarmID() + "    Name: "  + networkSwarm.getSwarmName());
         swarmInfo.setFont(new Font("Radio Canada", Font.BOLD, 16));
 
         swarmInfo.setForeground(new Color(0xFBFCF5));

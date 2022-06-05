@@ -25,8 +25,10 @@ public class GetFilesFromVersionFile extends ExceptionModule implements Command 
         Version_Control_Component vcc = Singleton.getSingletonObject().getVersion_control_component();
 
         String versionFileData = BasicFileUtils.GetIfExistsVersionFileData(swarmID);
-        vcc.setFisierVersiuni(versionFileData);
-        versionFileParser.setVersionFile(new JSONObject(vcc.getVersionFileData()));
+        if(versionFileData != null){
+            vcc.setFisierVersiuni(versionFileData);
+            versionFileParser.setVersionFile(new JSONObject(vcc.getVersionFileData()));
+        }
         Singleton.getSingletonObject().getUserData().setVersionFileFiles(versionFileParser.getFiles());
 
         System.out.println(Singleton.getSingletonObject().getUserData().getVersionFileFiles());

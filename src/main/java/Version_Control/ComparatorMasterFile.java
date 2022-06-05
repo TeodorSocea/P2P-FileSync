@@ -25,14 +25,15 @@ public class ComparatorMasterFile {
                 for (Pair<String,Long> j : other){
                     if (j.getKey().equals(temp.getKey()) && j.getValue() > temp.getValue()){
                         temp = j;
+                        finalList.add(temp);
                     }
                 }
-                finalList.add(temp);
+//                finalList.add(temp);
             }
             //daca pt fisierul din original nu exista fisier in other
-            else{
-                finalList.add(i);
-            }
+//            else{
+//                finalList.add(i);
+//            }
         }
         //acum iau fisierele care sunt in other si nu sunt in original
         for (Pair<String,Long> i : other){
