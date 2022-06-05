@@ -80,10 +80,10 @@ public class SyncSwarm extends ExceptionModule implements Command {
 
                 System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
 
-                if(localRecords.size() > 0) {
+                if(vc.getLocalMasterFile().size() > 0) {
                     StringBuilder stringBuilder = new StringBuilder();
 
-                    for(var pair : localRecords) {
+                    for(var pair : vc.getLocalMasterFile()) {
                         stringBuilder.append(pair.getKey() + "!");
                     }
                     stringBuilder.deleteCharAt(stringBuilder.length() - 1);
