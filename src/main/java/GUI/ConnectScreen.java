@@ -51,6 +51,10 @@ public class ConnectScreen extends JFrame {
     JButton newSwarmButton;
 
 
+    // changeSyncFolder:
+    JButton changeSyncFolderButton;
+
+
     // miscElements declaration:
     JLabel title;
     JButton helpButton;
@@ -76,7 +80,7 @@ public class ConnectScreen extends JFrame {
         title.setText("P2P File Sync");
         title.setFont(new Font("Radio Canada", Font.BOLD, 96));
 
-        title.setForeground(new Color(0xB1B6A6));
+        title.setForeground(new Color(0xA98B93));
         title.setBounds(330, -100, 884, 500);
 
         frame.add(title);
@@ -94,6 +98,7 @@ public class ConnectScreen extends JFrame {
         viewSwarms();
         viewInvites();
         createNewSwarm();
+        changeSyncFolderTab();
         miscElements();
 
         frame.revalidate();
@@ -129,11 +134,11 @@ public class ConnectScreen extends JFrame {
     private void viewSwarms() {
         viewSwarmsButton = new JButton();
 
-        viewSwarmsButton.setText("VIEW SWARMS");
+        viewSwarmsButton.setText("View Swarms");
         viewSwarmsButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-        viewSwarmsButton.setForeground(new Color(0x000000));
-        viewSwarmsButton.setBackground(new Color(0xB1B6A6));
+        viewSwarmsButton.setForeground(new Color(0xFBFCF5));
+        viewSwarmsButton.setBackground(new Color(0x3F3D4B));
 
         viewSwarmsButton.setBounds(540, 300, 200, 30);
         viewSwarmsButton.setFocusable(false);
@@ -142,7 +147,7 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 commandExecutor.ExecuteOperation(new PrintSwarms());
-                if (userData.getMySwarms().size() == 0) {
+                if (userData.getMySwarms().isEmpty()) {
                     System.out.println("GUI: No swarms found.");
                     JOptionPane.showMessageDialog(frame,
                             "You have no swarms.",
@@ -151,9 +156,10 @@ public class ConnectScreen extends JFrame {
                 }
                 else {
                     frame.remove(newSwarmButton);
-                    frame.remove(viewInvitesButton);
-                    removeMiscElements();
                     frame.remove(viewSwarmsButton);
+                    frame.remove(viewInvitesButton);
+                    frame.remove(changeSyncFolderButton);
+                    removeMiscElements();
 
 
                     swarmList = new JPanel();
@@ -169,7 +175,7 @@ public class ConnectScreen extends JFrame {
                     swarmList.setAutoscrolls(true);
 
                     pSwm.setFont(new Font("Radio Canada", Font.ITALIC, 25));
-                    pSwm.setForeground(new Color(0x000000));
+                    pSwm.setForeground(new Color(0xFBFCF5));
                     pSwm.setBackground(new Color(0x363946));
 
                     GridBagConstraints gbcSwarm = new GridBagConstraints();
@@ -198,12 +204,14 @@ public class ConnectScreen extends JFrame {
                                 if (joinButton != null)
                                     frame.remove(joinButton);
 
+                                NetworkSwarm selectedSwarm = new NetworkSwarm(swarmEntry.getValue().getSwarmID(), swarmEntry.getValue().getSelfID(), swarmEntry.getValue().getSwarmName());
+
                                 joinButton = new JButton();
                                 joinButton.setText("Join");
                                 joinButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-                                joinButton.setForeground(new Color(0x000000));
-                                joinButton.setBackground(new Color(0xB1B6A6));
+                                joinButton.setForeground(new Color(0xFBFCF5));
+                                joinButton.setBackground(new Color(0x3F3D4B));
 
                                 joinButton.setBounds(590, 585, 85, 30);;
                                 joinButton.setFocusable(false);
@@ -211,16 +219,22 @@ public class ConnectScreen extends JFrame {
                                 joinButton.addActionListener(new ActionListener() {
                                     @Override
                                     public void actionPerformed(ActionEvent e) {
-                                        System.out.print("GUI: Joining Swarm: " + joinSwarmSend);
+                                        System.out.print("GUI: Joining Swarm: " + selectedSwarm.getSwarmName());
 
-                                        frame.removeAll();
+                                        frame.remove(title);
+                                        frame.remove(swarmList);
+                                        frame.remove(joinButton);
+                                        frame.remove(backSwarmButton);
+
+                                        frame.revalidate();
                                         frame.repaint();
-//                                        workScreen = new WorkScreen(frame, joinSwarmSend);
-
+                                        workScreen = new WorkScreen(frame, selectedSwarm);
                                     }
                                 });
 
                                 frame.add(joinButton);
+                                frame.revalidate();
+                                frame.repaint();
                             }
                         });
 
@@ -233,8 +247,8 @@ public class ConnectScreen extends JFrame {
                     backSwarmButton.setText("BACK");
                     backSwarmButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-                    backSwarmButton.setForeground(new Color(0x000000));
-                    backSwarmButton.setBackground(new Color(0xB1B6A6));
+                    backSwarmButton.setForeground(new Color(0xFBFCF5));
+                    backSwarmButton.setBackground(new Color(0x3F3D4B));
 
                     backSwarmButton.setBounds(590, 635, 85, 30);
                     backSwarmButton.setFocusable(false);
@@ -274,11 +288,11 @@ public class ConnectScreen extends JFrame {
         viewInvitesButton = new JButton();
 
         // viewInvitesButton settings:
-        viewInvitesButton.setText("VIEW INVITES");
+        viewInvitesButton.setText("View Invites");
         viewInvitesButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-        viewInvitesButton.setForeground(new Color(0x000000));
-        viewInvitesButton.setBackground(new Color(0xB1B6A6));
+        viewInvitesButton.setForeground(new Color(0xFBFCF5));
+        viewInvitesButton.setBackground(new Color(0x3F3D4B));
 
         viewInvitesButton.setBounds(540, 350, 200, 30);
         viewInvitesButton.setFocusable(false);
@@ -289,7 +303,9 @@ public class ConnectScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: View invitations.");
 
-                if (userData.getUserInvitations() == null) {
+                commandExecutor.ExecuteOperation(new PrintInvitations());
+
+                if (userData.getUserInvitations().isEmpty()) {
                     System.out.println("GUI: No invites found.");
                     JOptionPane.showMessageDialog(frame,
                             "You have no invitations.",
@@ -298,9 +314,10 @@ public class ConnectScreen extends JFrame {
                 }
                 else {
                     frame.remove(newSwarmButton);
-                    removeMiscElements();
                     frame.remove(viewSwarmsButton);
                     frame.remove(viewInvitesButton);
+                    frame.remove(changeSyncFolderButton);
+                    removeMiscElements();
 
                     inviteList = new JPanel();
                     JPanel pInv = new JPanel(new GridBagLayout());
@@ -315,7 +332,7 @@ public class ConnectScreen extends JFrame {
                     inviteList.setAutoscrolls(true);
 
                     pInv.setFont(new Font("Radio Canada", Font.ITALIC, 25));
-                    pInv.setForeground(new Color(0x000000));
+                    pInv.setForeground(new Color(0xFBFCF5));
                     pInv.setBackground(new Color(0x363946));
 
                     GridBagConstraints gbcInvite = new GridBagConstraints();
@@ -323,13 +340,14 @@ public class ConnectScreen extends JFrame {
 
                     inviteIPS = new JButton[10];
 
+
+
                     int ii = 0;
                     for (Invitation invitation : userData.getUserInvitations()) {
-                        // for (int ii = 0; ii < 10; ii++) {
                         gbcInvite.gridy = ii;
                         gbcInvite.gridx = 0;
 
-                        inviteIPS[ii] = new JButton("Button " + invitation.getSenderID());
+                        inviteIPS[ii] = new JButton("From: " + invitation.getSenderID());
                         pInv.add(inviteIPS[ii], gbcInvite);
 
                         int i = ii;
@@ -339,16 +357,18 @@ public class ConnectScreen extends JFrame {
                             public void actionPerformed(ActionEvent e) {
                                 acceptIpSend = inviteIPS[i].getText();
 
-                                frame.remove(acceptButton);
-                                frame.remove(declineButton);
+                                if (acceptButton != null) {
+                                    frame.remove(acceptButton);
+                                    frame.remove(declineButton);
+                                }
 
                                 acceptButton = new JButton();
 
                                 acceptButton.setText("Accept");
                                 acceptButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-                                acceptButton.setForeground(new Color(0x000000));
-                                acceptButton.setBackground(new Color(0xB1B6A6));
+                                acceptButton.setForeground(new Color(0xFBFCF5));
+                                acceptButton.setBackground(new Color(0x3F3D4B));
 
                                 acceptButton.setBounds(540, 585, 85, 30);
                                 acceptButton.setFocusable(false);
@@ -358,6 +378,13 @@ public class ConnectScreen extends JFrame {
                                     public void actionPerformed(ActionEvent e) {
                                         System.out.print("GUI: Accepting invitation from: " + acceptIpSend);
                                         commandExecutor.ExecuteOperation(new RespondToInvitation(i, true));
+
+                                        frame.remove(inviteList);
+                                        frame.remove(acceptButton);
+                                        frame.remove(declineButton);
+                                        frame.remove(backInvitesButton);
+
+                                        menuElements();
                                     }
                                 });
 
@@ -367,8 +394,8 @@ public class ConnectScreen extends JFrame {
                                 declineButton.setText("Decline");
                                 declineButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-                                declineButton.setForeground(new Color(0x000000));
-                                declineButton.setBackground(new Color(0xB1B6A6));
+                                declineButton.setForeground(new Color(0xFBFCF5));
+                                declineButton.setBackground(new Color(0x3F3D4B));
 
                                 declineButton.setBounds(655, 585, 85, 30);
                                 declineButton.setFocusable(false);
@@ -378,9 +405,15 @@ public class ConnectScreen extends JFrame {
                                     public void actionPerformed(ActionEvent e) {
                                         System.out.print("GUI: Declining invitation from: " + acceptIpSend);
                                         commandExecutor.ExecuteOperation(new RespondToInvitation(i, false));
+
+                                        frame.remove(inviteList);
+                                        frame.remove(acceptButton);
+                                        frame.remove(declineButton);
+                                        frame.remove(backInvitesButton);
+
+                                        menuElements();
                                     }
                                 });
-
 
                                 frame.add(acceptButton);
                                 frame.add(declineButton);
@@ -391,7 +424,7 @@ public class ConnectScreen extends JFrame {
                         });
 
                         gbcInvite.gridx = 1;
-                        // ii++;
+                        ii++;
                     }
 
                     backInvitesButton = new JButton();
@@ -399,8 +432,8 @@ public class ConnectScreen extends JFrame {
                     backInvitesButton.setText("BACK");
                     backInvitesButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-                    backInvitesButton.setForeground(new Color(0x000000));
-                    backInvitesButton.setBackground(new Color(0xB1B6A6));
+                    backInvitesButton.setForeground(new Color(0xFBFCF5));
+                    backInvitesButton.setBackground(new Color(0x3F3D4B));
 
                     backInvitesButton.setBounds(590, 635, 85, 30);
                     backInvitesButton.setFocusable(false);
@@ -416,6 +449,7 @@ public class ConnectScreen extends JFrame {
                             if (acceptButton != null) {
                                 frame.remove(acceptButton);
                                 frame.remove(declineButton);
+                                frame.remove(backInvitesButton);
                             }
 
                             menuElements();
@@ -443,11 +477,11 @@ public class ConnectScreen extends JFrame {
         newSwarmButton = new JButton();
 
         // newSwarmButton settings:
-        newSwarmButton.setText("CREATE NEW SWARM");
+        newSwarmButton.setText("Create New Swarm");
         newSwarmButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-        newSwarmButton.setForeground(new Color(0x000000));
-        newSwarmButton.setBackground(new Color(0xB1B6A6));
+        newSwarmButton.setForeground(new Color(0xFBFCF5));
+        newSwarmButton.setBackground(new Color(0x3F3D4B));
 
         newSwarmButton.setBounds(540, 450, 200, 30);
         newSwarmButton.setFocusable(false);
@@ -465,11 +499,10 @@ public class ConnectScreen extends JFrame {
                 commandExecutor.ExecuteOperation(createdSwarm);
                 NetworkSwarm latestSwarmCreated = userData.getLastCreatedSwarm();
 
-//                new NetworkSwarm().getSelfID();
-
                 frame.remove(newSwarmButton);
                 frame.remove(viewInvitesButton);
                 frame.remove(viewSwarmsButton);
+                frame.remove(changeSyncFolderButton);
 
                 frame.remove(helpButton);
                 frame.remove(title);
@@ -478,11 +511,51 @@ public class ConnectScreen extends JFrame {
                 frame.revalidate();
                 frame.repaint();
 
-//                workScreen = new WorkScreen(frame, createdSwarm);
+                workScreen = new WorkScreen(frame, latestSwarmCreated);
             }
         });
 
         frame.add(newSwarmButton);
+    }
+
+    // changeSyncFolder:
+    private void changeSyncFolderTab() {
+        changeSyncFolderButton = new JButton();
+
+        changeSyncFolderButton.setText("Change Sync Folder");
+        changeSyncFolderButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
+
+        changeSyncFolderButton.setForeground(new Color(0xFBFCF5));
+        changeSyncFolderButton.setBackground(new Color(0x3F3D4B));
+
+        changeSyncFolderButton.setBounds(540, 500, 200, 30);
+        changeSyncFolderButton.setFocusable(false);
+
+        changeSyncFolderButton.setAlignmentX(-1);
+        changeSyncFolderButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new java.io.File("."));
+                chooser.setDialogTitle("Choose Swarms Folder");
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                chooser.setAcceptAllFileFilterUsed(false);
+                if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    String activeFolderPath = chooser.getSelectedFile().getAbsolutePath();
+                    commandExecutor.ExecuteOperation(new ChooseFolder(activeFolderPath));
+                }
+                else{
+                    System.out.println("GUI: No folder path selected!");
+                    JOptionPane.showMessageDialog(frame,
+                            "You have to choose a folder path in order to use this app.",
+                            "Error",
+                            JOptionPane.PLAIN_MESSAGE);
+                    selectFolder();
+                }
+            }
+        });
+
+        frame.add(changeSyncFolderButton);
     }
 
 
@@ -491,11 +564,11 @@ public class ConnectScreen extends JFrame {
         helpButton = new JButton();
 
         // helpButton settings:
-        helpButton.setText("HELP");
+        helpButton.setText("Help");
         helpButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-        helpButton.setForeground(new Color(0x000000));
-        helpButton.setBackground(new Color(0xB1B6A6));
+        helpButton.setForeground(new Color(0xFBFCF5));
+        helpButton.setBackground(new Color(0x3F3D4B));
 
         helpButton.setBounds(540, 635, 85, 30);
         helpButton.setFocusable(false);
@@ -506,12 +579,15 @@ public class ConnectScreen extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: Displaying help.");
                 JOptionPane.showMessageDialog(frame,
-                        "Move the chess pieces on the board by clicking\n"
-                                + "and dragging. The game will watch out for illegal\n"
-                                + "moves. You can win either by your opponent running\n"
-                                + "out of time or by checkmating your opponent.\n"
-                                + "\nGood luck, hope you enjoy the game!",
-                        "How to play",
+                        "Accept an invite, join or create an existing swarm\n"
+                                + "in order to access the features of the app.\n"
+                                + "Once in a swarm, you can invite users either manually by\n"
+                                + "inserting their IP, or refreshing the nearby IPs.\n"
+                                + "\nBy clicking a file you can see its timestamps, and\n"
+                                + "clicking one will show you the changes.\n"
+                                + "You can either or rollback changes\n"
+                                + "based on pressed timestamp.",
+                        "Help",
                         JOptionPane.PLAIN_MESSAGE);
             }
         });
@@ -520,11 +596,11 @@ public class ConnectScreen extends JFrame {
         quitButton = new JButton();
 
         // quitButton settings:
-        quitButton.setText("QUIT");
+        quitButton.setText("Quit");
         quitButton.setFont(new Font("Radio Canada", Font.BOLD, 15));
 
-        quitButton.setForeground(new Color(0x000000));
-        quitButton.setBackground(new Color(0xB1B6A6));
+        quitButton.setForeground(new Color(0xFBFCF5));
+        quitButton.setBackground(new Color(0x3F3D4B));
 
         quitButton.setBounds(655, 635, 85, 30);
         quitButton.setFocusable(false);
@@ -534,7 +610,7 @@ public class ConnectScreen extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("GUI: Exiting.");
-                // commandExecutor.ExecuteOperation(new ExitApp());
+                commandExecutor.ExecuteOperation(new ExitApp());
                 exit(1);
             }
         });
