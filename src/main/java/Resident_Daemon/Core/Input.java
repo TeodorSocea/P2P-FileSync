@@ -43,9 +43,14 @@ public class Input {
 
         String str = Input.nextString();
 
-        long longVal = Long.parseLong(str);
+        try {
 
-        return longVal;
+            long longVal = Long.parseLong(str);
+            return longVal;
+
+        } catch (NumberFormatException e) {
+            return BasicFileUtils.GetCurrentTimeStamp();
+        }
     }
 
     public static Integer nextInteger() {

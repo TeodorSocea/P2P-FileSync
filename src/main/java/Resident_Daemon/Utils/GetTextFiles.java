@@ -29,7 +29,7 @@ public class GetTextFiles
                 // Check if the file is a directory
                 if (file.isDirectory())
                 {
-                    var mapData2 = getTextFiles(Path.of(file.getAbsolutePath()));
+                    var mapData2 = RecursiveCall(Path.of(file.getAbsolutePath()));
                     for (var entry : mapData2.entrySet())
                     {
                         mapData.put(entry.getKey(), entry.getValue());

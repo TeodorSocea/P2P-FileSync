@@ -61,7 +61,7 @@ public class ReceiveFiles implements Command {
             List<FileP2P> fileToWrite = vcc.getOriginalFiles();
 
             for(var fileData : fileToWrite){
-                BasicFileUtils.WriteFileToFolder(swarmID, fileData.getFileName(), fileData.getData());
+                BasicFileUtils.WriteFileToFolder(swarmID, fileData.getFileName(), fileData.getTimestamp(), fileData.getData());
             }
 
             BasicFileUtils.WriteVersionFile(swarmID, vcc.getVersionFileData());

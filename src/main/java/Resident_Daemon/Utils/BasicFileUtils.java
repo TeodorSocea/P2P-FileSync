@@ -13,7 +13,10 @@ import java.nio.file.*;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -215,7 +218,7 @@ public class BasicFileUtils {
         return data.substring(findNthOccur(data, '!', 2) + 1);
     }
 
-    public static void WriteFileToFolder(int swarmID, String fileRelPath, String data) throws IOException {
+    public static void WriteFileToFolder(int swarmID, String fileRelPath, long timestamp, String data) throws IOException {
 
         String swarmFolderPath = String.valueOf(GetSwarmFolderPath(swarmID));
 
@@ -227,6 +230,9 @@ public class BasicFileUtils {
 
         try {
             Files.writeString(filePath, data);
+            BasicFileAttributeView attr = Files.getFileAttributeView(filePath, BasicFileAttributeView.class);
+            FileTime time = FileTime.from(Instant.ofEpochMilli(timestamp));
+            attr.setTimes(time, time, time);
         } catch (IOException e) {
             throw e;
         }
@@ -449,6 +455,12 @@ public class BasicFileUtils {
         }
     }
 
+    public static long GetCurrentTimeStamp() {
+        Date date = new Date();
 
+        long timeMilli = date.getTime();
+
+        return timeMilli;
+    }
 
 }

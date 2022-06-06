@@ -35,6 +35,7 @@ public class ProcessRecievedFile implements Command {
         byte[] dataReceived = networkingComponent.getDataFromDataPipeline(swarmID, peerID);
 
         FileData fileData = BasicFileUtils.GetFileData(dataReceived);
+//        System.out.println(fileData.getFileContent());
 
         if(fileData.getFileRelPath().contains(BasicFileUtils.filePathMasterSyncFile)) {
             List<SyncRecord> syncRecordList = BasicFileUtils.readRecordsFromString(fileData.getFileContent());

@@ -26,7 +26,7 @@ public class Rollback extends ExceptionModule implements Command {
 
     private void UpdateFile(String fileRelName, String fileData) {
         try {
-            BasicFileUtils.WriteFileToFolder(swarmID, fileRelName, fileData);
+            BasicFileUtils.WriteFileToFolder(swarmID, fileRelName, timestamp, fileData);
         } catch (IOException e) {
             e.printStackTrace();
         }
