@@ -39,7 +39,7 @@ public class GetTextFiles
                 else
                 {
                     Path fileFullPath = Path.of(file.getAbsolutePath());
-                    if(isTextPlainFile(fileFullPath))
+                    if(isValidFile(fileFullPath))
                     {
                         Path base = initialPath;
 
@@ -65,12 +65,45 @@ public class GetTextFiles
 
         try {
             String mimeType = Files.probeContentType(filePath);
-            System.out.println(mimeType);
+//            System.out.println(mimeType);
             return mimeType.equals("text/plain");
-        } catch (IOException e) {
+        } catch (IOException | NullPointerException e) {
             return false;
         }
 
+
+    }
+
+    public static boolean isAsciiText(Path filePath) throws IOException {
+
+        byte[] bytes = BasicFileUtils.file2bytes(filePath);
+        if(bytes == null) return false;
+
+        int x = 0;
+        short bin = 0;
+
+        for (byte thisByte : bytes) {
+            char it = (char) thisByte;
+            if (!Character.isWhitespace(it) && Character.isISOControl(it)) {
+
+                bin++;
+            }
+            if (bin >= 5) {
+                return false;
+            }
+            x++;
+        }
+        return true;
+    }
+
+    public static boolean isValidFile(Path filePath) {
+        try {
+            return isAsciiText(filePath);
+
+        } catch (Exception e) {
+
+            return false;
+        }
 
     }
 
