@@ -218,6 +218,12 @@ public class BasicFileUtils {
         return data.substring(findNthOccur(data, '!', 2) + 1);
     }
 
+    private static void ModifyFileLastModifiedTime(Path filePath, long timestamp) throws IOException {
+        BasicFileAttributeView attr = Files.getFileAttributeView(filePath, BasicFileAttributeView.class);
+        FileTime time = FileTime.from(Instant.ofEpochMilli(timestamp));
+        attr.setTimes(time, time, time);
+    }
+
     public static void WriteFileToFolder(int swarmID, String fileRelPath, long timestamp, String data) throws IOException {
 
         String swarmFolderPath = String.valueOf(GetSwarmFolderPath(swarmID));
@@ -230,9 +236,7 @@ public class BasicFileUtils {
 
         try {
             Files.writeString(filePath, data);
-            BasicFileAttributeView attr = Files.getFileAttributeView(filePath, BasicFileAttributeView.class);
-            FileTime time = FileTime.from(Instant.ofEpochMilli(timestamp));
-            attr.setTimes(time, time, time);
+            ModifyFileLastModifiedTime(filePath, timestamp);
         } catch (IOException e) {
             throw e;
         }

@@ -108,6 +108,7 @@ public class ComparatorP2PFiles {
                     diferente = fileDifferences(i, toBeSorted.get(toBeSorted.size() - 1));
                     diferente.getKey().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempAdded.add(a));
                     diferente.getValue().stream().filter(e -> !tempAdded.contains(new Pair<>(e.getKey(), e.getValue()))).forEach(a -> tempRemoved.add(a));
+                    i.setTimestamp(toBeSorted.get(toBeSorted.size() - 1).getTimestamp());
 
                     tempAdded.sort(new java.util.Comparator<Pair<Integer, String>>() {
                         @Override

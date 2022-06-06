@@ -44,12 +44,13 @@ public class Version_Control_Component {
     public void compare() throws IOException {
         comparatorul = new ComparatorP2PFiles(originalFiles, otherFiles);
        // System.out.println(comparatorul.compare().getKey());
-        fisierVersiuni.setVersionFileData(comparatorul.compare());
+        var modifications = comparatorul.compare();
+        fisierVersiuni.setVersionFileData(modifications);
 //        System.out.println("Fisiere originale inainte de modificare: " );
 //        System.out.println(this.originalFiles.toString());
 //        System.out.println("Fisiere originale dupa modificare: ");
         ModifiedFiles modify = new ModifiedFiles();
-        this.originalFiles = modify.buildModifiedFiles(originalFiles, otherFiles, comparatorul.compare());
+        this.originalFiles = modify.buildModifiedFiles(originalFiles, otherFiles, modifications);
 //        System.out.println(this.originalFiles.toString());
 //        System.out.println(fisierVersiuni.getVersionFileData());
     }

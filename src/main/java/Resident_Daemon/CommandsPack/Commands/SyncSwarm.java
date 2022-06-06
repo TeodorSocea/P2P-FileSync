@@ -85,8 +85,6 @@ public class SyncSwarm extends ExceptionModule implements Command {
 
                 vc.compareMasterFile();
 
-
-
 //                System.out.println(vc.getLocalMasterFile() + " --- " + vc.getOtherMasterFile());
 
                 if(vc.getLocalMasterFile().size() > 0) {
