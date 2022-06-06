@@ -15,10 +15,12 @@ public class ExitApp extends ExceptionModule implements Command {
 
         try {
             Singleton.saveSingletonData();
+            System.out.println("Saved folder path!");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        System.out.println("App closing...");
         exit(0);
 
         return true;

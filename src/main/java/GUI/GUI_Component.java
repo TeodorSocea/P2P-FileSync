@@ -12,6 +12,7 @@ public class GUI_Component extends JFrame{
         this.setSize(1280, 720);
         this.setTitle("P2P File Sync");
         this.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        this.addWindowListener(new CustomWindowListener());
         this.setResizable(false);
 
         this.getContentPane().setBackground(new Color(0x131c30));

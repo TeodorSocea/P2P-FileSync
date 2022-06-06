@@ -6,6 +6,7 @@ import Resident_Daemon.Utils.BasicFileUtils;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,10 +38,10 @@ public class GetTextFiles
                 }
                 else
                 {
-                    if(textFileFilter.accept(dir, file.getName()))
+                    Path fileFullPath = Path.of(file.getAbsolutePath());
+                    if(isTextPlainFile(fileFullPath))
                     {
                         Path base = initialPath;
-                        Path fileFullPath = Path.of(file.getAbsolutePath());
 
                         var fileRelPath = base.relativize(fileFullPath);
 
@@ -58,6 +59,19 @@ public class GetTextFiles
 
         Map<Path, byte[]> mapData = RecursiveCall(path);
         return mapData;
+    }
+
+    public static boolean isTextPlainFile(Path filePath) {
+
+        try {
+            String mimeType = Files.probeContentType(filePath);
+            System.out.println(mimeType);
+            return mimeType.equals("text/plain");
+        } catch (IOException e) {
+            return false;
+        }
+
+
     }
 
     private static final FilenameFilter textFileFilter = new FilenameFilter()
