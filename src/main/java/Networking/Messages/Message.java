@@ -18,7 +18,7 @@ public class Message {
     }
 
     protected void parse(){
-        decrypt();
+        //decrypt();
         header  = Messages.getIntFromByteArray(rawMessage,4);
         senderID  = Messages.getIntFromByteArray(rawMessage,8);
     }

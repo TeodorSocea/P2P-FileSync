@@ -57,7 +57,7 @@ public class InviteMessage extends Message{
         //swarmName
         buff.put(20, swarmName.getBytes(StandardCharsets.UTF_8));
         rawMessage = buff.array();
-        encrypt();
+        //encrypt();
         return rawMessage;
     }
 }

@@ -64,7 +64,7 @@ public class SwarmDataMessage extends Message{
         buff.put(22, peerIP[2]);
         buff.put(23, peerIP[3]);
         rawMessage = buff.array();
-        encrypt();
+        //encrypt();
         return rawMessage;
     }
 }

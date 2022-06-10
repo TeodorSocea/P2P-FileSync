@@ -53,7 +53,7 @@ public class InviteResponseMessage extends Message{
         //response
         buff.put(16, this.response);
         rawMessage = buff.array();
-        encrypt();
+        //encrypt();
         return rawMessage;
     }
 

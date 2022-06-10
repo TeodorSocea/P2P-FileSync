@@ -60,7 +60,7 @@ public class DataMessage extends Message{
             buff.put(20 + i, this.data[i]);
         }
         rawMessage = buff.array();
-        encrypt();
+        //encrypt();
         return rawMessage;
     }
 }

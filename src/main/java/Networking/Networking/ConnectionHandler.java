@@ -34,7 +34,7 @@ public class ConnectionHandler implements Runnable{
         int definitiveMessageSize;
         do{
             selfSocket.getInputStream().read(messageSize);
-            definitiveMessageSize = Messages.getIntFromByteArray(Messages.decryptSize(messageSize), 0);
+            definitiveMessageSize = Messages.getIntFromByteArray(messageSize, 0);
         }while(definitiveMessageSize == 0);
         byte[] buf = new byte[definitiveMessageSize - 4];
         int readBytes = selfSocket.getInputStream().read(buf, 0, buf.length);

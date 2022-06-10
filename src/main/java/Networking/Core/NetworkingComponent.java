@@ -190,7 +190,6 @@ public class NetworkingComponent {
         }
         networkSwarmManager.getSwarms().get(swarmID).popFulfilledRequests(peerID);
 
-
         return byteBuffer.array();
     }
 
