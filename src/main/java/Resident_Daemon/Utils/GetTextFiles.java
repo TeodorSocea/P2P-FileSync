@@ -97,6 +97,10 @@ public class GetTextFiles
     }
 
     public static boolean isValidFile(Path filePath) {
+
+        if(filePath.toString().contains(BasicFileUtils.VERSION_FILE_DATA_NAME))
+            return false;
+
         try {
             return isAsciiText(filePath);
 

@@ -50,6 +50,7 @@ public class Rollback extends ExceptionModule implements Command {
         vc.rollbackFile(timestamp);
 
         UpdateFile(fileName, vc.getRollbackFile());
+        timestamp = BasicFileUtils.GetCurrentTimeStamp();
         UpdateVersionFile(vc.getVersionFileData());
 
 
